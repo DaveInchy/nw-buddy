@@ -1,0 +1,120 @@
+{
+  "manifest_version": 1,
+  "type": "WebApp",
+  "meta": {
+    "name": "🏴‍☠️ Pirate Map",
+    "author": "Dave Inchy",
+    "version": "22.03.03",
+    "minimum-overwolf-version": "0.180.0",
+    "description": "A always under construction app to display a radar as an overlay on Games",
+    "dock_button_title": "🏴‍☠️ Pirate Map for New World",
+    "icon": "icons/IconMouseOver.png",
+    "icon_gray": "icons/IconMouseNormal.png",
+    "launcher_icon": "icons/desktop-icon.ico",
+    "window_icon": "icons/IconMouseOver.png"
+  },
+  "permissions": [
+    "Hotkeys",
+    "GameInfo"
+  ],
+  "data": {
+    "start_window": "background",
+    "hotkeys": {
+      "showhide": {
+        "title": "Show/Hide",
+        "action-type": "toggle",
+        "default": "Alt+W"
+      }
+    },
+    "protocol_override_domains": {
+      "localhost": "http"
+    },
+    "externally_connectable": {
+      "matches": [
+        "http://*.overwolf.com",
+        "https://*.overwolf.com",
+        "http://localhost:8420"
+      ]
+    },
+    "force_browser": "user",
+    "extra-objects": {
+      "dbghelp.dll": {
+        "file": "bin/dbghelp.dll",
+        "class": "overwolf.plugins.nw_debugger"
+      },
+      "bink2w64.dll": {
+        "file": "bin/bink2w64.dll",
+        "class": "overwolf.plugins.nw_bink2w64"
+      },
+      "vivoxsdk.dll": {
+        "file": "bin/vivoxsdk.dll",
+        "class": "overwolf.plugins.nw_vivox"
+      }
+    },
+    "windows": {
+      "background": {
+        "file": "background.html",
+        "background_optimization": false,
+        "is_background_page": true
+      },
+      "overlay": {
+        "file": "overlay.html",
+        "in_game_only": true,
+        "window_type": "normal",
+        "focus_game_takeover": "ReleaseOnHidden",
+        "focus_game_takeover_release_hotkey": "showhide",
+        "enable_osr_acceleration": true,
+        "resizable": false,
+        "transparent": true,
+        "override_on_update": true,
+        "fullscreen": true,
+        "maximized": true,
+        "always_on_top": true,
+        "min_size": {
+          "width": 1280,
+          "height": 720
+        }
+      },
+      "console": {
+        "file": "console.html",
+        "desktop_only": true,
+        "native_window": true,
+        "window_type": "normal",
+        "focus_game_takeover": "ReleaseOnHidden",
+        "focus_game_takeover_release_hotkey": "showhide",
+        "enable_osr_acceleration": true,
+        "use_os_windowing": true,
+        "resizable": true,
+        "transparent": true,
+        "override_on_update": true,
+        "size": {
+          "width": 1600,
+          "height": 900
+        },
+        "min_size": {
+          "width": 1280,
+          "height": 720
+        }
+      }
+    },
+    "game_targeting": {
+      "type": "dedicated",
+      "game_ids": [21816]
+    },
+    "game_events": [21816],
+    "launch_events": [
+      {
+        "event": "GameLaunch",
+        "event_data": {
+          "game_ids": [21816]
+        },
+        "start_minimized": false
+      }
+    ],
+    "developer": {
+      "enable_auto_refresh": true,
+      "reload_delay": 1000,
+      "filter": "*.*"
+    }
+  }
+}

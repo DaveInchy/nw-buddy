@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "experimentalDecorators": true,
+    "types": [
+      "@types/node",
+      "@overwolf/types"
+    ],
+    "rootDirs": [
+      "./src",
+      "./src/**/*"
+    ],
+    "target": "es2017",
+    "outDir": "./dist",
+    "module": "none",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "removeComments": true,
+    "allowJs": true,
+  },
+  "exclude": [
+    "node_modules",
+    "server.js",
+  ]
+}
