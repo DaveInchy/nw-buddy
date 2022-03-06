@@ -1,6 +1,6 @@
-const Utils: any = {};
+var utils: any;
 
-class loopClass {
+export class loop {
 
     constructor(callback: () => Promise<void>) {
         this.loop(callback);
@@ -22,6 +22,6 @@ class loopClass {
 
 }
 
-Utils.loop = loopClass;
+utils.loop = loop;
 
-export default Utils;
+export default utils;

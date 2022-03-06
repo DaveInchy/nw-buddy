@@ -61,18 +61,19 @@
         "file": "overlay.html",
         "in_game_only": true,
         "window_type": "normal",
-        "focus_game_takeover": "ReleaseOnHidden",
-        "focus_game_takeover_release_hotkey": "showhide",
+        "focus_game_takeover": "ShowOnFocus",
+        "keep_window_location": true,
         "enable_osr_acceleration": true,
         "resizable": false,
         "transparent": true,
         "override_on_update": true,
-        "fullscreen": true,
-        "maximized": true,
-        "always_on_top": true,
         "min_size": {
           "width": 1280,
           "height": 720
+        },
+        "size": {
+          "width": 1920,
+          "height": 1080
         }
       },
       "console": {

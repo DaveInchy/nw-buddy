@@ -38,10 +38,11 @@ class Overlay extends Window {
   private _gameEventData: Object | any;
   _gameInfoUpdates: overwolf.Event<any>;
   _gameEventsUpdates: overwolf.Event<owEvents.NewGameEvents>;
+  _playerLocation: any;
 
   private constructor() {
     super(WindowNames.overlay);
-    logMessage("info", "Overlay window created");
+    logMessage("info", "[overlay] window constructed");
 
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
@@ -51,79 +52,105 @@ class Overlay extends Window {
     if (!this._instance) {
       this._instance = new Overlay();
     }
-
+    logMessage("info", "[overlay] window registered successfully");
     return this._instance;
   }
 
   public async run() {
+    logMessage("info", "[overlay] window running");
 
-    // const gameFeatures = GamesFeatures.get(GameClassId);
-    // if (gameFeatures && gameFeatures.length) {
-    //   this._owGameEventsListener = new OWGamesEvents(
-    //     this._owGameEventsDeligate,
-    //     gameFeatures,
-    //   20);
-
-    //   this._gameEventsListener.start();
-    // }
+    logMessage("info", "[overlay] Registering event listeners");
     const gameFeatures = GamesFeatures.get(GameClassId);
     if (gameFeatures && gameFeatures.length) {
       this._gameInfoUpdates = overwolf.games.events.onInfoUpdates2;
       this._gameInfoUpdates.addListener(this.setProcData.bind(this));
       this._gameEventsUpdates = overwolf.games.events.onNewEvents;
       this._gameEventsUpdates.addListener(this.setEventData.bind(this));
+
+      this._owGameEventsDeligate = {
+        onNewEvents: (e) => {
+          this.setEventData(e);
+        },
+        onInfoUpdates: (e) => {
+          this.setProcData(e);
+        }
+      };
+
+      this._owGameEventsListener = new OWGamesEvents(this._owGameEventsDeligate, await this.getRequiredFeatures());
+      this._owGameEventsListener.start() && logMessage("info", "[overlay] Event listeners started");
     }
+
     // initialize the game data ??? is this needed?
-    // this._gameEventData = await this.getEventData();
-    // this._gameProcData = await this.getProcData();
+    this._gameEventData = await this.getEventData();
+    this._gameProcData = await this.getProcData();
 
-    utils.loop(async () => {
+    while (true) {
+      var ticksPerSecond = 5;
+      await this.wait(1000/ticksPerSecond);
 
-      // update the game data on this class as properties
-      // this._gameId = GameClassId;
-      // this._gameEventData = await this.getEventData();
-      // this._gameProcData = await this.getProcData();
+      await this.getEventData();
+      await this.getProcData();
 
-      // this._gameInfoData = this._gameEventData.game_info;
-      // this._playerPosData = this._gameInfoData.location;
-      // this._playerCharacter = this._gameInfoData.player_name;
+      // logMessage("debug", `${JSON.stringify(this._gameEventData)}`);
+      // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
 
-      // // make a struct with the new data and store those properties on this class
-      // this._gameData = {
-      //   id: this._gameId,
-      //   data: {
-      //     procData: this._gameProcData,
-      //     eventData: this._gameEventData,
-      //     posData: this._playerPosData
-      //   }
-      // }
-      // // After a long session of play, the html elements in the app will host an insane amount of gameData
-      // // solution: clear the html elements every 5 seconds or for now just NOT log
+      // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
 
-      // await this.drawCoords(this._playerPosData);
-      // logMessage("debug", `${this._playerPosData}`);
-      // console.log(`data:${this._gameData}`);
+      // handle player location
+      this._playerLocation = this._gameEventData.res.game_info.location;
+      this._playerPosData = this._playerLocation.split(",");
 
+      // logMessage("info", `[overlay] player position: ${this._playerPosData}`);
+      // logMessage("info", `[overlay] location '${this._gameEventData.res.game_info.location}'`);
+
+      this.drawCoords()
+      this.drawTime();
+
+      this._gameProcData.overlayInfo.isCursorVisible === true ? this.currWindow.minimize() : this.currWindow.maximize();
+
+    }
+
+  }
+
+  public async drawTime() {
+    var elem = document.getElementById('minimap-current-time');
+    var time = new Date();
+    var hours: any = time.getUTCHours() + 1;
+    var minutes: any = time.getUTCMinutes();
+    var seconds: any = time.getUTCSeconds();
+    var ampm = hours >= 12 ? 'pm' : 'am'; hours = hours % 12; hours = hours ? hours : 12; minutes = minutes < 10 ? '0'+minutes : minutes; seconds; seconds < 10 ? '0'+seconds : seconds;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    elem.innerHTML = strTime;
+  }
+
+  public async wait(intervalInMilliseconds: any) {
+    return new Promise(resolve => {
+      setTimeout(resolve, intervalInMilliseconds);
     });
   }
 
-  public async drawCoords(csv: string) {
-    // get the commas and devide all the text in between the commas into an array
-    const coords = csv.split(",");
+  public async drawCoords() {
+    var coords = this._playerPosData;
+    var x = coords[1];
+    var y = coords[3];
+    var z = coords[5];
 
-    // format the x y z coordinates to a string devided by a space
-    const formattedCoords: string = `x:${coords[1]} y:${coords[3]} z:${coords[5]}`;
-    const elem = document.getElementById("minimap-position");
-    elem.innerHTML = formattedCoords;
+    var elem = document.getElementById("minimap-position");
+    elem.innerHTML = `${x.toString().split('.')[0]}, ${y.toString().split('.')[0]}, ${z.toString().split('.')[0]}`;
   }
 
   public async getRequiredFeatures(): Promise<string[]> {
-    return GamesFeatures.get(GameClassId)
+    return GamesFeatures.get(GameClassId);
   }
 
   public async getProcData() {
     this._gameProcData = await OWGames.getRunningGameInfo();
     return this._gameProcData;
+  }
+
+  public async getEventData() {
+    this._gameEventData = await this._owGameEventsListener.getInfo();
+    return this._gameEventData;
   }
 
   private setProcData(json): void {
@@ -136,14 +163,9 @@ class Overlay extends Window {
     return;
   }
 
-  public async getEventData() {
-    this._gameEventData = await this._owGameEventsListener.getInfo();
-    return this._gameEventData;
-  }
-
   // Displays the toggle minimize/restore hotkey in the window header
   private async setToggleHotkeyText() {
-    const gameClassId = await GameClassId;
+    const gameClassId = GameClassId;
     const hotkeyText = await OWHotkeys.getHotkeyText(Hotkeys.overlay, gameClassId);
     const hotkeyElem = document.getElementById('hotkey');
     hotkeyElem.textContent = hotkeyText;
@@ -153,7 +175,7 @@ class Overlay extends Window {
   private async setToggleHotkeyBehavior() {
 
     const toggleInGameWindow = async (hotkeyResult: overwolf.settings.hotkeys.OnPressedEvent): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${hotkeyResult.name}`);
+      logMessage("event", `pressed hotkey for ${Hotkeys.overlay}`);
       const inGameState = await this.getWindowState();
 
       if (inGameState.window_state === WindowState.NORMAL ||
@@ -161,16 +183,11 @@ class Overlay extends Window {
         this.currWindow.minimize();
       } else if (inGameState.window_state === WindowState.MINIMIZED ||
         inGameState.window_state === WindowState.CLOSED) {
-        this.currWindow.restore();
+        this.currWindow.maximize();
       }
     }
 
     OWHotkeys.onHotkeyDown(Hotkeys.overlay, toggleInGameWindow);
-  }
-
-  private async getRunningGameClassId(): Promise<number | null> {
-    const info = await OWGames.getRunningGameInfo();
-    return (info && info.isRunning && info.classId) ? info.classId : null;
   }
 }
 
