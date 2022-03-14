@@ -1,35 +1,29 @@
-# Overwolf sample overlay service
 
-This repository contains sample apps that demonstrate some basic points and flows that are relevant when developing Overwolf apps:
+# New World Radar and Buddy
 
-- The apps will launch automatically when a supported starts
-- Register to the overwolf.games.events API in order to receive real time events from the game.
-- Define a custom hotkey to be used in-game
-- Communication between the app windows according to our best practices
+A private Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game.
 
-## Sample app versions
+## How to use
 
-This repository contains two variants of the sample app:
+1. Go to the [releases](https://www.overwolf.com/en/overlay) page and download the .opk file.
+2. Open the .opk file and install the overlay with overwolf already installed.
+3. Start the game and rightclick the overwolf icon and select "New World Buddy".
+4. Use the shortcut key combination shown below the radar to toggle the radar on and off.
 
-- typeScript version of the app, that uses external packages,etc.
+## (planned) Features
 
-In the future we will add more variants like React, Vue, etc.
+<🔴 Not Started />
 
-## How to load the app
+- Make locally stored routing &/or points
+- Make a settings/hotkeys page
+- OCR and Image/pixel detection to extract (live) data
 
-### Download from the store
+<🟡 In Progress />
 
-It's highly recommended to follow the build steps for setting up the sample app, including download the source code and built it manually.
-For those who need it, here is a [direct download link](https://www.overwolf.com/app/Overwolf-Sample_App) to the latest version on the store.
+- Player location tracking and streaming to other Group members
+- Network connections to the (custom) server
 
-### Load as unpackged extension
+<🟢 Completed />
 
-You can load the native version of the sample app "as is", without any build process. Just download the repo and under Overwolf's settings, choose Support tab and then Development options. Click the Load unpacked button and choose the relevant folder of the native folder from the repository you just downloaded.
-
-- To load the typescript version, first you should build it. More details on the readme page under the "ts" folder in this repo.
-
-## Notes
-
-Editing the author or app name in the manifest will prevent loading the app as unpacked app.
-
-For any further information or questions, contact developers@overwolf.com
+- Design & UI
+- Find free hosting solutions for express web servers

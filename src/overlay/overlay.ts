@@ -6,8 +6,17 @@ import {
 } from "@overwolf/overwolf-api-ts";
 
 import { Window } from "../window";
-import { Hotkeys, WindowNames, GamesFeatures, GameClassId, logMessage } from "../consts";
-import utils from "../utils";
+import {
+  Hotkeys,
+  WindowNames,
+  GamesFeatures,
+  GameClassId,
+  Config,
+  getCircularReplacer
+} from "../consts";
+
+import DataClient from "../database.client";
+import DebugClient, { logMessage, logError } from "../debug.client";
 
 import WindowState = overwolf.windows.WindowStateEx;
 import owWindowState = WindowState;
@@ -24,9 +33,6 @@ class Overlay extends Window {
   public _gameInfoData: any;
   public _gameEventsData: any;
 
-  public _playerPosData: string; // needs formatting, look at drawCoords()
-  public _playerCharacter: string; // character NAME
-
   // overwolf event registers
   private _owGameEventsListener: OWGamesEvents;
   private _owGameEventsDeligate: IOWGamesEventsDelegate;
@@ -35,14 +41,20 @@ class Overlay extends Window {
   public _gameId: number;
   public _gameData: Object | any;
   private _gameProcData: Object | any;
-  private _gameEventData: Object | any;
+  private _gameEventData: Object | any;;
+
   _gameInfoUpdates: overwolf.Event<any>;
   _gameEventsUpdates: overwolf.Event<owEvents.NewGameEvents>;
-  _playerLocation: any;
+
+  public _playerPosData: Array<string>; // needs formatting, look at drawCoords()
+  public _playerCharacter: string; // character NAME
+  public _playerLocation: any;
+  public _player: any;
+  public _playerList: any;
 
   private constructor() {
     super(WindowNames.overlay);
-    logMessage("info", "[overlay] window constructed");
+    logMessage("overlay", "window constructed");
 
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
@@ -52,14 +64,87 @@ class Overlay extends Window {
     if (!this._instance) {
       this._instance = new Overlay();
     }
-    logMessage("info", "[overlay] window registered successfully");
+    logMessage("overlay", "window registered successfully");
     return this._instance;
   }
 
   public async run() {
-    logMessage("info", "[overlay] window running");
+    logMessage("overlay", "window running");
 
-    logMessage("info", "[overlay] Registering event listeners");
+    this.currWindow.maximize();
+    await this.listenForEvents();
+
+    // initialize the game data ??? is this needed?
+    this._gameEventData = await this.getEventData();
+    this._gameProcData = await this.getProcData();
+
+    this._playerCharacter = this._gameEventData.res.game_info.player_name;
+    this._playerLocation = this._gameEventData.res.game_info.location;
+    this._playerPosData = this._playerLocation.split(",");
+
+    this._player = {
+      "user": this._playerCharacter,
+      "x": this._playerPosData[1],
+      "y": this._playerPosData[3],
+      "z": this._playerPosData[5],
+      "direction": this._playerPosData[13].toString()
+    };
+
+    DataClient.addPlayer(this._player);
+
+    var ticksPerSecond = Number(1);
+    while (true) {
+      // Check if the game's cursor is active or not, hide the overlay if it is
+      this._gameProcData.overlayInfo.isCursorVisible === true ? this.currWindow.minimize() && true : this.currWindow.maximize() && false;
+
+      // update the game data
+      await this.getProcData();
+
+      // logMessage("debug", `${JSON.stringify(this._gameEventData)}`);
+      // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
+
+      // update the game data
+      await this.getEventData();
+
+      // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
+
+      // handle player location
+      this._playerCharacter = this._gameEventData.res.game_info.player_name;
+      this._playerLocation = this._gameEventData.res.game_info.location;
+      this._playerPosData = this._playerLocation.split(",");
+
+      this._player = {
+        "user": this._playerCharacter,
+        "x": this._playerPosData[1],
+        "y": this._playerPosData[3],
+        "z": this._playerPosData[5],
+        "direction": this._playerPosData[13].toString()
+      };
+
+      this._playerList = DataClient.updatePlayer(this._player);
+
+      // logMessage("info", `[overlay] player position: ${this._playerPosData}`);
+      // logMessage("info", `[overlay] location '${this._gameEventData.res.game_info.location}'`);
+
+      this.drawCoords();
+      this.drawTime();
+      this.drawTitle();
+
+      //this._playerList = await this.requestPlayerList();
+      //this._playerList !== undefined ? logMessage("info", `[overlay] player list: ${JSON.stringify(this._playerList)}`) : logError(`[overlay] player list: ${this._playerList}`);
+
+      await this.wait(1000 / ticksPerSecond);
+    }
+
+  }
+
+  public drawTitle() {
+    const elem = document.getElementById("title");
+    elem.innerHTML = `${Config[1].dock_button_title}`;
+  }
+
+  public async listenForEvents() {
+    logMessage("overlay", "Registering event listeners");
     const gameFeatures = GamesFeatures.get(GameClassId);
     if (gameFeatures && gameFeatures.length) {
       this._gameInfoUpdates = overwolf.games.events.onInfoUpdates2;
@@ -77,42 +162,19 @@ class Overlay extends Window {
       };
 
       this._owGameEventsListener = new OWGamesEvents(this._owGameEventsDeligate, await this.getRequiredFeatures());
-      this._owGameEventsListener.start() && logMessage("info", "[overlay] Event listeners started");
+      var result = this._owGameEventsListener.start() && true || false;
+      while(!result)
+      {
+        logMessage("overlay", "event listeners failed to start, retry in 3 second");
+        await this.wait(3000);
+        result = await this.listenForEvents()
+      }
+      logMessage("overlay", "event listeners started");
+      return result;
     }
-
-    // initialize the game data ??? is this needed?
-    this._gameEventData = await this.getEventData();
-    this._gameProcData = await this.getProcData();
-
-    while (true) {
-      var ticksPerSecond = 5;
-      await this.wait(1000/ticksPerSecond);
-
-      await this.getEventData();
-      await this.getProcData();
-
-      // logMessage("debug", `${JSON.stringify(this._gameEventData)}`);
-      // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
-
-      // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
-
-      // handle player location
-      this._playerLocation = this._gameEventData.res.game_info.location;
-      this._playerPosData = this._playerLocation.split(",");
-
-      // logMessage("info", `[overlay] player position: ${this._playerPosData}`);
-      // logMessage("info", `[overlay] location '${this._gameEventData.res.game_info.location}'`);
-
-      this.drawCoords()
-      this.drawTime();
-
-      this._gameProcData.overlayInfo.isCursorVisible === true ? this.currWindow.minimize() : this.currWindow.maximize();
-
-    }
-
   }
 
-  public async drawTime() {
+  public drawTime() {
     var elem = document.getElementById('minimap-current-time');
     var time = new Date();
     var hours: any = time.getUTCHours() + 1;
@@ -129,7 +191,7 @@ class Overlay extends Window {
     });
   }
 
-  public async drawCoords() {
+  public drawCoords() {
     var coords = this._playerPosData;
     var x = coords[1];
     var y = coords[3];

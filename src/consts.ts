@@ -23,7 +23,20 @@ export const Hotkeys = {
   overlay: 'showhide'
 };
 
-// Communication with the backend web server for sending/recieving data.
-export const logMessage = async function (type, message) {
-  return await fetch('http://localhost:8420/?method=GET&type=' + type.toString() + '&message=' + encodeURIComponent(`${message}`));
-}
+export const Config = [
+  require('../package.json'),
+  require('../public/manifest.json').meta,
+];
+
+export const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};

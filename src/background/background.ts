@@ -4,8 +4,8 @@ import {
   OWWindow
 } from '@overwolf/overwolf-api-ts';
 
-import { WindowNames, GameClassIds, logMessage } from "../consts";
-
+import { WindowNames, GameClassIds } from "../consts";
+import { logMessage, logError } from "../debug.client";
 import RunningGameInfo = overwolf.games.RunningGameInfo;
 import AppLaunchTriggeredEvent = overwolf.extensions.AppLaunchTriggeredEvent;
 

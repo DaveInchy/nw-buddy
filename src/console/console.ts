@@ -5,8 +5,8 @@ import {
 } from "@overwolf/overwolf-api-ts";
 
 import { Window } from "../window";
-import { Hotkeys, WindowNames, GamesFeatures, logMessage } from "../consts";
-
+import { Hotkeys, WindowNames, GamesFeatures } from "../consts";
+import { logMessage, logError } from "../debug.client";
 import WindowState = overwolf.windows.WindowStateEx
 
 class Console extends Window {

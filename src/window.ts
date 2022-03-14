@@ -1,5 +1,5 @@
 import { OWWindow } from "@overwolf/overwolf-api-ts";
-import { logMessage } from "./consts";
+import { logMessage, logError } from "./debug.client";
 
 // A base class for the app's foreground windows.
 // Sets the modal and drag behaviors, which are shared accross the desktop and in-game windows.

@@ -13,12 +13,14 @@
       font-weight: bolder;
     }
   </style>
+
+
 </head>
 <body style="background: none;">
 
   <main id="minimap">
     <div id="minimap-title" style="position: absolute; top: 400px; right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
-      <h1 style="color: rgb(197, 161, 0); font-size: 2.8em; letter-spacing: 1px; line-height: 22px; font-variant: all-small-caps; padding: 0px;">~ Pirate Map  ~</h1>
+      <h1 style="color: rgb(197, 161, 0); font-size: 2.8em; letter-spacing: 1px; line-height: 22px; font-variant: all-small-caps; padding: 0px;">~ <span id="title"></span> ~</h1>
     </div>
     <div id="minimap-context" class="shadow-4xl " style="width: 16vw; height: 16vw; border-radius: 1000px; background-color: rgb(197, 161, 0, 0.35); border: 5px solid rgb(197, 161, 0); position: absolute; top: calc(400px + 50px); right: 50px; z-index: 0;">
       <div style="display:flex; align-items: center; justify-content: center; height:100%; width: 100%;">
@@ -27,12 +29,12 @@
     </div>
     <div id="minimap-info" style="position: absolute; top: calc(400px + 50px + 16vw + 10px); right: 50px; width: 16vw; height: auto; z-index: 10;">
       <div style="display:inline-block; width: 16vw; font-weight:bolder; color: rgb(197, 161, 0); font-size: 2.0em; letter-spacing: -2px; line-height: 22px; font-variant: all-small-caps;">
-        <p style="display: inline; float: left;">⚔️ <span id="minimap-versus">PvP</span> <span class="font-thin">ON</span></p>
-        <p style="display: inline; float: right;"><span id="minimap-territory">Daily Tasks</span> 📜</p>
+        <p style="display: inline; float: left;">⚔️ <span id="minimap-versus">PvP</span> <span class="font-extralight">ON</span></p>
+        <p style="display: inline; float: right;" class="font-extralight">Hotkey <span id="hotkey" class="font-extrabold">Alt+W</span> 🖱️</p>
       </div>
       <div style="display:inline-block; width: 16vw; font-weight:bolder; color: rgb(197, 161, 0); font-size: 2.0em; letter-spacing: -2px; line-height: 22px; font-variant: all-small-caps;">
-        <p style="display: inline; float: left;">🕑 <span id="minimap-current-time">9:52</span> <span class="font-thin">CET</span></p>
-        <p style="display: inline; float: right;"><span id="minimap-position">1265, 5324, 54</span> 🧭</p>
+        <p style="display: inline; float: left;">🕑 <span id="minimap-current-time"></span> <span class="font-extralight">CET</span></p>
+        <p style="display: inline; float: right;"><span id="minimap-position"></span> 🧭</p>
       </div>
     </div>
   </main>
