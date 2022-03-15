@@ -8,7 +8,7 @@ class DataClient
     private player: any;
     private playerList: [];
 
-    constructor(host = undefined)
+    constructor(host: string = undefined)
     {
         this.host = host !== undefined ? host.toString() : process.env.API_REMOTE;
         return;
@@ -28,7 +28,7 @@ class DataClient
 
     public addPlayer = async (player: any): Promise<any> =>
     {
-        var http: Response = await fetch(`${this.host}/player/add`
+        var http: Response = await fetch(`${this.host}/api/player/add`
             + `?user=${encodeURIComponent(player.user)}`
             + `&x=${player.x}`
             + `&y=${player.y}`
@@ -38,7 +38,7 @@ class DataClient
     }
 
     public updatePlayer = async (player: any): Promise<any> => {
-        var http: Response = await fetch(`${this.host}/player/update`
+        var http: Response = await fetch(`${this.host}/api/player/update`
             + `?user=${encodeURIComponent(player.user)}`
             + `&x=${player.x}`
             + `&y=${player.y}`
@@ -48,10 +48,10 @@ class DataClient
     }
 
     public getPlayers = async (): Promise<any> => {
-        var http: Response = await fetch(`${this.host}/player/list`);
+        var http: Response = await fetch(`${this.host}/api/player/list`);
         return http.json();
     }
 
 }
 
-export default new DataClient() as DataClient;
+export default new DataClient("https://nw-radar-api.vercel.app") as DataClient;

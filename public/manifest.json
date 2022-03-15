@@ -54,12 +54,7 @@
       ]
     },
     "force_browser": "user",
-    "extra-objects": {
-      "dbghelp.dll": {
-        "file": "bin/dbghelp.dll",
-        "class": "overwolf.plugins.debugger"
-      }
-    },
+    "extra-objects": {},
     "windows": {
       "background": {
         "file": "background.html",
