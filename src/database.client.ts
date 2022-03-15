@@ -3,13 +3,14 @@ import { logMessage, logError } from './debug.client';
 class DataClient
 {
 
-    public host: string = 'http://localhost:8421';
+    public host: string;
 
     private player: any;
     private playerList: [];
 
-    constructor()
+    constructor(host = undefined)
     {
+        this.host = host !== undefined ? host.toString() : process.env.API_REMOTE;
         return;
     }
 

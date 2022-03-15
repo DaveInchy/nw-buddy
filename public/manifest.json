@@ -69,7 +69,6 @@
       "overlay": {
         "file": "overlay.html",
         "in_game_only": true,
-        "window_type": "normal",
         "focus_game_takeover": "HideOnLostFocus",
         "allow_local_file_access": true,
         "keep_window_location": true,
