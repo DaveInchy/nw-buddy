@@ -20,13 +20,14 @@ const getCircularReplacer = () => {
 class DataServer {
 
     app = {};
-    port = 8421;
+    port = 8080;
 
-    constructor(port) {
+    constructor() {
 
         this.app = express();
-        this.port = parseInt(port, 10) ||  8421;
-        // this.app.listen(this.port);
+        this.port = 8080 || 3000;
+
+        this.app.listen(this.port);
 
         console.log(`Server started on ${this.getUrl()}`);
 
@@ -60,7 +61,7 @@ class DataServer {
             console.log(`${request.url} => ${data.players}`);
 
             response.setHeader('Content-Type', 'application/json');
-            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+            response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.end(JSON.stringify(data.player, getCircularReplacer()));
         });
 
@@ -92,7 +93,7 @@ class DataServer {
             console.log(`${request.url} => ${data.players}`);
 
             response.setHeader('Content-Type', 'application/json');
-            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+            response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.end(JSON.stringify(data.players, getCircularReplacer()));
         });
 
@@ -110,7 +111,7 @@ class DataServer {
             console.log(`${request.url} => ${data.players}`);
 
             response.setHeader('Content-Type', 'application/json');
-            res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+            response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.end(JSON.stringify(data.players, getCircularReplacer()));
         });
 
@@ -126,4 +127,4 @@ class DataServer {
     }
 }
 
-module.exports = new DataServer(8421);
+module.exports = new DataServer().app;
