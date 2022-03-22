@@ -3,16 +3,16 @@
   "manifest_version": 1,
   "type": "WebApp",
   "meta": {
-    "name": "[BSC] New World Buddy",
+    "name": "New World Buddy",
     "author": "Dave Inchy",
-    "version": "22.03.07",
+    "version": "22.03.22",
     "minimum-overwolf-version": "0.180.0",
-    "description": "A New World Tool for The Black Sail Corporation",
-    "dock_button_title": "NW Buddy",
-    "icon": "icons/IconMouseOver.png",
-    "icon_gray": "icons/IconMouseNormal.png",
-    "launcher_icon": "icons/desktop-icon.ico",
-    "window_icon": "icons/IconMouseOver.png"
+    "description": "A TOS Compliant overwolf overlay for New World",
+    "dock_button_title": "New World Buddy",
+    "icon": "icons/Icon.png",
+    "icon_gray": "icons/IconNormal.png",
+    "launcher_icon": "icons/Icon.png",
+    "window_icon": "icons/Icon.png"
   },
   "permissions": [
     "Hotkeys",
@@ -49,8 +49,8 @@
       "matches": [
         "http://*.overwolf.com",
         "https://*.overwolf.com",
-        "http://localhost:8420",
-        "http://localhost:8421"
+        "http://localhost:*",
+        "http://*.vercel.app"
       ]
     },
     "force_browser": "user",
@@ -64,14 +64,14 @@
       "overlay": {
         "file": "overlay.html",
         "in_game_only": true,
-        "focus_game_takeover": "HideOnLostFocus",
+        "focus_game_takeover": "ShowOnFocus",
         "allow_local_file_access": true,
         "keep_window_location": true,
         "optimize_accelerate_rendering": true,
         "ignore_keyboard_events": true,
         "resizable": false,
         "transparent": true,
-        "override_on_update": false,
+        "override_on_update": true,
         "min_size": {
           "width": 1280,
           "height": 720
@@ -79,23 +79,6 @@
         "size": {
           "width": 1920,
           "height": 1080
-        }
-      },
-      "console": {
-        "file": "console.html",
-        "desktop_only": true,
-        "native_window": true,
-        "use_os_windowing": true,
-        "resizable": true,
-        "transparent": true,
-        "override_on_update": true,
-        "size": {
-          "width": 1600,
-          "height": 900
-        },
-        "min_size": {
-          "width": 1280,
-          "height": 720
         }
       }
     },
@@ -119,8 +102,7 @@
         "game_ids": [
           21816
         ],
-        "start_minimized": false,
-        "wait_for_stable_framerate": 30
+        "start_minimized": false
       }
     ],
     "developer": {

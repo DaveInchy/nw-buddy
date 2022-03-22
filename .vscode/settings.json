@@ -1,0 +1,9 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#141414",
+        "activityBar.foreground": "#ffffff",
+        "titleBar.activeBackground": "#000000",
+        "titleBar.activeForeground": "#F3FEF6"
+    },
+    "workbench.editor.splitSizing": "distribute"
+}

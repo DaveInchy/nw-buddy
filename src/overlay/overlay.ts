@@ -4,8 +4,8 @@ import {
   OWGamesEvents,
   OWHotkeys
 } from "@overwolf/overwolf-api-ts";
-
 import { Window } from "../window";
+import { logMessage, logError } from "../debug";
 import {
   Hotkeys,
   WindowNames,
@@ -13,17 +13,16 @@ import {
   GameClassId,
   Config,
   getCircularReplacer
-} from "../consts";
-
-import DataClient from "../database.client";
-import DebugClient, { logMessage, logError } from "../debug.client";
+} from "../global";
+import DataClient from "../data";
+import Minimap from "../minimap";
 
 import WindowState = overwolf.windows.WindowStateEx;
 import owWindowState = WindowState;
 import owRunningGameInfo = overwolf.games.RunningGameInfo;
 import owEvents = overwolf.games.events;
 
-import "./overlay.css";
+import "./tailwind.css";
 
 // The window displayed in-game while a game is running.
 class Overlay extends Window {
@@ -54,7 +53,7 @@ class Overlay extends Window {
 
   private constructor() {
     super(WindowNames.overlay);
-    logMessage("overlay", "window constructed");
+    logMessage("startup", "constructing overlay window isntance");
 
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
@@ -64,48 +63,76 @@ class Overlay extends Window {
     if (!this._instance) {
       this._instance = new Overlay();
     }
-    logMessage("overlay", "window registered successfully");
+    logMessage("startup", "overlay window instance registered successfully");
     return this._instance;
   }
 
   public async run() {
-    logMessage("overlay", "window running");
 
-    this.currWindow.maximize();
+
+    var loading = true;
+    var ticksPerSecond = Number(2);
+    var interfaceShown = false;
+
     await this.listenForEvents();
 
-    // initialize the game data ??? is this needed?
-    this._gameEventData = await this.getEventData();
-    this._gameProcData = await this.getProcData();
+    var loadInterval = 5; // seconds
+    var loadCounter = 0;
 
-    this._playerCharacter = this._gameEventData.res.game_info.player_name;
-    this._playerLocation = this._gameEventData.res.game_info.location;
-    this._playerPosData = this._playerLocation.split(",");
+    while (loading) {
 
-    this._player = {
-      "user": this._playerCharacter,
-      "x": this._playerPosData[1],
-      "y": this._playerPosData[3],
-      "z": this._playerPosData[5],
-      "direction": this._playerPosData[13].toString()
-    };
+      loadCounter++;
+      await this.wait(loadInterval * 1000);
 
-    DataClient.addPlayer(this._player);
+      logMessage("startup", "loading game data ... [" + loadInterval * loadCounter + " sec]" );
 
-    var ticksPerSecond = Number(1);
-    while (true) {
-      // Check if the game's cursor is active or not, hide the overlay if it is
-      this._gameProcData.overlayInfo.isCursorVisible === true ? this.currWindow.minimize() && true : this.currWindow.maximize() && false;
+      try {
+        this._gameEventData = await this.getEventData();
+        this._gameProcData = await this.getProcData();
+
+        logMessage("startup", "loading playerdata ...");
+
+        this._playerCharacter = this._gameEventData.res.game_info.player_name;
+        this._playerLocation = this._gameEventData.res.game_info.location;
+        this._playerPosData = this._playerLocation.split(",");
+
+        this._player = {
+          user: this._playerCharacter,
+          x: this._playerPosData[1],
+          y: this._playerPosData[3],
+          z: this._playerPosData[5],
+          direction: this._playerPosData[13].toString(),
+        };
+
+        loading = false;
+        logMessage("startup", "success loading gamedata ...");
+      } catch (e) {
+        logError("error loading gamedata ...");
+        logError(e);
+      }
+    }
+
+    logMessage("startup", "loading radar canvas ...");
+
+    var canvas: HTMLCanvasElement = document.querySelector("canvas#minimap-canvas");
+    var canvasContext = canvas.getContext("2d");
+
+    logMessage("startup", "starting runtime service ...");
+
+    var updateCounter = 0;
+
+    while (!loading) {
+
+      logMessage("runtime", "ticking ...[" + updateCounter + "]");
 
       // update the game data
       await this.getProcData();
-
-      // logMessage("debug", `${JSON.stringify(this._gameEventData)}`);
+      // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
 
       // update the game data
       await this.getEventData();
-
+      // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
 
       // handle player location
@@ -121,30 +148,43 @@ class Overlay extends Window {
         "direction": this._playerPosData[13].toString()
       };
 
-      this._playerList = DataClient.updatePlayer(this._player);
-
+      updateCounter % ticksPerSecond || updateCounter === 0 ? DataClient.addPlayer(this._player) : null;
+      updateCounter >= 1 ? DataClient.updatePlayer(this._player).then(players => this._playerList = players) : null;
+      // logMessage("player", `playerlist: ${JSON.stringify(await DataClient.getPlayers(), getCircularReplacer)}`);
+      // https://nw-radar-api.vercel.app/api/player/list
       // logMessage("info", `[overlay] player position: ${this._playerPosData}`);
       // logMessage("info", `[overlay] location '${this._gameEventData.res.game_info.location}'`);
 
+      Minimap.renderCanvas(canvas, this._player);
+
       this.drawCoords();
       this.drawTime();
-      this.drawTitle();
+      this.drawTitle(this._playerCharacter);
 
-      //this._playerList = await this.requestPlayerList();
-      //this._playerList !== undefined ? logMessage("info", `[overlay] player list: ${JSON.stringify(this._playerList)}`) : logError(`[overlay] player list: ${this._playerList}`);
+      // Check if the game's cursor is active or not, hide the overlay if it is
+      interfaceShown = this._gameProcData.overlayInfo.isCursorVisible === true ? this.currWindow.minimize() && true : this.currWindow.maximize() && false;
+
+      updateCounter <= 1 ? this.showInterface() : null;
 
       await this.wait(1000 / ticksPerSecond);
+      updateCounter++;
     }
 
   }
 
-  public drawTitle() {
+  public showInterface() {
+    const elem = document.querySelector("main");
+    elem.style.display = "block";
+  }
+
+  public async drawTitle(title: string) {
     const elem = document.getElementById("title");
-    elem.innerHTML = `${Config[1].dock_button_title}`;
+    elem.innerHTML = title;
   }
 
   public async listenForEvents() {
-    logMessage("overlay", "Registering event listeners");
+    logMessage("startup", "loading event listeners ...");
+
     const gameFeatures = GamesFeatures.get(GameClassId);
     if (gameFeatures && gameFeatures.length) {
       this._gameInfoUpdates = overwolf.games.events.onInfoUpdates2;
@@ -162,16 +202,10 @@ class Overlay extends Window {
       };
 
       this._owGameEventsListener = new OWGamesEvents(this._owGameEventsDeligate, await this.getRequiredFeatures());
-      var result = this._owGameEventsListener.start() && true || false;
-      while(!result)
-      {
-        logMessage("overlay", "event listeners failed to start, retry in 3 second");
-        await this.wait(3000);
-        result = await this.listenForEvents()
-      }
-      logMessage("overlay", "event listeners started");
-      return result;
+      await this._owGameEventsListener.start();
+      logMessage("startup", "event listeners loaded ...");
     }
+    return;
   }
 
   public drawTime() {
@@ -183,12 +217,6 @@ class Overlay extends Window {
     var ampm = hours >= 12 ? 'pm' : 'am'; hours = hours % 12; hours = hours ? hours : 12; minutes = minutes < 10 ? '0'+minutes : minutes; seconds; seconds < 10 ? '0'+seconds : seconds;
     var strTime = hours + ':' + minutes + ' ' + ampm;
     elem.innerHTML = strTime;
-  }
-
-  public async wait(intervalInMilliseconds: any) {
-    return new Promise(resolve => {
-      setTimeout(resolve, intervalInMilliseconds);
-    });
   }
 
   public drawCoords() {
@@ -237,7 +265,7 @@ class Overlay extends Window {
   private async setToggleHotkeyBehavior() {
 
     const toggleInGameWindow = async (hotkeyResult: overwolf.settings.hotkeys.OnPressedEvent): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.overlay}`);
+      logMessage("game", `pressed hotkey for ${Hotkeys.overlay}`);
       const inGameState = await this.getWindowState();
 
       if (inGameState.window_state === WindowState.NORMAL ||
@@ -251,6 +279,13 @@ class Overlay extends Window {
 
     OWHotkeys.onHotkeyDown(Hotkeys.overlay, toggleInGameWindow);
   }
+
+  public async wait(intervalInMilliseconds: any) {
+    return new Promise(resolve => {
+      setTimeout(resolve, intervalInMilliseconds);
+    });
+  }
+
 }
 
 Overlay.instance().run();

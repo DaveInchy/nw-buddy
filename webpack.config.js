@@ -10,21 +10,19 @@ module.exports = env => ({
         extensions: ['.js', '.ts'],
         modules: [
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'lib'),
             path.resolve(__dirname, 'node_modules')
         ],
         fallback: {
             "url": require.resolve("url"),
             "fs": require.resolve("fs"),
             "crypto": require.resolve("crypto-browserify"),
-            "http": require.resolve("stream-browserify"),
+            // "http": require.resolve("stream-browserify"),
             "zlib": require.resolve("browserify-zlib"),
         }
     },
     entry: {
         background: './src/background/background.ts',
         overlay: './src/overlay/overlay.ts',
-        console: './src/console/console.ts',
     },
     devtool: 'inline-source-map',
     module: {
@@ -85,11 +83,6 @@ module.exports = env => ({
             template: './src/background/background.html',
             filename: path.resolve(__dirname, './dist/background.html'),
             chunks: ['background']
-        }),
-        new HtmlWebpackPlugin({
-            template: './src/console/console.html',
-            filename: path.resolve(__dirname, './dist/console.html'),
-            chunks: ['console']
         }),
         new HtmlWebpackPlugin({
             template: './src/overlay/overlay.html',
