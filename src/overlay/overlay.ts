@@ -2,7 +2,8 @@ import {
   IOWGamesEventsDelegate,
   OWGames,
   OWGamesEvents,
-  OWHotkeys
+  OWHotkeys,
+  OWWindow
 } from "@overwolf/overwolf-api-ts";
 import { Window } from "../window";
 import { logMessage, logError } from "../debug";
@@ -16,34 +17,35 @@ import {
 } from "../global";
 import DataClient from "../data";
 import Minimap from "../minimap";
+import StorageInterface from "../storage";
 
-import WindowState = overwolf.windows.WindowStateEx;
-import owWindowState = WindowState;
-import owRunningGameInfo = overwolf.games.RunningGameInfo;
+import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
+import owUtils = overwolf.utils;
 
 import "./tailwind.css";
+import Pin from "../pin";
 
 // The window displayed in-game while a game is running.
 class Overlay extends Window {
   private static _instance: Overlay;
-  private _gameEventsListener: OWGamesEvents;
 
   public _gameInfoData: any;
   public _gameEventsData: any;
 
-  // overwolf event registers
   private _owGameEventsListener: OWGamesEvents;
   private _owGameEventsDeligate: IOWGamesEventsDelegate;
 
-  // storage of game data from the API
   public _gameId: number;
   public _gameData: Object | any;
+
   private _gameProcData: Object | any;
-  private _gameEventData: Object | any;;
+  private _gameEventData: Object | any;
 
   _gameInfoUpdates: overwolf.Event<any>;
   _gameEventsUpdates: overwolf.Event<owEvents.NewGameEvents>;
+
+  private _Minimap: Minimap;
 
   public _playerPosData: Array<string>; // needs formatting, look at drawCoords()
   public _playerCharacter: string; // character NAME
@@ -51,12 +53,18 @@ class Overlay extends Window {
   public _player: any;
   public _playerList: any;
 
+  private _minimapShown: boolean = false;
+  private _createPinShown: boolean = false;
+  private _overlayShown: boolean = false;
+
   private constructor() {
     super(WindowNames.overlay);
-    logMessage("startup", "constructing overlay window isntance");
+    logMessage("startup", "constructing overlay window instance");
 
-    this.setToggleHotkeyBehavior();
+    this.setHotkeyBehavior();
+
     this.setToggleHotkeyText();
+    this.setCreatePinHotkeyText();
   }
 
   public static instance() {
@@ -68,29 +76,33 @@ class Overlay extends Window {
   }
 
   public async run() {
-
-
     var loading = true;
     var ticksPerSecond = Number(2);
-    var interfaceShown = false;
-
-    await this.listenForEvents();
 
     var loadInterval = 5; // seconds
     var loadCounter = 0;
+
+    logMessage("startup", "loading radar canvas ...");
+
+    var canvas: HTMLCanvasElement = document.querySelector(
+      "canvas#minimap-canvas"
+    );
+
+    logMessage("startup","loading game data ...");
 
     while (loading) {
 
       loadCounter++;
       await this.wait(loadInterval * 1000);
 
-      logMessage("startup", "loading game data ... [" + loadInterval * loadCounter + " sec]" );
+      logMessage("startup","try again => [" + loadInterval * loadCounter + " sec]");
 
       try {
+
+        await this.listenForEvents();
+
         this._gameEventData = await this.getEventData();
         this._gameProcData = await this.getProcData();
-
-        logMessage("startup", "loading playerdata ...");
 
         this._playerCharacter = this._gameEventData.res.game_info.player_name;
         this._playerLocation = this._gameEventData.res.game_info.location;
@@ -104,26 +116,21 @@ class Overlay extends Window {
           direction: this._playerPosData[13].toString(),
         };
 
+        this._Minimap = new Minimap(this._player, canvas)
+
         loading = false;
-        logMessage("startup", "success loading gamedata ...");
+        logMessage("startup", "success loading game data ...");
       } catch (e) {
-        logError("error loading gamedata ...");
+        logError("error loading game data ...");
         logError(e);
       }
     }
 
-    logMessage("startup", "loading radar canvas ...");
-
-    var canvas: HTMLCanvasElement = document.querySelector("canvas#minimap-canvas");
-    var canvasContext = canvas.getContext("2d");
-
     logMessage("startup", "starting runtime service ...");
 
     var updateCounter = 0;
-
     while (!loading) {
-
-      logMessage("runtime", "ticking ...[" + updateCounter + "]");
+      // logMessage("runtime", "ticking ...[" + updateCounter + "]");
 
       // update the game data
       await this.getProcData();
@@ -141,40 +148,102 @@ class Overlay extends Window {
       this._playerPosData = this._playerLocation.split(",");
 
       this._player = {
-        "user": this._playerCharacter,
-        "x": this._playerPosData[1],
-        "y": this._playerPosData[3],
-        "z": this._playerPosData[5],
-        "direction": this._playerPosData[13].toString()
+        user: this._playerCharacter,
+        x: this._playerPosData[1],
+        y: this._playerPosData[3],
+        z: this._playerPosData[5],
+        direction: this._playerPosData[13].toString(),
       };
 
-      updateCounter % ticksPerSecond || updateCounter === 0 ? DataClient.addPlayer(this._player) : null;
-      updateCounter >= 1 ? DataClient.updatePlayer(this._player).then(players => this._playerList = players) : null;
-      // logMessage("player", `playerlist: ${JSON.stringify(await DataClient.getPlayers(), getCircularReplacer)}`);
+      updateCounter % ticksPerSecond || updateCounter === 0
+        ? DataClient.addPlayer(this._player)
+        : null;
+      updateCounter >= 1
+        ? DataClient.updatePlayer(this._player)
+        : undefined;
+
+      // logMessage(
+      //   "player",
+      //   `playerlist: ${JSON.stringify(this._playerList, getCircularReplacer())}`
+      // );
       // https://nw-radar-api.vercel.app/api/player/list
-      // logMessage("info", `[overlay] player position: ${this._playerPosData}`);
+      // logMessage("info",   `[overlay] player position: ${this._playerPosData}`);
       // logMessage("info", `[overlay] location '${this._gameEventData.res.game_info.location}'`);
 
-      Minimap.renderCanvas(canvas, this._player);
+      this._Minimap.renderCanvas(this._player);
 
       this.drawCoords();
       this.drawTime();
       this.drawTitle(this._playerCharacter);
 
       // Check if the game's cursor is active or not, hide the overlay if it is
-      interfaceShown = this._gameProcData.overlayInfo.isCursorVisible === true ? this.currWindow.minimize() && true : this.currWindow.maximize() && false;
+      this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
+      ? (this._createPinShown
+        ? this.currWindow.maximize()
+        : this.currWindow.minimize()
+      ) && true
+      : this.currWindow.maximize() && false;
 
-      updateCounter <= 1 ? this.showInterface() : null;
+      updateCounter <= 1 ? this.showMinimap() : null;
 
       await this.wait(1000 / ticksPerSecond);
       updateCounter++;
     }
-
   }
 
-  public showInterface() {
-    const elem = document.querySelector("main");
+  public async releaseMouse() {
+    await this.wait(1000);
+    logMessage("game", "artificial keystroke: Enter");
+    return overwolf.utils.sendKeyStroke("Enter");
+  }
+
+  public showMinimap() {
+    const elem = document.getElementById("minimap");
     elem.style.display = "block";
+    this._minimapShown = true;
+  }
+
+  public hideMinimap() {
+    const elem = document.getElementById("minimap");
+    elem.style.display = "none";
+    this._minimapShown = false;
+  }
+
+  public showCreatePin() {
+    const elem = document.getElementById("create-pin");
+    elem.style.display = "block";
+
+    const elemButton: HTMLButtonElement = elem.querySelector("#pinButton");
+    const elemInput: HTMLInputElement = elem.querySelector("#pinTag");
+
+    this._createPinShown = true;
+    this._overlayShown = true;
+
+    elemButton.addEventListener("click", event => {
+      event.preventDefault();
+      var pin: Pin = new Pin("default", this._player.x, this._player.y, this._playerCharacter);
+      var canvas: HTMLCanvasElement = document.querySelector( "canvas#minimap-canvas" );
+      StorageInterface.set(`${elemInput.value}`, JSON.stringify(pin, getCircularReplacer()));
+      logMessage("game", `created pin: ${elemInput.value}`);
+      logMessage("game", `all stored pins: \n${JSON.stringify(StorageInterface.getAll(), getCircularReplacer())}`);
+      elemInput.value = "";
+      this._Minimap.refreshRender();
+      this.hideCreatePin();
+    });
+
+    this.releaseMouse();
+  }
+
+  public hideCreatePin() {
+    const elem = document.getElementById("create-pin");
+    elem.style.display = "none";
+
+    const elemButton: HTMLButtonElement = elem.querySelector("#pinButton");
+    const elemInput: HTMLInputElement = elem.querySelector("#pinTag");
+
+    this._createPinShown = false;
+
+    elemButton.removeEventListener("click", event => event.preventDefault(), false);
   }
 
   public async drawTitle(title: string) {
@@ -198,10 +267,13 @@ class Overlay extends Window {
         },
         onInfoUpdates: (e) => {
           this.setProcData(e);
-        }
+        },
       };
 
-      this._owGameEventsListener = new OWGamesEvents(this._owGameEventsDeligate, await this.getRequiredFeatures());
+      this._owGameEventsListener = new OWGamesEvents(
+        this._owGameEventsDeligate,
+        await this.getRequiredFeatures()
+      );
       await this._owGameEventsListener.start();
       logMessage("startup", "event listeners loaded ...");
     }
@@ -209,13 +281,18 @@ class Overlay extends Window {
   }
 
   public drawTime() {
-    var elem = document.getElementById('minimap-current-time');
+    var elem = document.getElementById("minimap-current-time");
     var time = new Date();
     var hours: any = time.getUTCHours() + 1;
     var minutes: any = time.getUTCMinutes();
     var seconds: any = time.getUTCSeconds();
-    var ampm = hours >= 12 ? 'pm' : 'am'; hours = hours % 12; hours = hours ? hours : 12; minutes = minutes < 10 ? '0'+minutes : minutes; seconds; seconds < 10 ? '0'+seconds : seconds;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds;
+    seconds < 10 ? "0" + seconds : seconds;
+    var strTime = hours + ":" + minutes + " " + ampm;
     elem.innerHTML = strTime;
   }
 
@@ -223,10 +300,11 @@ class Overlay extends Window {
     var coords = this._playerPosData;
     var x = coords[1];
     var y = coords[3];
-    var z = coords[5];
 
     var elem = document.getElementById("minimap-position");
-    elem.innerHTML = `${x.toString().split('.')[0]}, ${y.toString().split('.')[0]}, ${z.toString().split('.')[0]}`;
+    elem.innerHTML = `${x.toString().split(".")[0]}, ${
+      y.toString().split(".")[0]
+    }`; // , ${z.toString().split('.')[0]}`;
   }
 
   public async getRequiredFeatures(): Promise<string[]> {
@@ -253,39 +331,63 @@ class Overlay extends Window {
     return;
   }
 
-  // Displays the toggle minimize/restore hotkey in the window header
   private async setToggleHotkeyText() {
     const gameClassId = GameClassId;
-    const hotkeyText = await OWHotkeys.getHotkeyText(Hotkeys.overlay, gameClassId);
-    const hotkeyElem = document.getElementById('hotkey');
+    const hotkeyText = await OWHotkeys.getHotkeyText(
+      Hotkeys.minimap,
+      gameClassId
+    );
+    const hotkeyElem = document.getElementById("minimap-hotkey");
     hotkeyElem.textContent = hotkeyText;
   }
 
-  // Sets toggleInGameWindow as the behavior for the Ctrl+F hotkey
-  private async setToggleHotkeyBehavior() {
+  private async setCreatePinHotkeyText() {
+    const gameClassId = GameClassId;
+    const hotkeyText = await OWHotkeys.getHotkeyText(
+      Hotkeys.create,
+      gameClassId
+    );
+    const hotkeyElem = document.getElementById("create-hotkey");
+    hotkeyElem.textContent = hotkeyText;
+  }
 
-    const toggleInGameWindow = async (hotkeyResult: overwolf.settings.hotkeys.OnPressedEvent): Promise<void> => {
-      logMessage("game", `pressed hotkey for ${Hotkeys.overlay}`);
-      const inGameState = await this.getWindowState();
+  // @TODO create each interface and shortcut for each interface
+  private async setHotkeyBehavior() {
 
-      if (inGameState.window_state === WindowState.NORMAL ||
-        inGameState.window_state === WindowState.MAXIMIZED) {
-        this.currWindow.minimize();
-      } else if (inGameState.window_state === WindowState.MINIMIZED ||
-        inGameState.window_state === WindowState.CLOSED) {
-        this.currWindow.maximize();
+    const toggleMinimap = async (): Promise<void> => {
+      logMessage("event", `pressed hotkey for ${Hotkeys.minimap.toString()}`);
+      if (this._minimapShown) {
+        this.hideMinimap();
+        this._minimapShown = false;
+      } else {
+        this.showMinimap();
+        this._minimapShown = true;
       }
-    }
+      return;
+    };
 
-    OWHotkeys.onHotkeyDown(Hotkeys.overlay, toggleInGameWindow);
+    const toggleCreatePin = async (): Promise<void> => {
+      logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
+      if (this._createPinShown) {
+        this.hideCreatePin();
+        this._createPinShown = false;
+      } else {
+        this.showCreatePin();
+        this._createPinShown = true;
+      }
+      return;
+    };
+
+    OWHotkeys.onHotkeyDown(Hotkeys.minimap, toggleMinimap);
+    OWHotkeys.onHotkeyDown(Hotkeys.create, toggleCreatePin);
   }
 
   public async wait(intervalInMilliseconds: any) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(resolve, intervalInMilliseconds);
     });
   }
-
 }
 
 Overlay.instance().run();
+

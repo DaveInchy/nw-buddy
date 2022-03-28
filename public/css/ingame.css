@@ -12,15 +12,7 @@ main {
   display: flex;
   flex: 1;
   position: relative;
-  padding: 38px;
-}
-
-h1 {
-  font-family: "Roboto Mono", sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
-  color: #d5d5d5;
+  padding: 50px;
 }
 
 #logs {
@@ -137,4 +129,9 @@ button.logCopy {
 button.logCopy:hover {
   background: #8d8d8d;
   color: #ffffff;
+}
+
+@font-face {
+    font-family: 'New World';
+    src: url('../font/IMFellDWPica-Regular.ttf');
 }

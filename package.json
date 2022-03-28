@@ -1,6 +1,6 @@
 {
   "name": "nw-buddy",
-  "version": "22.03.22",
+  "version": "22.03.25",
   "description": "a TOS compliant overwolf overlay for new world",
   "main": "api/index.js",
   "private": true,
@@ -8,11 +8,18 @@
     "make": "webpack --mode=development --env makeOpk",
     "build": "webpack --mode=development",
     "watch": "webpack --watch --mode=development",
-    "serve:debug": "node debug.server.js",
-    "serve:database": "node api/index.js"
+    "server:debug": "node debug.server.js",
+    "server:data": "node api/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "overwolf",
+    "new",
+    "world",
+    "overlay"
+  ],
   "author": "Dave Inchy",
+  "publisher": "Overwolf",
+  "website": "http://github.com/dadavinci/nw-buddy",
   "license": "CUSTOM",
   "dependencies": {
     "@babel/preset-env": "^7.16.11",

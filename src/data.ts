@@ -37,15 +37,15 @@ class DataClient
         return http.json();
     }
 
-    public updatePlayer = async (player: any): Promise<any> => {
+    public updatePlayer = async (player: any): Promise<Response> => {
         var http: Response = await fetch(`${this.host}/api/player/update`
             + `?user=${encodeURIComponent(player.user)}`
             + `&x=${player.x}`
             + `&y=${player.y}`
             + `&z=${player.z}`
             + `&direction=${encodeURIComponent(player.direction)}`);
-        return http.json();
-    }
+        return http;
+    };
 
     public getPlayers = async () => {
         var http: Response = await fetch(`${this.host}/api/player/list`);

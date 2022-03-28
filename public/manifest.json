@@ -35,10 +35,30 @@
   "data": {
     "start_window": "background",
     "hotkeys": {
-      "showhide": {
-        "title": "Show/Hide",
+      "minimap": {
+        "title": "Show/Hide Minimap",
         "action-type": "toggle",
-        "default": "Alt+W"
+        "default": "Ctrl+M"
+      },
+      "create": {
+        "title": "Show/Hide Pin Factory",
+        "action-type": "toggle",
+        "default": "Ctrl+P"
+      },
+      "settings": {
+        "title": "Show/Hide Settings",
+        "action-type": "custom",
+        "default": "RightAlt+S"
+      },
+      "pins": {
+        "title": "Show/Hide Pin Editor",
+        "action-type": "custom",
+        "default": "RightAlt+E"
+      },
+      "credits": {
+        "title": "Show/Hide Credits",
+        "action-type": "custom",
+        "default": "RightAlt+C"
       }
     },
     "protocol_override_domains": {
@@ -67,7 +87,7 @@
         "allow_local_file_access": true,
         "keep_window_location": true,
         "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": true,
+        "ignore_keyboard_events": false,
         "resizable": false,
         "transparent": true,
         "override_on_update": true,
@@ -75,9 +95,13 @@
           "width": 1280,
           "height": 720
         },
-        "size": {
+        "max_size": {
           "width": 1920,
           "height": 1080
+        },
+        "size": {
+          "width": 1280,
+          "height": 720
         }
       }
     },

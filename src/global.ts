@@ -11,21 +11,20 @@ export const GamesFeatures = new Map<number, string[]>([
   ]
 ]);
 
-export const GameClassIds = Array.from(GamesFeatures.keys());
-
 export const WindowNames = {
   overlay: 'overlay'
 };
 
 export const Hotkeys = {
-  overlay: 'showhide'
+  minimap: 'minimap',
+  create: 'create',
+  pins: 'pins',
+  settings: 'settings',
+  credits: 'credits',
 };
 
-export const Config = [
-  require('../package.json'),
-  require('../public/manifest.json').meta,
-];
-
+export const Config = [{ config: require('../package.json'), metadata: require('../public/manifest.json').meta }];
+export const GameClassIds = Array.from(GamesFeatures.keys());
 export const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key, value) => {
