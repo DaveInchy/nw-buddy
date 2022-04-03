@@ -62,7 +62,7 @@ class DataServer {
 
             response.setHeader('Content-Type', 'application/json');
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-            response.end(JSON.stringify(data.player, getCircularReplacer()));
+            response.send(JSON.stringify(data.player, getCircularReplacer()));
         });
 
         this.app.get('/api/player/update', function (request, response) {
@@ -94,7 +94,7 @@ class DataServer {
 
             response.setHeader('Content-Type', 'application/json');
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-            response.end(JSON.stringify(data.players, getCircularReplacer()));
+            response.send(JSON.stringify(data.players, getCircularReplacer()));
         });
 
         this.app.get('/api/player/list', function (request, response) {
@@ -112,7 +112,7 @@ class DataServer {
 
             response.setHeader('Content-Type', 'application/json');
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-            response.end(JSON.stringify(data.players, getCircularReplacer()));
+            response.send(JSON.stringify(data.players, getCircularReplacer()));
         });
 
         return this.app;

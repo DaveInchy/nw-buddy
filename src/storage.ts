@@ -1,9 +1,9 @@
 export default class StorageInterface
 {
 
-    private static getStorage(): Storage
+    private static getStorage(isPersistent: boolean = true): Storage
     {
-        return localStorage;
+        return isPersistent ? localStorage : sessionStorage;
     }
 
     public static get(key: string): any
@@ -40,5 +40,4 @@ export default class StorageInterface
     {
         return Object.values(this.getStorage());
     }
-
 }

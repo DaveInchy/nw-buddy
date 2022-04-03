@@ -5,8 +5,12 @@ import {
   OWHotkeys,
   OWWindow
 } from "@overwolf/overwolf-api-ts";
-import { Window } from "../window";
+
+import "../assets/tailwind.css";
+import "../assets/overlay.css";
+
 import { logMessage, logError } from "../debug";
+import { Window as WindowManager } from "../window";
 import {
   Hotkeys,
   WindowNames,
@@ -15,19 +19,18 @@ import {
   Config,
   getCircularReplacer
 } from "../global";
+
+import Resources from "../resources";
 import DataClient from "../data";
 import Minimap from "../minimap";
+import Pin from "../pin";
 import StorageInterface from "../storage";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
 import owUtils = overwolf.utils;
 
-import "./tailwind.css";
-import Pin from "../pin";
-
-// The window displayed in-game while a game is running.
-class Overlay extends Window {
+class Overlay extends WindowManager {
   private static _instance: Overlay;
 
   public _gameInfoData: any;
@@ -47,15 +50,16 @@ class Overlay extends Window {
 
   private _Minimap: Minimap;
 
-  public _playerPosData: Array<string>; // needs formatting, look at drawCoords()
-  public _playerCharacter: string; // character NAME
+  public _playerPosData: Array<string>;
+  public _playerCharacter: string;
   public _playerLocation: any;
   public _player: any;
   public _playerList: any;
 
-  private _minimapShown: boolean = false;
+  private _minimapShown: boolean = true;
   private _createPinShown: boolean = false;
-  private _overlayShown: boolean = false;
+  private _editorShown: boolean = false;
+  private _overlayShown: boolean;
 
   private constructor() {
     super(WindowNames.overlay);
@@ -77,7 +81,7 @@ class Overlay extends Window {
 
   public async run() {
     var loading = true;
-    var ticksPerSecond = Number(2);
+    var ticksPerSecond = Number(3);
 
     var loadInterval = 5; // seconds
     var loadCounter = 0;
@@ -130,19 +134,14 @@ class Overlay extends Window {
 
     var updateCounter = 0;
     while (!loading) {
-      // logMessage("runtime", "ticking ...[" + updateCounter + "]");
-
-      // update the game data
       await this.getProcData();
       // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
 
-      // update the game data
       await this.getEventData();
       // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
 
-      // handle player location
       this._playerCharacter = this._gameEventData.res.game_info.player_name;
       this._playerLocation = this._gameEventData.res.game_info.location;
       this._playerPosData = this._playerLocation.split(",");
@@ -155,36 +154,28 @@ class Overlay extends Window {
         direction: this._playerPosData[13].toString(),
       };
 
+      // https://nw-radar-api.vercel.app/api/player/list
       updateCounter % ticksPerSecond || updateCounter === 0
         ? DataClient.addPlayer(this._player)
         : null;
       updateCounter >= 1
         ? DataClient.updatePlayer(this._player)
-        : undefined;
-
-      // logMessage(
-      //   "player",
-      //   `playerlist: ${JSON.stringify(this._playerList, getCircularReplacer())}`
-      // );
-      // https://nw-radar-api.vercel.app/api/player/list
-      // logMessage("info",   `[overlay] player position: ${this._playerPosData}`);
-      // logMessage("info", `[overlay] location '${this._gameEventData.res.game_info.location}'`);
-
-      this._Minimap.renderCanvas(this._player);
+        : null;
 
       this.drawCoords();
       this.drawTime();
       this.drawTitle(this._playerCharacter);
 
-      // Check if the game's cursor is active or not, hide the overlay if it is
-      this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
-      ? (this._createPinShown
-        ? this.currWindow.maximize()
-        : this.currWindow.minimize()
-      ) && true
-      : this.currWindow.maximize() && false;
+      this._overlayShown =
+        this._gameProcData.overlayInfo.isCursorVisible === true
+          ? ((this._createPinShown || this._editorShown)
+            ? this.currWindow.maximize() && true
+            : this.currWindow.minimize() && false)
+          : this.currWindow.maximize() && false;
 
       updateCounter <= 1 ? this.showMinimap() : null;
+
+      this._Minimap.renderCanvas(this._player);
 
       await this.wait(1000 / ticksPerSecond);
       updateCounter++;
@@ -192,9 +183,24 @@ class Overlay extends Window {
   }
 
   public async releaseMouse() {
-    await this.wait(1000);
+    await this.wait(300);
     logMessage("game", "artificial keystroke: Enter");
     return overwolf.utils.sendKeyStroke("Enter");
+  }
+
+  public showEditor() {
+    const elem: HTMLElement = document.querySelector("div#pin-editor");
+    elem.style.display = "block";
+    this._editorShown = true;
+    this.hideMinimap();
+    this.releaseMouse();
+  }
+
+  public hideEditor() {
+    const elem: HTMLElement = document.querySelector("#pin-editor");
+    elem.style.display = "none";
+    this._editorShown = false;
+    this.releaseMouse();
   }
 
   public showMinimap() {
@@ -219,19 +225,27 @@ class Overlay extends Window {
     this._createPinShown = true;
     this._overlayShown = true;
 
-    elemButton.addEventListener("click", event => {
+    elemButton.onclick = (event) => {
       event.preventDefault();
-      var pin: Pin = new Pin("default", this._player.x, this._player.y, this._playerCharacter);
-      var canvas: HTMLCanvasElement = document.querySelector( "canvas#minimap-canvas" );
-      StorageInterface.set(`${elemInput.value}`, JSON.stringify(pin, getCircularReplacer()));
-      logMessage("game", `created pin: ${elemInput.value}`);
-      logMessage("game", `all stored pins: \n${JSON.stringify(StorageInterface.getAll(), getCircularReplacer())}`);
-      elemInput.value = "";
-      this._Minimap.refreshRender();
-      this.hideCreatePin();
-    });
 
-    this.releaseMouse();
+      var pin: Pin = new Pin(
+        elemInput.value.toLowerCase(),
+        1,
+        undefined,
+        this._player.x,
+        this._player.y,
+        this._player.z
+      );
+
+      // logMessage("game",`created pin: ${pin.icon} ${JSON.stringify(pin, getCircularReplacer())}`);
+
+      StorageInterface.set(`${pin.type}_${pin.token}`, JSON.stringify(pin));
+      this._Minimap.refreshRender();
+
+      elemInput.value = "";
+      this.hideCreatePin();
+    };
+
   }
 
   public hideCreatePin() {
@@ -242,8 +256,6 @@ class Overlay extends Window {
     const elemInput: HTMLInputElement = elem.querySelector("#pinTag");
 
     this._createPinShown = false;
-
-    elemButton.removeEventListener("click", event => event.preventDefault(), false);
   }
 
   public async drawTitle(title: string) {
@@ -288,7 +300,7 @@ class Overlay extends Window {
     var seconds: any = time.getUTCSeconds();
     var ampm = hours >= 12 ? "pm" : "am";
     hours = hours % 12;
-    hours = hours ? hours : 12;
+    hours = hours + 1 ? hours + 1 : 12;
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds;
     seconds < 10 ? "0" + seconds : seconds;
@@ -351,35 +363,36 @@ class Overlay extends Window {
     hotkeyElem.textContent = hotkeyText;
   }
 
-  // @TODO create each interface and shortcut for each interface
   private async setHotkeyBehavior() {
-
-    const toggleMinimap = async (): Promise<void> => {
+    OWHotkeys.onHotkeyDown(Hotkeys.minimap, async (): Promise<void> => {
       logMessage("event", `pressed hotkey for ${Hotkeys.minimap.toString()}`);
       if (this._minimapShown) {
         this.hideMinimap();
-        this._minimapShown = false;
       } else {
         this.showMinimap();
-        this._minimapShown = true;
       }
       return;
-    };
+    });
 
-    const toggleCreatePin = async (): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
-      if (this._createPinShown) {
-        this.hideCreatePin();
-        this._createPinShown = false;
-      } else {
-        this.showCreatePin();
-        this._createPinShown = true;
-      }
-      return;
-    };
+    // OWHotkeys.onHotkeyDown(Hotkeys.pins, async (): Promise<void> => {
+    //   logMessage("event", `pressed hotkey for ${Hotkeys.pins.toString()}`);
+    //   if (this._editorShown) {
+    //     this.hideEditor();
+    //   } else {
+    //     this.showEditor();
+    //   }
+    //   return;
+    // });
 
-    OWHotkeys.onHotkeyDown(Hotkeys.minimap, toggleMinimap);
-    OWHotkeys.onHotkeyDown(Hotkeys.create, toggleCreatePin);
+    // OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
+    //   logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
+    //   if (this._createPinShown) {
+    //     this.hideCreatePin();
+    //   } else {
+    //     this.showCreatePin();
+    //   }
+    //   return;
+    // });
   }
 
   public async wait(intervalInMilliseconds: any) {
@@ -390,4 +403,3 @@ class Overlay extends Window {
 }
 
 Overlay.instance().run();
-

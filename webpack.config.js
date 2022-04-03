@@ -1,11 +1,11 @@
-const
-    path = require('path'),
-    HtmlWebpackPlugin = require('html-webpack-plugin'),
-    CopyPlugin = require("copy-webpack-plugin"),
-    { CleanWebpackPlugin } = require('clean-webpack-plugin'),
-    OverwolfPlugin = require('./overwolf.webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const OverwolfPlugin = require('./overwolf.webpack');
 
 module.exports = env => ({
+
     resolve: {
         extensions: ['.js', '.ts'],
         modules: [
@@ -16,7 +16,6 @@ module.exports = env => ({
             "url": require.resolve("url"),
             "fs": require.resolve("fs"),
             "crypto": require.resolve("crypto-browserify"),
-            // "http": require.resolve("stream-browserify"),
             "zlib": require.resolve("browserify-zlib"),
         }
     },
@@ -37,18 +36,18 @@ module.exports = env => ({
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
-                {
-                    loader: 'style-loader',
-                },
-                {
-                    loader: 'css-loader',
-                    options: {
-                    importLoaders: 1,
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader'
                     }
-                },
-                {
-                    loader: 'postcss-loader'
-                }
                 ]
             },
             {

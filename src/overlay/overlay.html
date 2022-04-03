@@ -2,25 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="tailwind.css" />
-  <link rel="stylesheet" href="../../css/ingame.css" />
   <title>New World Buddy</title>
   <style>
-    h1, h2, h3, h4, h5, h6, p {
-      font-family: 'New World', Roboto, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap');
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'New World', sans-serif;
       font-weight: bolder;
+      font-size: 1.8rem;
+    }
+    h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
+      font-family: 'New World', sans-serif;
+      font-size: 1.0em;
+    }
+    * > span {
+      font-family: inherit;
+      font-size: 1.0em;
+    }
+    p > span, p {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 18px !important;
+      letter-spacing: -2px;
     }
   </style>
-
-
 </head>
-<body style="background: none;">
+<body style="border: 0px solid cyan">
 
-  <main>
+  <main style="border: 0px solid yellow;">
 
-    <div id="settings" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="min-w-full min-h-full p-24 px-32">
-      <div class="w-full h-full p-2 m-auto" style="background-image: url(./img/border-tile.png); background-size: 100% 100%; background-origin:border-box;">
-
+    <div id="pin-editor" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="min-w-full h-fit p-24 px-32">
+      <div class="flex w-full justify-center items-center h-full">
+        <div id="pin-list" class="min-w-full">
+          <h2 class="text-4xl text-white text-left">Current Pins</h2>
+          <table class="overflow-scroll h-fit min-w-full">
+            <thead class="w-full bg-yellow text-black">
+              <tr class="w-full pin_row rounded-full">
+                <th class="text-yellow text-2xl text-left w-1/12">Pin</th>
+                <th class="text-yellow text-2xl text-left w-6/12">Name</th>
+                <th class="text-yellow text-2xl text-left w-3/12">Category</th>
+                <th class="text-yellow text-2xl text-left w-1/12">⛔</th>
+                <th class="text-yellow text-2xl text-left w-1/12">💾</th>
+              </tr>
+            </thead>
+            <tbody class="w-full">
+              <span class="spin"></span>
+              <tr class="w-full pin_row" id="pin_example" style="display: none;">
+                <td class="pin_column">
+                  <span class="text-4xl">🌾</span>
+                </td>
+                <td class="pin_column">
+                  <span class="text-white lowercase text-xl first-letter:uppercase">hemp</span>
+                </td>
+                <td class="pin_column">
+                  <span class="text-white lowercase text-xl first-letter:uppercase">fiber</span>
+                </td>
+                <td class="pin_column">
+                  <button class="bg-yellow text-white hover:bg-dark hover:text-white p-2 w-full">Remove</button>
+                </td>
+                <td class="pin_column">
+                  <button class="bg-yellow text-white hover:bg-dark hover:text-white p-2 w-full">Change</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -29,11 +74,11 @@
 
         <div class="w-full">
 
-          <h1 class="text-gray-light font-normal text-2xl text-center">Create a new Pin</h1>
+          <h1 class="text-gray-light font-normal text-4xl text-center">Create new Pin</h1>
           <hr class="w-8/12 text-white border-y-1  my-3 mx-auto rounded" style="border-color: rgb(197, 161, 0);" />
-          <p class="text-gray-light text-center">Give the Pin a tag name, so you can identify it later.<br />
+          <p class="text-gray-light text-center font-new-world">Give the Pin a tag name, so you can identify it later.<br />
             <input id="pinTag" style="border-color: rgb(197, 161, 0);" class="text-center rounded-l-lg mt-3 mb-2  bg-gray-dark text-gray-light py-1 px-3 text-md border-2 focus:outline-0" type="text" placeholder="None" value="" />
-            <button id="pinButton" style="border-color: rgb(197, 161, 0);" class="text-center rounded-r-lg mt-3 mb-2 border-2 bg-gray-dark text-gray-light py-1 px-3 text-md active:border-0 focus:outline-0">Create</button>
+            <button id="pinButton" style="border-color: rgb(197, 161, 0);" class="text-center rounded-r-lg mt-3 mb-2 font-new-world border-2 bg-gray-dark text-gray-light py-1 px-3 text-md active:border-0 focus:outline-0">Create</button>
           </p>
 
         </div>
@@ -44,12 +89,12 @@
     <div id="minimap" style="display: none;">
 
       <div id="minimap-title" style="position: absolute; bottom: calc(250px + 40px + 50px + 16vw); right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
-        <h1 style="color: rgb(197, 161, 0); font-size: 2.8em; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;">~ <span id="title"></span> ~</h1>
+        <h1 style="color: rgb(197, 161, 0); font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;">~ <span id="title"></span> ~</h1>
       </div>
 
-      <div id="minimap-context" class="group" style="width: 16vw; height: 16vw; border-radius: 1000px; border: 5px solid rgb(197, 161, 0); position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 10; overflow:hidden;">
+      <div id="minimap-context" class="group" style="width: 16vw; height: 16vw; border-radius: 1000px; border: 5px solid rgb(197, 161, 0); position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 10; overflow: hidden; scroll-behavior: smooth;">
 
-        <canvas width="9000" height="10200" id="minimap-canvas" class="transform duration-600" style="position:relative; padding: 0; top: 50%; left: 50%; width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap.png'); background-size:cover; opacity: 90%; z-index: -1;">
+        <canvas width="9000" height="10200" id="minimap-canvas" class="transform duration-600" style="position:relative; padding: 0; top: 50%; left: 50%; width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap.png'); background-size: cover; opacity: 90%; z-index: -1;">
         </canvas>
 
         <svg id="compassNeedle" class="transform-gpu duration-500" style="max-width: 24px; max-height: 24px; position: absolute; top: 50%; left: 50%; z-index: 10; margin-left: -12px; margin-top: -12px;" xmlns="http://www.w3.org/2000/svg" fill="none" class="" viewBox="0 0 24 24" stroke="white" stroke-width="3">
@@ -59,13 +104,17 @@
       </div>
 
       <div id="minimap-info" style="position: absolute; bottom: calc(250px); right: 50px; width: 16vw; height: auto; z-index: 10;">
-        <div style="display:inline-block; width: 16vw; font-weight:bolder; color: rgb(197, 161, 0); font-size: 2.0em; letter-spacing: -2px; line-height: 22px; font-variant: all-small-caps;">
-          <p style="display: inline; float: left;">⚔️ <span id="minimap-versus">PvP</span> <span class="font-extralight">ON</span></p>
-          <p style="display: inline; float: right;" class="font-extralight">Pin <span id="create-hotkey" class="font-extrabold">KEY</span> 🖱️</p>
+        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">💾 <span id="editor-hotkey" class="font-bold">CTRL+E</span> EDITOR</p>
+          <p style="display: inline; float: right;" class="font-normal"><span id="create-hotkey" class="font-bold">KEY</span> NEW PIN 🖱️</p>
         </div>
-        <div style="display:inline-block; width: 16vw; font-weight:bolder; color: rgb(197, 161, 0); font-size: 2.0em; letter-spacing: -2px; line-height: 22px; font-variant: all-small-caps;">
-          <p style="display: inline; float: left;">🕑 <span id="minimap-current-time"></span> <span class="font-extralight">CET</span></p>
-          <p style="display: inline; float: right;"><span id="minimap-position"></span> 🧭</p>
+        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;">
+            🕑 <span id="minimap-current-time" class="font-bold"></span> <span class="font-normal">CET</span>
+          </p>
+          <p style="display: inline; float: right;">
+            <span id="minimap-position" class="font-normal"></span> 🧭
+          </p>
         </div>
       </div>
 

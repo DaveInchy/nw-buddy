@@ -1,142 +1,79 @@
-import { logMessage } from "./debug";
-import Vector2 from "./vector2";
-import StorageInterface from './storage';
+import { logError, logMessage as log } from "./debug";
+import { getCircularReplacer } from "./global";
+
+import Resources from "./resources";
 
 export default class Pin {
-  public readonly ctxDrawCall: void;
 
-  private readonly types = {
-    default: {
-      icon: "./img/pins/icon/default.png",
-      color: "rgba(192, 161, 0, 0)",
-    },
-    stone: {
-      icon: "./img/pins/icon/stone.png",
-      types: {
-        default: {
-          includes: ["stone", "rock"],
-        },
-        boulder: {
-          includes: ["stone", "boulder"],
-        },
-        lodestone: {
-          includes: ["lode", "lodes"],
-        },
-      },
-    },
-    ore: {
-      icon: "./img/pins/icon/ore.png",
-      types: {
-        default: {
-          includes: ["ore"],
-        },
-        iron: {
-          includes: ["iron", "steel", "copper", "ironium"],
-        },
-        starmetal: {
-          includes: ["star", "starmetal", "starumite"],
-        },
-        orichalcum: {
-          includes: [
-            "ori",
-            "orri",
-            "orichalcum",
-            "orichalcumite",
-            "chilium",
-            "chillium",
-          ],
-        },
-        silver: {
-          includes: ["silver", "sliver"],
-        },
-        gold: {
-          includes: ["gold", "golden"],
-        },
-        platinum: {
-          includes: ["platinum", "plat", "platinumite", "platina"],
-        },
-      },
-    },
-    wood: {
-      icon: "./img/pins/icon/wood.png",
-      types: {
-        default: {
-          includes: ["wood", "log", "tree"],
-        },
-        green: {
-          includes: ["green", "greenwood"],
-        },
-        mature: {
-            includes: ["mature", "horny", "ofnie", "mom", "mommy", "milf"],
-        },
-        dead: {
-            includes: ["green", "dead", "coal"],
-        },
-        wyrdwood: {
-            includes: ["wyr", "wyrd", "wyrdwood"],
-        },
-        ironwood: {
-            includes: ["iron", "ironwood", "red", "redwood"],
-        },
-      },
-    },
-    fiber: {
-      types: {
-        default: {
-            includes: ["fiber", "fibers", "thread", "threads", "hemp", "silk", "weed"],
-        },
-        hemp: {
-            includes: ["weed", "hemp", "fiber", "thread"],
-        },
-        silkweed: {
-            includes: ["silk", "silkweed", "thread", "fiber"],
-        },
-        wireweed: {
-            includes: ["wire", "wireweed", "thread", "fiber"],
-        },
-      },
-    },
-    other: {
-      types: {
-        default: {
-            includes: [""],
-        },
-        herbs: {},
-        flint: {},
-      },
-    },
+  public type: string;
+
+  public size = {
+    width: 24,
+    height: 24,
   };
 
   constructor(
-    public readonly source: string = "default",
+    public readonly name: string,
+    public readonly tier: number,
+    public readonly icon: string,
+
     public readonly x: number = 0,
     public readonly y: number = 0,
-    public readonly owner: string = undefined
-  ) {
-    this.owner = owner !== undefined ? owner : "Map";
-    this.source = this.getImageFileLocation(source);
+    public readonly z: number = 0,
 
+    public readonly owner: string = undefined,
+    public readonly token: string = Math.random() * 10 + "",
+    public readonly color: string = "rgb(192, 161, 0, 1)",
+  ) {
+    let props = this.sortProperties(this.name);
+    this.icon = props[0];
+    this.type = props[1];
+
+    if(this.type == "chest") {
+      this.size = { width: props[2].width * this.tier, height: props[2].height * this.tier };
+    } else {
+      this.size = { width: props[2].width, height: props[2].height };
+    }
+
+    this.color = color !== undefined ? color : "rgba(192, 161, 0, 0)";
+    this.token = token !== undefined ? token : Math.random().toString();
+    this.owner = owner !== undefined ? owner : "private";
     this.x = x;
     this.y = y;
-
-    logMessage(
-      "minimap",
-      "Minimap.Pin() instance created for " +
-        this.owner +
-        " at " +
-        this.x +
-        "," +
-        this.y
-    );
-
+    this.z = z;
     return this;
   }
 
-  private getImageFileLocation(imgName: string = "default") {
-    var sourceLocation = "./img/pins/default.png";
-    if (imgName !== "default") {
-      sourceLocation = "./img/pins/" + imgName + ".png";
+  private sortProperties(tag: string) {
+    try {
+
+      let icon = `📍`;
+      let size = { width: 16, height: 16 };
+      let type = tag;
+      let cache = [];
+
+      Resources.forEach((element) => {
+        icon = element.icon;
+        size = element.size;
+        element.types.forEach((element2) => {
+          type = element2.name;
+          icon = element2.icon !== undefined ? element2.icon : icon;
+          element2.includes.forEach((element3) => {
+            cache.push({ filter: element3, icon: icon, type: type, size: size });
+          });
+        });
+      });
+
+      for (let i = 0; i < cache.length; i++) {
+        if (tag.includes(cache[i].filter)) {
+          return [cache[i].icon, cache[i].type, { width: cache[i].size.width, height: cache[i].size.width }];
+        }
+      }
+
+      return [`📍`, tag, { width: 16, height: 16 }];
+    } catch (e) {
+      logError(e);
+      return ["⛔", e];
     }
-    return sourceLocation;
   }
 }
