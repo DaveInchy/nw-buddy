@@ -16,7 +16,7 @@ export default class Minimap {
 
   public _once: boolean = true;
 
-  private __ = {
+  public __ = {
     data: {},
     zoom: 1.0,
 
@@ -42,16 +42,14 @@ export default class Minimap {
     mapHeight: undefined,
 
     mapToCanvasRatio: undefined,
+    directionAngle: undefined
   };
 
   constructor(player: any, canvas: HTMLCanvasElement) {
     var _ = this.__;
 
     // Add data for pins to the cache
-
-    //check for the cache file otherwise dont execute cachedata
-
-
+    //@TODO check for the cache file otherwise dont execute cachedata
     _.data = require("./assets/cache.json");
     this.cacheData();
 
@@ -80,18 +78,20 @@ export default class Minimap {
 
     // tuning the numbers
     _.mapToCanvasRatio = new Vector2(
-      _.canvasWidth / _.mapWidth,
-      _.canvasHeight / _.mapHeight
+      _.canvasWidth * _.zoom / _.mapWidth,
+      _.canvasHeight * _.zoom / _.mapHeight
     );
+
+    _.directionAngle = 0;
 
     return;
   }
 
   public async renderCanvas(player: any) {
 
-    this.setZoom();
-
     this.__.playerMapCoords = new Vector2(player.x, player.y);
+
+    this.setZoom(this.__.zoom);
 
     var playerCanvasCoords: Vector2 = new Vector2(
       (this.__.playerMapCoords.x - this.__.mapLeft) *
@@ -104,18 +104,17 @@ export default class Minimap {
     this.__.canvas.style.marginLeft = playerCanvasCoords.x + "px";
     this.__.canvas.style.marginTop = playerCanvasCoords.y + "px";
 
-    this.setZoom(this.__.zoom);
-
     // draw and animation of the player pointer
-    this.rotateNeedle(this.getRotationFromDirection(player.direction));
+    this.rotateNeedle(this.getDirectionAngle(player.direction));
 
-    // render a grid over the background of the canvas
     this.renderLayers(player);
 
     return this;
   }
 
-  public async setZoom(amount: number = 1.0) {
+  public async setZoom(amount: number = 1) {
+    this.__.zoom = amount
+
     this.__.canvasLeft = 0;
     this.__.canvasRight = this.__.canvas.width * this.__.zoom;
     this.__.canvasTop = 0;
@@ -126,13 +125,18 @@ export default class Minimap {
     this.__.canvas.style.width = parseInt(this.__.canvasWidth) + "px";
     this.__.canvas.style.height = parseInt(this.__.canvasHeight) + "px";
 
+    this.__.mapToCanvasRatio = new Vector2(
+      this.__.canvasWidth / this.__.mapWidth,
+      this.__.canvasHeight / this.__.mapHeight
+    );
+
     return;
   }
 
   private renderLayers = async (player: any) => {
     this._once
       ? this.renderGrid(player) &&
-        this.renderPins(player) &&
+        this.renderPins() &&
         (this._once = false)
       : (this._once = false);
 
@@ -153,31 +157,33 @@ export default class Minimap {
 
   private rotateNeedle(angle: number) {
     var needle: HTMLElement = document.getElementById("compassNeedle");
-    needle.style.transform = "rotate(" + angle + "deg)";
+    needle.style.transform = 'rotate(' + angle + 'deg)'
     return;
   }
 
-  private getRotationFromDirection(playerDirection: string) {
-    switch (playerDirection) {
-      case "N":
-        return 360;
-      case "NE":
-        return 45;
-      case "E":
-        return 90;
-      case "SE":
-        return 135;
-      case "S":
-        return 180;
-      case "SW":
-        return 225;
-      case "W":
-        return 270;
-      case "NW":
-        return 315;
-      default:
-        return 360;
-    }
+  private getRotation = (playerDirection: string = "N"): number => {
+    let sequence = [
+      "N",
+      "NE",
+      "E",
+      "SE",
+      "S",
+      "SW",
+      "W",
+      "NW",
+    ];
+
+    return sequence.indexOf(playerDirection) * 45;
+  }
+
+  //@TODO fix this to actually work
+  private getDirectionAngle(playerDirection: string) {
+    let angle = this.__.directionAngle ? this.__.directionAngle : 0;
+    let diff = angle - this.getRotation(playerDirection);
+    if(angle >= 360) angle += diff;
+    if(angle < 360) angle -= diff;
+    this.__.directionAngle = angle;
+    return angle;
   }
 
   async cacheData() {
@@ -305,11 +311,11 @@ export default class Minimap {
                           tier = 1;
                           break;
                         case "hemp_t4":
-                          type = "fiber";
+                          type = "silk";
                           tier = 4;
                           break;
                         case "hemp_t5":
-                          type = "fiber";
+                          type = "wire";
                           tier = 5;
                           break;
                         case "berry":
@@ -394,6 +400,32 @@ export default class Minimap {
                     CacheInterface.set(id, JSON.stringify(pin));
                   }
 
+                  if (key.toLowerCase() === "essences" && data[key][key2][key3].y !== undefined && data[key][key2][key3].x !== undefined) {
+
+                    let getProps = (str: string): [string, string] => {
+                      return [
+                        str.split("_")[0],
+                        str.split("_")[1]
+                      ];
+                    }
+
+                    let id = key3;
+                    let props = getProps(key2.toLowerCase());
+                    let tier = props[1].toString() == "boid" ? 1 : props[1].toString() == "plant" ? 3 : 5;
+                    let elem = props[0].toString();
+
+                    let pin = new Pin(
+                      elem + " mote",
+                      tier,
+                      undefined,
+                      data[key][key2][key3].x,
+                      data[key][key2][key3].y,
+                      1
+                    );
+
+                    CacheInterface.set(id, JSON.stringify(pin));
+                  }
+
                 } // end key4 loop
               } // end key3 loop
             }
@@ -403,12 +435,18 @@ export default class Minimap {
     } // end key loop
   }
 
-  async renderPins(player: any) {
+  async renderPins() {
 
+    // Reset the zoom because the pins are not in the right location (zoom value is not calculated)
+    this.setZoom(1.0);
+
+    // Get pins from localstorage
     var pins: [string, any][] = StorageInterface.getAll();
-    pins = pins.concat(CacheInterface.getAll());
-    pins.forEach(([key, value]) => {
+        // Add pins from local stored cache file
+        pins = pins.concat(CacheInterface.getAll());
 
+    // Loop through all the keyvalue pairs
+    pins.forEach(([key, value]) => {
 
       let title: string = key;
       let pin: Pin = JSON.parse(value, getCircularReplacer());
@@ -417,36 +455,11 @@ export default class Minimap {
         return;
       }
 
-      let icon = document.createElement("p");
-      icon.style.position = "relative";
-      icon.style.transform = "translate(-50%, -50%)";
-      icon.style.fontSize = pin.size.width + "px";
-      icon.style.lineHeight = pin.size.height + "px";
-      icon.innerHTML = pin.icon;
-
-      let img: SVGElement = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "image"
-      );
-      img.id = pin.owner + "_" + title + "_token_" + pin.token;
-      img.classList.add("pin");
-      img.appendChild(icon);
-
-      img.style.width = pin.size.width + "px";
-      img.style.height = pin.size.height + "px";
-
       var pinX = -((pin.x - this.__.mapLeft) * this.__.mapToCanvasRatio.x);
       var pinY = -((this.__.mapTop - this.__.mapBottom - (pin.y - this.__.mapBottom)) * this.__.mapToCanvasRatio.y);
 
-      img.onload = () =>
-        this.__.canvasContext.drawImage(
-          img,
-          pinX - (pin.size.width / 2),
-          pinY + (pin.size.height / 2),
-        );
-
       // draw a little circle dot on the location
-      this.__.canvasContext.fillStyle = "yellow";
+      this.__.canvasContext.fillStyle = "rgba(0,0,0,0.4)";
       this.__.canvasContext.fillRect(pinX - 1, pinY - 1, 3, 3);
 
       //draw text on top of the pin with the tag as title
@@ -455,6 +468,8 @@ export default class Minimap {
       this.__.canvasContext.fillStyle = "#fff";
       this.__.canvasContext.fillText(pin.icon, pinX, pinY - (pin.size.height / 4));
 
+      //@TODO add a label while debugging is turned on
+      //@TODO implement global debugging switch
     });
 
     return true;
@@ -468,8 +483,10 @@ export default class Minimap {
     }
 
     this.__.canvasContext.font = "24px 'New World'";
-    this.__.canvasContext.fillStyle = "#fff";
     this.__.canvasContext.lineWidth = 1;
+
+    var rgba_dark = "rgba(0,0,0,0.5)";
+    var rgba_red = "rgba(255,0,0,0.5)";
 
     for (
       let x = this.__.canvasLeft;
@@ -477,8 +494,8 @@ export default class Minimap {
       x += step(this.__.canvasWidth)
     ) {
       x % (step(this.__.canvasWidth) * 2)
-        ? (this.__.canvasContext.strokeStyle = "#fff")
-        : (this.__.canvasContext.strokeStyle = "#eee");
+        ? (this.__.canvasContext.strokeStyle = rgba_dark)
+        : (this.__.canvasContext.strokeStyle = rgba_red);
 
       this.__.canvasContext.beginPath();
       this.__.canvasContext.moveTo(x, 0);
@@ -494,8 +511,8 @@ export default class Minimap {
       y += step(this.__.canvasWidth)
     ) {
       y % (step(this.__.canvasWidth) * 2)
-        ? (this.__.canvasContext.strokeStyle = "#fff")
-        : (this.__.canvasContext.strokeStyle = "#eee");
+        ? (this.__.canvasContext.strokeStyle = rgba_red)
+        : (this.__.canvasContext.strokeStyle = rgba_dark);
 
       this.__.canvasContext.beginPath();
       this.__.canvasContext.moveTo(0, y);

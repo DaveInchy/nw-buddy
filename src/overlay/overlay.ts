@@ -69,6 +69,7 @@ class Overlay extends WindowManager {
 
     this.setToggleHotkeyText();
     this.setCreatePinHotkeyText();
+    this.setZoomHotkeysText();
   }
 
   public static instance() {
@@ -343,6 +344,22 @@ class Overlay extends WindowManager {
     return;
   }
 
+  private async setZoomHotkeysText() {
+    const gameClassId = GameClassId;
+    const hotkeyZoomIn = await OWHotkeys.getHotkeyText(
+      Hotkeys.zoomIn,
+      gameClassId
+    );
+    const hotkeyZoomOut = await OWHotkeys.getHotkeyText(
+      Hotkeys.zoomOut,
+      gameClassId
+    );
+    const hotkeyElemZoomIn = document.getElementById("zoomIn-hotkey");
+    const hotkeyElemZoomOut = document.getElementById("zoomOut-hotkey");
+    hotkeyElemZoomIn.textContent = hotkeyZoomIn;
+    hotkeyElemZoomOut.textContent = hotkeyZoomOut;
+  }
+
   private async setToggleHotkeyText() {
     const gameClassId = GameClassId;
     const hotkeyText = await OWHotkeys.getHotkeyText(
@@ -364,6 +381,7 @@ class Overlay extends WindowManager {
   }
 
   private async setHotkeyBehavior() {
+
     OWHotkeys.onHotkeyDown(Hotkeys.minimap, async (): Promise<void> => {
       logMessage("event", `pressed hotkey for ${Hotkeys.minimap.toString()}`);
       if (this._minimapShown) {
@@ -371,6 +389,19 @@ class Overlay extends WindowManager {
       } else {
         this.showMinimap();
       }
+      return;
+    });
+
+    OWHotkeys.onHotkeyDown(Hotkeys.zoomIn, async (): Promise<void> => {
+      logMessage("event", `pressed hotkey for ${Hotkeys.zoomIn.toString()}`);
+      this._Minimap.__.zoom = this._Minimap.__.zoom + 0.25
+      this._Minimap.setZoom(this._Minimap.__.zoom);
+      return;
+    });
+    OWHotkeys.onHotkeyDown(Hotkeys.zoomOut, async (): Promise<void> => {
+      logMessage("event", `pressed hotkey for ${Hotkeys.zoomOut.toString()}`);
+      this._Minimap.__.zoom = this._Minimap.__.zoom - 0.25
+      this._Minimap.setZoom(this._Minimap.__.zoom);
       return;
     });
 
@@ -384,15 +415,15 @@ class Overlay extends WindowManager {
     //   return;
     // });
 
-    // OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
-    //   logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
-    //   if (this._createPinShown) {
-    //     this.hideCreatePin();
-    //   } else {
-    //     this.showCreatePin();
-    //   }
-    //   return;
-    // });
+    OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
+      logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
+      if (this._createPinShown) {
+        this.hideCreatePin();
+      } else {
+        this.showCreatePin();
+      }
+      return;
+    });
   }
 
   public async wait(intervalInMilliseconds: any) {

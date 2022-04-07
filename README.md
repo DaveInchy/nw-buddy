@@ -1,7 +1,7 @@
 
-# New World Radar and Buddy
+# New World Buddy
 
-A private Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game.
+An Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game.
 
 ## How to use
 
@@ -13,19 +13,35 @@ A private Overwolf overlay that helps players find new friends and keep track of
 
 ## Features
 
+## Changelog
+
+1. Update version (<version\>)
+
+    - Added ... as completed feature
+
+## Todo list
+
 <🔴 Not Started />
 
 - OCR and Image/pixel detection to extract (live) data
+- Making all interfaces for the overlay other then the radar itself.
+- Refactor some of the codebase and design of the overlay
 
 <🟡 In Progress />
 
-- Make locally stored routing &/or points
+- Make locally stored routing &/or points (Cache)
+- Make save files for the pins created by the user, so it can be shared.
+
 - Make a settings/hotkeys page
+- Adding zoom ability for the user
+
+- Making sure that the overlay is TOS Compliant based off AGS before release
+- Implement overwolf Quality and Standards before release.
 
 <🟢 Completed />
 
 - Network connections to the Cloud server
-- Player location tracking and streaming to other Group members with Cloud funtions
+- Player location tracking and streaming to other Group members with vercel cloud funtions
 
 - Render a "map" of the world with player  position and direction on the radar
 

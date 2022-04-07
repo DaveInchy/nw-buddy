@@ -1,5 +1,18 @@
 export const GameClassId = 21816; // New world
 
+export const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
 export const GamesFeatures = new Map<number, string[]>([
   [
     GameClassId,
@@ -21,19 +34,9 @@ export const Hotkeys = {
   pins: 'pins',
   settings: 'settings',
   credits: 'credits',
+  zoomIn: 'zoomIn',
+  zoomOut: 'zoomOut',
 };
 
 export const Config = [{ config: require('../package.json'), metadata: require('../public/manifest.json').meta }];
 export const GameClassIds = Array.from(GamesFeatures.keys());
-export const getCircularReplacer = () => {
-  const seen = new WeakSet();
-  return (key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) {
-        return;
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-};

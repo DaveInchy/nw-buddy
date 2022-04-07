@@ -1,8 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+
+  <meta name="msapplication-TileColor" content="rgb(192,161,0)">
+  <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="rgb(192,161,0)">
+  <link rel="manifest" href="/icons/manifest.json">
   <meta charset="UTF-8" />
+
   <title>New World Buddy</title>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap');
 
@@ -92,29 +112,34 @@
         <h1 style="color: rgb(197, 161, 0); font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;">~ <span id="title"></span> ~</h1>
       </div>
 
-      <div id="minimap-context" class="group" style="width: 16vw; height: 16vw; border-radius: 1000px; border: 5px solid rgb(197, 161, 0); position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 10; overflow: hidden; scroll-behavior: smooth;">
+      <div id="minimap-context" class="group backdrop-filter backdrop-grayscale" style="width: 16vw; height: 16vw; border-radius: 1000px; border: 5px solid rgb(197, 161, 0); position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
 
-        <canvas width="9000" height="10200" id="minimap-canvas" class="transform duration-600" style="position:relative; padding: 0; top: 50%; left: 50%; width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap.png'); background-size: cover; opacity: 90%; z-index: -1;">
+        <img src="../../img/map/compass.png" style="position:absolute; bottom: calc(250px + 20px + 50px); right: 50px; height: 16vw; width: 16vw" />
+
+        <canvas width="9000" height="10200" id="minimap-canvas" class="transform duration-600" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap.png'); background-size: cover; opacity: 95%; z-index: 0;">
         </canvas>
 
-        <svg id="compassNeedle" class="transform-gpu duration-500" style="max-width: 24px; max-height: 24px; position: absolute; top: 50%; left: 50%; z-index: 10; margin-left: -12px; margin-top: -12px;" xmlns="http://www.w3.org/2000/svg" fill="none" class="" viewBox="0 0 24 24" stroke="white" stroke-width="3">
-          <path stroke-linecap="round" stroke-linejoin="square" d="M5 15l7-7 7 7" />
-        </svg>
+        <img src="../../img/map/needle.svg" id="compassNeedle" class="transform-gpu duration-500" style="max-width: 150px; max-height: 150px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -75px; margin-top: -75px;" />
 
       </div>
-
-      <div id="minimap-info" style="position: absolute; bottom: calc(250px); right: 50px; width: 16vw; height: auto; z-index: 10;">
-        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;" class="font-normal">💾 <span id="editor-hotkey" class="font-bold">CTRL+E</span> EDITOR</p>
-          <p style="display: inline; float: right;" class="font-normal"><span id="create-hotkey" class="font-bold">KEY</span> NEW PIN 🖱️</p>
-        </div>
-        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+      <div id="minimap-info" style="position: absolute; bottom: calc(220px); right: 50px; width: 16vw; height: auto; z-index: 10;">
+        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.6rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
           <p style="display: inline; float: left;">
             🕑 <span id="minimap-current-time" class="font-bold"></span> <span class="font-normal">CET</span>
           </p>
           <p style="display: inline; float: right;">
             <span id="minimap-position" class="font-normal"></span> 🧭
           </p>
+        </div>
+
+        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.6rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">🖱️ Zoom In <span id="zoomIn-hotkey" class="font-bold">ALT+I</span> / Out <span id="zoomOut-hotkey" class="font-bold">ALT+O</span></p>
+        </div>
+
+
+        <div style="display:inline-block; width: 16vw; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.6rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">🎙️ LIVE STATUS:</p>
+          <p style="display: inline; float: right;" class="font-normal">🟢</p>
         </div>
       </div>
 

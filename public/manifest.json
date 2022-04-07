@@ -3,15 +3,16 @@
   "manifest_version": 1,
   "type": "WebApp",
   "meta": {
-    "name": "Sample App",
-    "author": "Overwolf",
-    "version": "2.0.3",
-    "minimum-overwolf-version": "0.170.0",
-    "description": "An example app for developers new to Overwolf",
-    "icon": "icons/IconMouseOver.png",
-    "icon_gray": "icons/IconMouseNormal.png",
-    "launcher_icon": "icons/desktop-icon.ico",
-    "window_icon": "icons/IconMouseOver.png"
+    "name": "New World Buddy",
+    "author": "Dave Inchy",
+    "version": "22.04.04",
+    "minimum-overwolf-version": "0.180.0",
+    "description": "A TOS Compliant overwolf overlay for New World",
+    "dock_button_title": "New World Buddy",
+    "icon": "icons/Icon.png",
+    "icon_gray": "icons/IconNormal.png",
+    "launcher_icon": "icons/Icon.png",
+    "window_icon": "icons/Icon.png"
   },
   "permissions": [
     "Hotkeys",
@@ -38,27 +39,37 @@
       "minimap": {
         "title": "Show/Hide Minimap",
         "action-type": "toggle",
-        "default": "Ctrl+M"
+        "default": "Alt+M"
       },
       "create": {
-        "title": "Show/Hide Pin Factory",
+        "title": "Create new Pin",
         "action-type": "toggle",
-        "default": "Ctrl+P"
+        "default": "Alt+P"
       },
       "settings": {
-        "title": "Show/Hide Settings",
+        "title": "Show Settings",
         "action-type": "custom",
-        "default": "RightAlt+S"
+        "default": "Alt+S"
       },
       "pins": {
-        "title": "Show/Hide Pin Editor",
+        "title": "Show Editor",
         "action-type": "custom",
-        "default": "RightAlt+E"
+        "default": "Alt+E"
       },
       "credits": {
-        "title": "Show/Hide Credits",
+        "title": "Show Credits",
         "action-type": "custom",
-        "default": "RightAlt+C"
+        "default": "Alt+C"
+      },
+      "zoomIn": {
+        "title": "Zoom in",
+        "action-type": "custom",
+        "default": "Alt+I"
+      },
+      "zoomOut": {
+        "title": "Zoom out",
+        "action-type": "custom",
+        "default": "Alt+O"
       }
     },
     "protocol_override_domains": {

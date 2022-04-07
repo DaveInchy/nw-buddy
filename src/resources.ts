@@ -29,6 +29,52 @@ const Resources: Array<{
     ],
   },
   {
+    name: "mote",
+    icon: `🉑`,
+    size: { width: 16, height: 16 },
+    types: [
+      {
+        name: "air",
+        icon: `💨`,
+        includes: ["air", "wind", "windy", "fart", "breath", "breathe", "breathing"],
+      },
+      {
+        name: "earth",
+        icon: `🏔️`,
+        includes: ["earth", "earthy", "rock", "rocky"],
+      },
+      {
+        name: "fire",
+        icon: `🔥`,
+        includes: ["fire", "flame", "burning", "burn", "hot", "heat", "heating"],
+      },
+      {
+        name: "water",
+        icon: `💦`,
+        includes: ["wet", "watery", "ocean", "oceans", "sea", "seas"],
+      },
+      {
+        name: "death",
+        icon: `💀`,
+        includes: ["death", "deathly", "dead", "dying", "doom", "doomed"],
+      },
+      {
+        name: "life",
+        icon: `🧠`,
+        includes: ["life", "lively", "living"],
+      },
+      {
+        name: "soul",
+        icon: `👻`,
+        includes: ["soul", "spirit", "spiritual"],
+      },
+      {
+        name: "essence",
+        includes: ["mote", "motes", "essence", "essences"],
+      },
+    ],
+  },
+  {
     name: "loot",
     icon: `💰`,
     size: { width: 8, height: 8 },
@@ -39,7 +85,6 @@ const Resources: Array<{
       },
       {
         name: "chest",
-        icon: `📦`,
         includes: [
           "chest",
           "chests",
@@ -96,8 +141,8 @@ const Resources: Array<{
           "reekw",
           "kwater",
           "ebonscale",
-          "first",
-          "light",
+          "firstl",
+          "tlight",
           "monarch",
           "bluffs",
           "cutlass",
@@ -117,7 +162,7 @@ const Resources: Array<{
   {
     name: "housing",
     icon: `🏡`,
-    size: { width: 24, height: 24 },
+    size: { width: 32, height: 32 },
     types: [
       {
         name: "homes",
@@ -138,7 +183,7 @@ const Resources: Array<{
   {
     name: "poi",
     icon: `💡`,
-    size: { width: 32, height: 32 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "events",
@@ -191,7 +236,7 @@ const Resources: Array<{
   {
     name: "magical",
     icon: `✨`,
-    size: { width: 24, height: 24 },
+    size: { width: 16, height: 16 },
     types: [
       {
         name: "azoth",
@@ -218,7 +263,7 @@ const Resources: Array<{
   },
   {
     name: "woods",
-    icon: `🪵`,
+    icon: `🌲`,
     size: { width: 16, height: 16 },
     types: [
       {
@@ -233,6 +278,7 @@ const Resources: Array<{
       },
       {
         name: "wood",
+        icon: `🪵`,
         includes: ["wood", "woods", "tree", "dead", "mature", "greenwood"],
       },
     ],
@@ -249,12 +295,12 @@ const Resources: Array<{
       },
       {
         name: "starmetal",
-        icon: `💠`,
+        icon: `⭐`,
         includes: ["star", "starmetal", "starumite"],
       },
       {
         name: "orichalcum",
-        icon: `🎀`,
+        icon: `🩸`,
         includes: [
           "ori",
           "orri",
@@ -271,7 +317,7 @@ const Resources: Array<{
       },
       {
         name: "gold",
-        icon: `📀`,
+        icon: `🪙`,
         includes: ["gold", "golden"],
       },
       {
@@ -284,34 +330,21 @@ const Resources: Array<{
   {
     name: "fiber",
     icon: `🌾`,
-    size: { width: 24, height: 24 },
+    size: { width: 16, height: 16 },
     types: [
       {
+        name: "hemp",
+        includes: ["hemp", "fiber", "thread"],
+      },
+      {
         name: "silkweed",
-        icon: `🧶`,
-        includes: ["silk", "silkweed", "silkweeds"],
+        icon: `🧵`,
+        includes: ["silk", "silkweed", "silkweeds", "hemp_t4"],
       },
       {
         name: "wirefiber",
-        icon: `🍁`,
-        includes: ["wire", "wirefiber", "wireweed", "wireweeds"],
-      },
-      {
-        name: "hemp",
-        icon: `🌾`,
-        includes: ["weed", "hemp", "fiber", "thread"],
-      },
-      {
-        name: "fiber",
-        includes: [
-          "fiber",
-          "fibers",
-          "thread",
-          "threads",
-          "hemp",
-          "silk",
-          "weed",
-        ],
+        icon: `🎀`,
+        includes: ["wire", "wirefiber", "wireweed", "wireweeds", "hemp_t5"],
       },
     ],
   },
@@ -322,7 +355,7 @@ const Resources: Array<{
     types: [
       {
         name: "lodestone",
-        icon: `🧱`,
+        icon: `💥`,
         includes: ["lode", "lodes"],
       },
       {
@@ -332,7 +365,7 @@ const Resources: Array<{
       },
       {
         name: "saltpeter",
-        icon: `⛏️`,
+        icon: `💩`,
         includes: ["salt", "peter"],
       },
       {
@@ -349,7 +382,7 @@ const Resources: Array<{
     types: [
       {
         name: "dyes",
-        icon: `🌹`,
+        icon: `🌼`,
         includes: ["dye", "flowers", "flower", "pigment"],
       },
       {
@@ -374,7 +407,6 @@ const Resources: Array<{
       },
       {
         name: "barley",
-        icon: `🥬`,
         includes: ["barley", "grain", "wheat"],
       },
       {
