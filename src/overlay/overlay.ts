@@ -31,7 +31,6 @@ import "../assets/tailwind.css";
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
 import owUtils = overwolf.utils;
-import DocumentStateController from "../document";
 
 class Overlay extends WindowManager {
   private static _instance: Overlay;
@@ -69,10 +68,6 @@ class Overlay extends WindowManager {
     logMessage("startup", "constructing overlay window instance");
 
     this.setHotkeyBehavior();
-
-    this.setToggleHotkeyText();
-    this.setCreatePinHotkeyText();
-    this.setZoomHotkeysText();
   }
 
   public static instance() {
@@ -108,6 +103,10 @@ class Overlay extends WindowManager {
       try {
 
         await this.listenForEvents();
+
+        this.setToggleHotkeyText();
+        this.setCreatePinHotkeyText();
+        this.setZoomHotkeysText();
 
         this._gameEventData = await this.getEventData();
         this._gameProcData = await this.getProcData();
@@ -160,12 +159,16 @@ class Overlay extends WindowManager {
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
-      updateCounter % ticksPerSecond || updateCounter === 0
+      let data1 = updateCounter % ticksPerSecond || updateCounter === 0
         ? DataClient.addPlayer(this._player)
         : null;
-      updateCounter >= 1
+      let data2 = updateCounter >= 1
         ? DataClient.updatePlayer(this._player)
         : null;
+
+      let data3 = data1 !== null && data2 !== null ? DataClient.getPlayers() : null;
+
+      logMessage("fetch", " 1: " + JSON.stringify(data1, getCircularReplacer()) + "\n2: " + JSON.stringify(data2, getCircularReplacer()) + "\n3: " + JSON.stringify(data3, getCircularReplacer()));
 
       this.drawCoords();
       this.drawTime();
@@ -177,8 +180,6 @@ class Overlay extends WindowManager {
             ? this.currWindow.maximize() && true
             : this.currWindow.minimize() && false)
           : this.currWindow.maximize() && false;
-
-      this.currWindow.restore();
 
       this._Minimap.renderCanvas(this._player);
 
@@ -363,8 +364,8 @@ class Overlay extends WindowManager {
     );
     const hotkeyElemZoomIn = document.getElementById("zoomIn-hotkey");
     const hotkeyElemZoomOut = document.getElementById("zoomOut-hotkey");
-    hotkeyElemZoomIn.textContent = hotkeyZoomIn;
-    hotkeyElemZoomOut.textContent = hotkeyZoomOut;
+    hotkeyElemZoomIn.innerHTML = hotkeyZoomIn;
+    hotkeyElemZoomOut.innerHTML = hotkeyZoomOut;
   }
 
   private async setToggleHotkeyText() {
@@ -374,7 +375,7 @@ class Overlay extends WindowManager {
       gameClassId
     );
     const hotkeyElem = document.getElementById("minimap-hotkey");
-    hotkeyElem.textContent = hotkeyText;
+    hotkeyElem.innerHTML = hotkeyText;
   }
 
   private async setCreatePinHotkeyText() {
@@ -384,7 +385,7 @@ class Overlay extends WindowManager {
       gameClassId
     );
     const hotkeyElem = document.getElementById("create-hotkey");
-    hotkeyElem.textContent = hotkeyText;
+    hotkeyElem.innerHTML = hotkeyText;
   }
 
   private async setHotkeyBehavior() {

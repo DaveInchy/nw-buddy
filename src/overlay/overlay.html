@@ -1,24 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
 
-  <meta name="msapplication-TileColor" content="rgb(192,161,0)">
-  <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
-  <meta name="theme-color" content="rgb(192,161,0)">
-  <link rel="manifest" href="/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#333">
+  <meta name="msapplication-TileImage" content="/icons/Icon.png">
+  <meta name="theme-color" content="#333">
   <meta charset="UTF-8" />
 
   <title>New World Buddy</title>
@@ -26,6 +12,45 @@
 <body style="border: 0px solid cyan">
 
   <main style="border: 0px solid yellow;">
+
+    <div id="minimap" style="display: none;">
+
+      <div id="minimap-title" style="position: absolute; bottom: calc(250px + 40px + 50px + 16vw); right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
+        <h1 style="font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;"><span id="title"></span></h1>
+      </div>
+
+      <div id="minimap-context" class="rounded-lg" style="background-image: url(./img/bg-dialog.png); background-size: 120% 120%; background-position: center; background-repeat: repeat-x; width: 16vw; height: 16vw; border: 8px solid #333; position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
+
+        <canvas width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-300" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap-transparent.webp'); background-size: cover; opacity: 100%; z-index: 0;">
+        </canvas>
+
+        <img src="../../img/map/compass-needle-yellow.svg" id="compassNeedle" class="transform-none" style="max-width: 200px; max-height: 250px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -100px; margin-top: -100px;" />
+
+      </div>
+
+      <div id="minimap-info" style="background-color: rgba(30, 34, 34, 0.5); background-size:  120% 120%; background-position: center; position: absolute; bottom: calc(180px); right: 50px; width: 16vw; height: auto; z-index: 10; border: 8px solid #333;" class="p-2 clip rounded-lg">
+        <div style="display:inline-block; width: 100%; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;">
+            ⏳ <span id="minimap-current-time" class="font-bold"></span> <span class="font-normal">CET</span>
+          </p>
+          <p style="display: inline; float: right;">
+            <span id="minimap-position" class="font-bold"></span> 🧭
+          </p>
+        </div>
+
+        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">🔎 IN <span class="w-6 inline-block"></span><span id="zoomIn-hotkey" class="font-bold">AL</span></p>
+          <p style="display: inline; float: right;" class="font-normal">Zoom <span id="zoom-value" class="font-bold">1.0</span> x⚙️</p>
+        </div>
+
+
+        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">🔍 OUT  <span class="w-2 inline-block"></span><span id="zoomOut-hotkey" class="font-bold">AL</span> </p>
+          <p style="display: inline; float: right;" class="font-normal"></p>
+        </div>
+      </div>
+
+    </div>
 
     <div id="pin-editor" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display:none;" class="w-1/3 h-full p-16">
       <div class="flex justify-center items-start w-full h-full">
@@ -44,19 +69,19 @@
             <tbody class="w-full">
               <span class="spin"></span>
               <tr class="w-full pin_row" id="pin_example">
-                <td class="pin_column">
+                <td class="pin_column w-1/12">
                   <span class="text-4xl">🌾</span>
                 </td>
-                <td class="pin_column">
+                <td class="pin_column w-6/12">
                   <span class="text-white lowercase text-xl first-letter:uppercase">hemp</span>
                 </td>
-                <td class="pin_column">
+                <td class="pin_column w-3/12">
                   <span class="text-white lowercase text-xl first-letter:uppercase">fiber</span>
                 </td>
-                <td class="pin_column">
+                <td class="pin_column w-1/12">
                   <button class="text-white hover:text-yellow p-2 w-full">Remove</button>
                 </td>
-                <td class="pin_column">
+                <td class="pin_column w-1/12">
                   <button class="text-white hover:text-yellow p-2 w-full">Change</button>
                 </td>
               </tr>
@@ -66,7 +91,7 @@
       </div>
     </div>
 
-    <div id="create-pin" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="mx-auto mt-52 w-4/12 h-80 py-6">
+    <div id="create-pin" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="mx-auto mt-1/4 w-3/4 h-1/2 py-6">
       <div class="flex w-full h-full justify-center items-center">
 
         <div class="w-full">
@@ -81,45 +106,6 @@
         </div>
 
       </div>
-    </div>
-
-    <div id="minimap" style="display: none;">
-
-      <div id="minimap-title" style="position: absolute; bottom: calc(250px + 40px + 50px + 16vw); right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
-        <h1 style="font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;"><span id="title"></span></h1>
-      </div>
-
-      <div id="minimap-context" class="rounded-lg" style="background-image: url(./img/bg-dialog.png); background-size: 120% 120%; background-position: center; background-repeat: repeat-x; width: 16vw; height: 16vw; border: 8px solid #333; position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
-
-        <canvas width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-600" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap-transparent.webp'); background-size: cover; opacity: 100%; z-index: 0;">
-        </canvas>
-
-        <img src="../../img/map/compass-needle-yellow.svg" id="compassNeedle" class="transform-none" style="max-width: 200px; max-height: 250px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -100px; margin-top: -100px;" />
-
-      </div>
-
-      <div id="minimap-info" style="background-color: rgba(30, 34, 34, 0.5); background-size:  120% 120%; background-position: center; position: absolute; bottom: calc(180px); right: 50px; width: 16vw; height: auto; z-index: 10; border: 8px solid #333;" class="p-2 clip rounded-lg">
-        <div style="display:inline-block; width: 100%; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;">
-            ⏳ <span id="minimap-current-time" class="font-extrabold"></span> <span class="font-extralight">CET</span>
-          </p>
-          <p style="display: inline; float: right;">
-            <span id="minimap-position" class="font-extralight"></span> 🧭
-          </p>
-        </div>
-
-        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;" class="font-extralight">🖱️ Zoom In <span id="zoomIn-hotkey" class="font-extrabold">AL</span></p>
-          <p style="display: inline; float: right;" class="font-extralight"><span id="zoom-value" class="font-extrabold">1.0</span> 🔎</p>
-        </div>
-
-
-        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;" class="font-extralight">🖱️ Zoom Out <span id="zoomOut-hotkey" class="font-extrabold">AL</span></p>
-          <p style="display: inline; float: right;" class="font-extralight"></p>
-        </div>
-      </div>
-
     </div>
 
   </main>

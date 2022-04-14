@@ -24,6 +24,8 @@ export default class Pin {
     public readonly owner: string = undefined,
     public readonly token: string = Math.random() * 10 + "",
     public readonly color: string = "rgb(192, 161, 0, 1)",
+
+    public readonly link: Pin = undefined,
   ) {
     let props = this.sortProperties(this.name);
     this.icon = props[0];

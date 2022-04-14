@@ -28,7 +28,7 @@ class DataClient
 
     public addPlayer = async (player: any): Promise<any> =>
     {
-        var http: Response = await fetch(`${this.host}/api/player/add`
+        var http = await fetch(`${this.host}/api/player/add`
             + `?user=${encodeURIComponent(player.user)}`
             + `&x=${player.x}`
             + `&y=${player.y}`
@@ -36,14 +36,16 @@ class DataClient
             + `&direction=${encodeURIComponent(player.direction)}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         });
-        return http.json();
+        let data = await http.json();
+        return data;
     }
 
-    public updatePlayer = async (player: any): Promise<Response> => {
-        var http: Response = await fetch(`${this.host}/api/player/update`
+    public updatePlayer = async (player: any): Promise<any> => {
+        var http = await fetch(`${this.host}/api/player/update`
             + `?user=${encodeURIComponent(player.user)}`
             + `&x=${player.x}`
             + `&y=${player.y}`
@@ -51,20 +53,24 @@ class DataClient
             + `&direction=${encodeURIComponent(player.direction)}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         });
-        return http;
+        let data = await http.json();
+        return data;
     };
 
-    public getPlayers = async () => {
-        var http: Response = await fetch(`${this.host}/api/player/list`, {
+    public getPlayers = async (): Promise<any> => {
+        var http = await fetch(`${this.host}/api/player/list`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         });
-        return http.json();
+        let data = await http.json();
+        return data;
     }
 
 }

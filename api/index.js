@@ -27,11 +27,9 @@ class DataServer {
         this.app = express();
         this.port = 8080 || 3000;
 
-        this.app.listen(this.port);
-
         console.log(`Server started on ${this.getUrl()}`);
 
-        this.app.get('/api/player/add', function (request, response) {
+        this.app.use('/api/player/add', function (request, response) {
 
             const hasQuery = Object.keys(request.query).length > 0;
             const hasHeaders = Object.keys(request.headers).length > 0;
@@ -65,9 +63,10 @@ class DataServer {
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.player, getCircularReplacer()));
             response.end();
+            request.end();
         });
 
-        this.app.get('/api/player/update', function (request, response) {
+        this.app.use('/api/player/update', function (request, response) {
 
             const hasQuery = Object.keys(request.query).length > 0;
             const hasHeaders = Object.keys(request.headers).length > 0;
@@ -99,9 +98,10 @@ class DataServer {
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.players, getCircularReplacer()));
             response.end();
+            request.end();
         });
 
-        this.app.get('/api/player/list', function (request, response) {
+        this.app.use('/api/player/list', function (request, response) {
 
             const hasQuery = Object.keys(request.query).length > 0;
             const hasHeaders = Object.keys(request.headers).length > 0;
@@ -119,7 +119,10 @@ class DataServer {
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.players, getCircularReplacer()));
             response.end();
+            request.end();
         });
+
+        this.app.listen(this.port);
 
         return this.app;
     }

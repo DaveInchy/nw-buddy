@@ -3,15 +3,18 @@ body {
   flex: 1;
   position: relative;
   font-size: 14px;
-  padding: 50px;
-  min-height: 100vh;
-  min-width: 100vw;
+  width: 100vw;
+  height: 100vh;
+  padding-bottom: 50px;
+  padding-top: 50px;
 }
 
 main {
   display: flex;
   flex: 1;
   position: relative;
+  overflow: hidden;
+  width: 100%;
   padding: 50px;
 }
 

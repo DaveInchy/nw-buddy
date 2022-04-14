@@ -5,7 +5,7 @@
   "main": "api/index.js",
   "private": true,
   "scripts": {
-    "start": "npm run server:debug; npm run watch",
+    "start": "npm run server:debug & npm run watch",
     "make": "webpack --mode=production --env makeOpk",
     "build": "webpack --mode=development",
     "watch": "webpack --watch --mode=development",
@@ -18,7 +18,7 @@
     "world",
     "overlay"
   ],
-  "author": "Dave Inchy",
+  "author": "DaveInchy",
   "publisher": "Overwolf",
   "website": "http://github.com/dadavinci/nw-buddy",
   "license": "CUSTOM",
