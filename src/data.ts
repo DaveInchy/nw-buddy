@@ -67,7 +67,9 @@ class DataClient
             body: JSON.stringify({}),
             headers: {
                 'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*'
             }
         });
         let data = await req.json()

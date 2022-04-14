@@ -117,6 +117,7 @@ class DataServer {
             response.setHeader('Accept', 'application/json');
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.setHeader('Access-Control-Allow-Header', '*');
+            response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.players, getCircularReplacer()));
             response.end();
             request.end();
