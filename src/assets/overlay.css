@@ -2,9 +2,10 @@ body {
   display: flex;
   flex: 1;
   position: relative;
-  padding: 50px;
   font-size: 14px;
+  padding: 50px;
   min-height: 100vh;
+  min-width: 100vw;
 }
 
 main {

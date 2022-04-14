@@ -4,7 +4,12 @@ export const logMessage = async (type, message) => {
         + '?time=' + encodeURIComponent(`${Date.now()}`)
         + '&subject=' + encodeURIComponent(`${type}`)
         + '&message=' + encodeURIComponent(`${message}`)
-        + '&type=' + encodeURIComponent(`${type}`));
+        + '&type=' + encodeURIComponent(`${type}`), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     return http;
 };
 

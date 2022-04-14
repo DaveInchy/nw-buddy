@@ -50,7 +50,7 @@ const Resources: Array<{
       },
       {
         name: "water",
-        icon: `💦`,
+        icon: `🌊`,
         includes: ["wet", "watery", "ocean", "oceans", "sea", "seas"],
       },
       {
@@ -98,7 +98,7 @@ const Resources: Array<{
   {
     name: "regions",
     icon: `🗺️`,
-    size: { width: 64, height: 64 },
+    size: { width: 48, height: 48 },
     types: [
       {
         name: "outposts",
@@ -182,12 +182,12 @@ const Resources: Array<{
   },
   {
     name: "poi",
-    icon: `💡`,
+    icon: `🎭`,
     size: { width: 24, height: 24 },
     types: [
       {
         name: "events",
-        icon: `🎭`,
+        icon: `🎉`,
         includes: [
           "event",
           "festival",
@@ -199,7 +199,7 @@ const Resources: Array<{
       },
       {
         name: "teleport",
-        icon: `🧿`,
+        icon: `🗿`,
         includes: ["portal", "shrine", "temple", "sanctum", "altar"],
       },
       {
@@ -216,10 +216,12 @@ const Resources: Array<{
     types: [
       {
         name: "corruption",
+        icon: `😈`,
         includes: ["corrupted", "cursed", "doomed", "diseased"],
       },
       {
         name: "angry_earth",
+        icon: `🤢`,
         includes: ["mutated", "mutation", "angry", "earth", "poison"],
       },
       {
@@ -229,17 +231,19 @@ const Resources: Array<{
       },
       {
         name: "ancient",
+        icon: `☠️`,
         includes: ["ancient", "mutation", "soul", "spirit", "ghost"],
       },
     ],
   },
   {
     name: "magical",
-    icon: `✨`,
+    icon: `🪄`,
     size: { width: 16, height: 16 },
     types: [
       {
         name: "azoth",
+        icon: `🌀`,
         includes: ["azoth"],
       },
       {
@@ -295,12 +299,12 @@ const Resources: Array<{
       },
       {
         name: "starmetal",
-        icon: `⭐`,
+        icon: `✨`,
         includes: ["star", "starmetal", "starumite"],
       },
       {
         name: "orichalcum",
-        icon: `🩸`,
+        icon: `💥`,
         includes: [
           "ori",
           "orri",
@@ -338,12 +342,12 @@ const Resources: Array<{
       },
       {
         name: "silkweed",
-        icon: `🧵`,
+        icon: `🧶`,
         includes: ["silk", "silkweed", "silkweeds", "hemp_t4"],
       },
       {
         name: "wirefiber",
-        icon: `🎀`,
+        icon: `🍁`,
         includes: ["wire", "wirefiber", "wireweed", "wireweeds", "hemp_t5"],
       },
     ],
@@ -355,7 +359,7 @@ const Resources: Array<{
     types: [
       {
         name: "lodestone",
-        icon: `💥`,
+        icon: `🧱`,
         includes: ["lode", "lodes"],
       },
       {
@@ -371,7 +375,7 @@ const Resources: Array<{
       {
         name: "seeping_stone",
         icon: `🕳️`,
-        includes: ["seeping", "stone"],
+        includes: ["seeping"],
       },
     ],
   },

@@ -33,7 +33,12 @@ class DataClient
             + `&x=${player.x}`
             + `&y=${player.y}`
             + `&z=${player.z}`
-            + `&direction=${encodeURIComponent(player.direction)}`);
+            + `&direction=${encodeURIComponent(player.direction)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return http.json();
     }
 
@@ -43,12 +48,22 @@ class DataClient
             + `&x=${player.x}`
             + `&y=${player.y}`
             + `&z=${player.z}`
-            + `&direction=${encodeURIComponent(player.direction)}`);
+            + `&direction=${encodeURIComponent(player.direction)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return http;
     };
 
     public getPlayers = async () => {
-        var http: Response = await fetch(`${this.host}/api/player/list`);
+        var http: Response = await fetch(`${this.host}/api/player/list`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return http.json();
     }
 

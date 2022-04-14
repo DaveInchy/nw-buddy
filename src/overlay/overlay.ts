@@ -6,9 +6,7 @@ import {
   OWWindow
 } from "@overwolf/overwolf-api-ts";
 
-import "../assets/tailwind.css";
-import "../assets/overlay.css";
-
+// Typescript imports
 import { logMessage, logError } from "../debug";
 import { Window as WindowManager } from "../window";
 import {
@@ -20,15 +18,20 @@ import {
   getCircularReplacer
 } from "../global";
 
+// Typescript Class imports
 import Resources from "../resources";
 import DataClient from "../data";
 import Minimap from "../minimap";
 import Pin from "../pin";
 import StorageInterface from "../storage";
 
+// CSS imports
+import "../assets/tailwind.css";
+
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
 import owUtils = overwolf.utils;
+import DocumentStateController from "../document";
 
 class Overlay extends WindowManager {
   private static _instance: Overlay;
@@ -132,6 +135,7 @@ class Overlay extends WindowManager {
     }
 
     logMessage("startup", "starting runtime service ...");
+    // var domState = new DocumentStateController();
 
     var updateCounter = 0;
     while (!loading) {
@@ -165,7 +169,7 @@ class Overlay extends WindowManager {
 
       this.drawCoords();
       this.drawTime();
-      this.drawTitle(this._playerCharacter);
+      // this.drawTitle(this._playerCharacter);
 
       this._overlayShown =
         this._gameProcData.overlayInfo.isCursorVisible === true
@@ -174,9 +178,11 @@ class Overlay extends WindowManager {
             : this.currWindow.minimize() && false)
           : this.currWindow.maximize() && false;
 
-      updateCounter <= 1 ? this.showMinimap() : null;
+      this.currWindow.restore();
 
       this._Minimap.renderCanvas(this._player);
+
+      updateCounter <= 1 ? this.showMinimap() : null;
 
       await this.wait(1000 / ticksPerSecond);
       updateCounter++;
@@ -185,23 +191,23 @@ class Overlay extends WindowManager {
 
   public async releaseMouse() {
     await this.wait(300);
-    logMessage("game", "artificial keystroke: Enter");
-    return overwolf.utils.sendKeyStroke("Enter");
+    logMessage("game", "artificial keystroke: Tab");
+    return overwolf.utils.sendKeyStroke("Tab");
   }
 
-  public showEditor() {
+  public async showEditor() {
     const elem: HTMLElement = document.querySelector("div#pin-editor");
     elem.style.display = "block";
     this._editorShown = true;
     this.hideMinimap();
-    this.releaseMouse();
+    await this.releaseMouse();
   }
 
-  public hideEditor() {
+  public async hideEditor() {
     const elem: HTMLElement = document.querySelector("#pin-editor");
     elem.style.display = "none";
     this._editorShown = false;
-    this.releaseMouse();
+    await this.releaseMouse();
   }
 
   public showMinimap() {
@@ -226,7 +232,7 @@ class Overlay extends WindowManager {
     this._createPinShown = true;
     this._overlayShown = true;
 
-    elemButton.onclick = (event) => {
+    elemButton.onclick = async (event) => {
       event.preventDefault();
 
       var pin: Pin = new Pin(
@@ -244,12 +250,12 @@ class Overlay extends WindowManager {
       this._Minimap.refreshRender();
 
       elemInput.value = "";
-      this.hideCreatePin();
+      await this.hideCreatePin();
     };
 
   }
 
-  public hideCreatePin() {
+  public async hideCreatePin() {
     const elem = document.getElementById("create-pin");
     elem.style.display = "none";
 
@@ -257,6 +263,7 @@ class Overlay extends WindowManager {
     const elemInput: HTMLInputElement = elem.querySelector("#pinTag");
 
     this._createPinShown = false;
+    await this.releaseMouse();
   }
 
   public async drawTitle(title: string) {
@@ -309,7 +316,7 @@ class Overlay extends WindowManager {
     elem.innerHTML = strTime;
   }
 
-  public drawCoords() {
+  public async drawCoords() {
     var coords = this._playerPosData;
     var x = coords[1];
     var y = coords[3];
@@ -396,34 +403,43 @@ class Overlay extends WindowManager {
       logMessage("event", `pressed hotkey for ${Hotkeys.zoomIn.toString()}`);
       this._Minimap.__.zoom = this._Minimap.__.zoom + 0.25
       this._Minimap.setZoom(this._Minimap.__.zoom);
+
+      const elem = document.getElementById("zoom-value");
+      elem.innerHTML = this._Minimap.__.zoom.toString();
+
       return;
     });
+
     OWHotkeys.onHotkeyDown(Hotkeys.zoomOut, async (): Promise<void> => {
       logMessage("event", `pressed hotkey for ${Hotkeys.zoomOut.toString()}`);
       this._Minimap.__.zoom = this._Minimap.__.zoom - 0.25
       this._Minimap.setZoom(this._Minimap.__.zoom);
+
+      const elem = document.getElementById("zoom-value");
+      elem.innerHTML = this._Minimap.__.zoom.toString();
+
       return;
     });
 
-    // OWHotkeys.onHotkeyDown(Hotkeys.pins, async (): Promise<void> => {
-    //   logMessage("event", `pressed hotkey for ${Hotkeys.pins.toString()}`);
-    //   if (this._editorShown) {
-    //     this.hideEditor();
-    //   } else {
-    //     this.showEditor();
-    //   }
-    //   return;
-    // });
-
-    OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
-      if (this._createPinShown) {
-        this.hideCreatePin();
+    OWHotkeys.onHotkeyDown(Hotkeys.pins, async (): Promise<void> => {
+      logMessage("event", `pressed hotkey for ${Hotkeys.pins.toString()}`);
+      if (this._editorShown) {
+        this.hideEditor();
       } else {
-        this.showCreatePin();
+        this.showEditor();
       }
       return;
     });
+
+    // OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
+    //   logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
+    //   if (this._createPinShown) {
+    //     this.hideCreatePin();
+    //   } else {
+    //     this.showCreatePin();
+    //   }
+    //   return;
+    // });
   }
 
   public async wait(intervalInMilliseconds: any) {

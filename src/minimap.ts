@@ -4,6 +4,7 @@ import StorageInterface from './storage';
 import { logError, logMessage } from './debug';
 import { getCircularReplacer } from './global';
 import CacheInterface from './cache';
+
 /*
  * ClassName:       Minimap
  * Description:     A two dimensional Minimap Canvas object
@@ -82,8 +83,6 @@ export default class Minimap {
       _.canvasHeight * _.zoom / _.mapHeight
     );
 
-    _.directionAngle = 0;
-
     return;
   }
 
@@ -105,7 +104,9 @@ export default class Minimap {
     this.__.canvas.style.marginTop = playerCanvasCoords.y + "px";
 
     // draw and animation of the player pointer
-    this.rotateNeedle(this.getDirectionAngle(player.direction));
+    var a = this.getRotation(player.direction);
+    this.rotateNeedle(this.getDirectionAngle(player));
+    this.__.directionAngle = a;
 
     this.renderLayers(player);
 
@@ -158,32 +159,32 @@ export default class Minimap {
   private rotateNeedle(angle: number) {
     var needle: HTMLElement = document.getElementById("compassNeedle");
     needle.style.transform = 'rotate(' + angle + 'deg)'
+    needle.style.animationDuration = '1ms'
     return;
   }
 
   private getRotation = (playerDirection: string = "N"): number => {
     let sequence = [
-      "N",
-      "NE",
-      "E",
-      "SE",
-      "S",
-      "SW",
-      "W",
-      "NW",
+      "N", // 0
+      "NE", // 45
+      "E", // 90
+      "SE", // 135
+      "S", // 180
+      "SW", // 225
+      "W", // 270
+      "NW", // 315
     ];
 
     return sequence.indexOf(playerDirection) * 45;
   }
 
   //@TODO fix this to actually work
-  private getDirectionAngle(playerDirection: string) {
-    let angle = this.__.directionAngle ? this.__.directionAngle : 0;
-    let diff = angle - this.getRotation(playerDirection);
-    if(angle >= 360) angle += diff;
-    if(angle < 360) angle -= diff;
-    this.__.directionAngle = angle;
-    return angle;
+  private getDirectionAngle(player: any) {
+    var prev = this.__.directionAngle;
+    var curr = this.getRotation(player.direction)
+    var diff = prev-curr;
+
+    return curr;
   }
 
   async cacheData() {
@@ -459,7 +460,7 @@ export default class Minimap {
       var pinY = -((this.__.mapTop - this.__.mapBottom - (pin.y - this.__.mapBottom)) * this.__.mapToCanvasRatio.y);
 
       // draw a little circle dot on the location
-      this.__.canvasContext.fillStyle = "rgba(0,0,0,0.4)";
+      this.__.canvasContext.fillStyle = "rgba(0,0,0,0.5)";
       this.__.canvasContext.fillRect(pinX - 1, pinY - 1, 3, 3);
 
       //draw text on top of the pin with the tag as title
@@ -485,8 +486,10 @@ export default class Minimap {
     this.__.canvasContext.font = "24px 'New World'";
     this.__.canvasContext.lineWidth = 1;
 
-    var rgba_dark = "rgba(0,0,0,0.5)";
-    var rgba_red = "rgba(255,0,0,0.5)";
+    var rgba_dark = "rgba(0,0,0,0.1)";
+    var rgba_red = "rgba(255,0,0,0.1)";
+    var rgba_light = "rgba(255,255,255,0.1)";
+    var rgba_yellow = "rgba(192,161,0,0.1)";
 
     for (
       let x = this.__.canvasLeft;
@@ -494,8 +497,8 @@ export default class Minimap {
       x += step(this.__.canvasWidth)
     ) {
       x % (step(this.__.canvasWidth) * 2)
-        ? (this.__.canvasContext.strokeStyle = rgba_dark)
-        : (this.__.canvasContext.strokeStyle = rgba_red);
+        ? (this.__.canvasContext.strokeStyle = rgba_light)
+        : (this.__.canvasContext.strokeStyle = rgba_yellow);
 
       this.__.canvasContext.beginPath();
       this.__.canvasContext.moveTo(x, 0);
@@ -511,8 +514,8 @@ export default class Minimap {
       y += step(this.__.canvasWidth)
     ) {
       y % (step(this.__.canvasWidth) * 2)
-        ? (this.__.canvasContext.strokeStyle = rgba_red)
-        : (this.__.canvasContext.strokeStyle = rgba_dark);
+        ? (this.__.canvasContext.strokeStyle = rgba_yellow)
+        : (this.__.canvasContext.strokeStyle = rgba_light);
 
       this.__.canvasContext.beginPath();
       this.__.canvasContext.moveTo(0, y);

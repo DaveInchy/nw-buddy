@@ -1,14 +1,19 @@
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: ["./src/**/*.{html,js}", "./src/**/*.{css,scss}", "./src/**/*.{png,jpg,jpeg,svg,gif}"],
   theme: {
     colors: {
-      blue: "#1fb6ff",
-      purple: "#7e5bef",
-      pink: "#ff49db",
-      orange: "#ff7849",
-      green: "#13ce66",
-      yellow: "#c5a100",
-      red: "#ff4949",
+      "blue": "#1fb6ff",
+      "purple": "#7e5bef",
+      "pink": "#ff49db",
+      "orange": "#ff7849",
+      "green": "#13ce66",
+      "yellow": "#c5a100",
+      "red": "#ff4949",
+      "gray": "#8492a6",
+      "white": "#ffffff",
+      "black": "#000000",
+      "light": "#eeeeee",
+      "dark": "#333333",
     },
     extend: {
       fontFamily: {
@@ -17,11 +22,6 @@ module.exports = {
       color: {
         "gray-dark": "#273444",
         "gray-light": "#d3dce6",
-        gray: "#8492a6",
-        white: "#ffffff",
-        black: "#000000",
-        light: "#eeeeee",
-        dark: "#333333",
       },
       fontSize: {
         "7xl": "5rem",

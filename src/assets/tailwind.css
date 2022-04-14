@@ -1,29 +1,80 @@
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
 
-@keyframes spinner {
-    0% {
-        transform: translate3d(-50%, -50%, 0) rotate(0deg);
-    }
-    100% {
-        transform: translate3d(-50%, -50%, 0) rotate(360deg);
-    }
+@import "./overlay.css";
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap');
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'New World', sans-serif;
+    font-weight: bolder;
+    font-size: 1.8rem;
+    @apply text-yellow;
 }
 
-.spin::before {
-  animation: 1.5s linear infinite spinner;
-  animation-play-state: inherit;
-  border: solid 5px transparent;
-  border-bottom-color: rgb(192,161,0);
-  border-radius: 50%;
-  content: "";
-  height: 40px;
-  position: relative;
-  top: 10%;
-  left: 10%;
-  transform: translate3d(-50%, -50%, 0);
-  width: 40px;
-  will-change: transform;
+h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
+    font-family: 'New World', sans-serif;
+    font-size: 1.0em;
+    @apply text-black;
+}
+
+* > span {
+    font-family: inherit;
+    font-size: 1.0em;
+    color: #fefefe;
+}
+
+thead > tr > th > span, thead > tr > th, tbody > tr > td > span, tbody > tr > td {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 18px !important;
+    letter-spacing: -1px;
+    color: #fefefe;
+}
+
+p, a, p > span, a > span {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: 18px !important;
+    letter-spacing: -2px;
+    color: rgb(192,161,0);
+}
+
+span#zoomIn-hotkey, span#zoomOut-hotkey {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    border: 2px solid rgb(192,161,0);
+    background-color: #000;
+    @apply text-yellow rounded px-1;
+}
+
+div#minimap-info {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: 16px !important;
+    letter-spacing: -2px;
+    color: rgb(192,161,0);
+}
+
+.pin_row {
+    @apply flex flex-row;
+    @apply justify-between;
+    @apply items-center;
+    @apply px-2;
+    @apply py-1;
+    @apply text-yellow;
+    @apply rounded;
+    @apply cursor-row-resize;
+    @apply hover:bg-yellow;
+}
+
+.pin_column {
+    @apply flex flex-col;
+    @apply justify-between;
+    @apply items-center;
+    @apply px-2;
+    @apply py-1;
+    @apply text-yellow;
+    @apply rounded;
+    @apply cursor-col-resize;
+    @apply hover:bg-yellow;
 }
