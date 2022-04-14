@@ -64,6 +64,7 @@ class DataServer {
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.player, getCircularReplacer()));
+            response.end();
         });
 
         this.app.get('/api/player/update', function (request, response) {
@@ -97,6 +98,7 @@ class DataServer {
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.players, getCircularReplacer()));
+            response.end();
         });
 
         this.app.get('/api/player/list', function (request, response) {
@@ -116,6 +118,7 @@ class DataServer {
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
             response.setHeader('Access-Control-Allow-Origin', '*');
             response.send(JSON.stringify(data.players, getCircularReplacer()));
+            response.end();
         });
 
         return this.app;
