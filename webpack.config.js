@@ -13,10 +13,12 @@ module.exports = env => ({
             path.resolve(__dirname, 'node_modules')
         ],
         fallback: {
-            "url": require.resolve("url"),
-            "fs": require.resolve("fs"),
+            "url": false,
+            "fs": require.resolve("fs-extra"),
             "crypto": require.resolve("crypto-browserify"),
-            "zlib": require.resolve("browserify-zlib"),
+            "zlib": require.resolve("zlibjs"),
+            "http": require.resolve("stream-http"),
+            "fetch": require.resolve("node-fetch"),
         }
     },
     entry: {

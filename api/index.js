@@ -114,9 +114,9 @@ class DataServer {
 
             console.log(`${request.url} => ${data.players}`);
 
-            response.setHeader('Content-Type', 'application/json');
+            response.setHeader('Accept', 'application/json');
             response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-            response.setHeader('Access-Control-Allow-Origin', '*');
+            response.setHeader('Access-Control-Allow-Header', '*');
             response.send(JSON.stringify(data.players, getCircularReplacer()));
             response.end();
             request.end();

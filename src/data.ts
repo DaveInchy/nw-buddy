@@ -61,18 +61,21 @@ class DataClient
         return data;
     };
 
-    public getPlayers = async (): Promise<any> => {
-        var http = await fetch(`${this.host}/api/player/list`, {
-            method: 'GET',
+    public getPlayers = async () => {
+        let req = await fetch(`${this.host}/api/player/list`, {
+            method: 'POST',
+            body: JSON.stringify({}),
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'access-control-allow-headers': '*',
             }
         });
-        let data = await http.json();
+        let data = await req.json()
         return data;
     }
 
 }
 
-export default new DataClient("https://nw-radar-api.vercel.app") as DataClient;
+export default new DataClient("https://nw-radar-api.vercel.app");

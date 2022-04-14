@@ -166,9 +166,14 @@ class Overlay extends WindowManager {
         ? DataClient.updatePlayer(this._player)
         : null;
 
-      let data3 = data1 !== null && data2 !== null ? DataClient.getPlayers() : null;
+      DataClient.getPlayers().then((data) => {
+        this._playerList = data;
+      }).catch((e) => {
+        this._playerList = {};
+        logError(e);
+      });
 
-      logMessage("fetch", " 1: " + JSON.stringify(data1, getCircularReplacer()) + "\n2: " + JSON.stringify(data2, getCircularReplacer()) + "\n3: " + JSON.stringify(data3, getCircularReplacer()));
+      logMessage("fetch", "\n1: " + JSON.stringify(data1, getCircularReplacer()) + "\n2: " + JSON.stringify(data2, getCircularReplacer()) + "\n3: " + JSON.stringify(this._playerList, getCircularReplacer()));
 
       this.drawCoords();
       this.drawTime();
