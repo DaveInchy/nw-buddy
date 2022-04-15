@@ -5,7 +5,7 @@ class DataClient
 
     public host: string;
 
-    private player: any;
+    private player: any = {};
     private playerList: [];
 
     constructor(host: string = undefined)
@@ -14,64 +14,64 @@ class DataClient
         return;
     }
 
-    public setPlayer = (player: any): any =>
-    {
-        this.player = {
-            "user": player.user,
-            "x": player.x,
-            "y": player.y,
-            "z": player.z,
-            "direction": player.direction
-        };
-        return this.player.length > 0 ? true : false;
+    public addPlayer = (player: any) => {
+        this.player = player;
+        fetch(`${this.host}/api/player/add`
+            + `?user=${encodeURIComponent(this.player.user)}`
+            + `&x=${this.player.x}`
+            + `&y=${this.player.y}`
+            + `&z=${this.player.z}`
+            + `&direction=${encodeURIComponent(this.player.direction)}`, {
+            method: 'POST',
+            body: JSON.stringify(this.player)
+        }).then(res => {
+            res.json().then(data => {
+                this.playerList = data;
+            }).catch(err => {
+                logError("res.json() => " + err);
+            });
+        }).catch(err => {
+            logError("addPlayers() => " + err);
+        });
+        return this.playerList;
     }
 
-    public addPlayer = async (player: any): Promise<any> =>
-    {
-        var http = await fetch(`${this.host}/api/player/add`
-            + `?user=${encodeURIComponent(player.user)}`
-            + `&x=${player.x}`
-            + `&y=${player.y}`
-            + `&z=${player.z}`
-            + `&direction=${encodeURIComponent(player.direction)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
+    public updatePlayer = (player: any) => {
+        this.player = player;
+        fetch(`${this.host}/api/player/update`
+            + `?user=${encodeURIComponent(this.player.user)}`
+            + `&x=${this.player.x}`
+            + `&y=${this.player.y}`
+            + `&z=${this.player.z}`
+            + `&direction=${encodeURIComponent(this.player.direction)}`, {
+            method: 'POST',
+            body: JSON.stringify(this.player),
+        }).then(res => {
+            res.json().then(data => {
+                this.playerList = data;
+            }).catch(err => {
+                logError("res.json() => " + err);
+            });
+        }).catch(err => {
+            logError("updatePlayers() => " + err);
         });
-        let data = await http.json();
-        return data;
-    }
-
-    public updatePlayer = async (player: any): Promise<any> => {
-        var http = await fetch(`${this.host}/api/player/update`
-            + `?user=${encodeURIComponent(player.user)}`
-            + `&x=${player.x}`
-            + `&y=${player.y}`
-            + `&z=${player.z}`
-            + `&direction=${encodeURIComponent(player.direction)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
-        let data = await http.json();
-        return data;
+        return this.playerList;
     };
 
-    public getPlayers = async () => {
-        let req = await fetch(`${this.host}/api/player/list`, {
+    public getPlayers = () => {
+        fetch(`${this.host}/api/player/list`, {
             method: 'POST',
-            body: JSON.stringify({}),
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
+            body: JSON.stringify({})
+        }).then(res => {
+            res.json().then(data => {
+                this.playerList = data;
+            }).catch(err => {
+                logError("res.json() => " + err);
+            });
+        }).catch(err => {
+            logError("getPlayers() => " + err);
         });
-        let data = await req.json()
-        return data;
+        return this.playerList;
     }
 
 }
