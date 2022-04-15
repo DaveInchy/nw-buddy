@@ -161,7 +161,7 @@ class DataServer {
 
         this.players.forEach(function(element, index) {
             if(element.user === player.user) {
-                this.players[index] = player;
+                element = player;
                 console.log("updated player successfully ...");
             }
         });
