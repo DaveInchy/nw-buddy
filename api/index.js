@@ -135,7 +135,6 @@ class DataServer {
         console.log(`${request.url} => ${data.players}`);
 
         response.setHeader('Accept', 'application/json');
-        response.setHeader('Content-Type', 'application/json');
         response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
@@ -176,7 +175,6 @@ class DataServer {
         console.log(`${request.url} => ${data.players}`);
 
         response.setHeader('Accept', 'application/json');
-        response.setHeader('Content-Type', 'application/json');
         response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
@@ -198,7 +196,6 @@ class DataServer {
         console.log(`${request.url} => ${data.players}`);
 
         response.setHeader('Accept', 'application/json');
-        response.setHeader('Content-Type', 'application/json');
         response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
