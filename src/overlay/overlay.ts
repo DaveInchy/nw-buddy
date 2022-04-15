@@ -159,16 +159,11 @@ class Overlay extends WindowManager {
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
-      let data1 = updateCounter % ticksPerSecond || updateCounter === 0
-        ? DataClient.addPlayer(this._player)
-        : null;
-      let data2 = updateCounter >= 1
+      updateCounter >= 1
         ? DataClient.updatePlayer(this._player)
-        : null;
+        : DataClient.addPlayer(this._player);
 
-      this._playerList = DataClient.getPlayers()
-
-      logMessage("fetch", "\n1: " + JSON.stringify(data1, getCircularReplacer()) + "\n2: " + JSON.stringify(data2, getCircularReplacer()) + "\n3: " + JSON.stringify(this._playerList, getCircularReplacer()));
+      this._playerList = DataClient.getPlayers();
 
       this.drawCoords();
       this.drawTime();

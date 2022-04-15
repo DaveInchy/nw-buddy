@@ -76,4 +76,4 @@ class DataClient
 
 }
 
-export default new DataClient("https://nw-radar-api.vercel.app");
+export default new DataClient();
