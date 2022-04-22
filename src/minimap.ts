@@ -50,21 +50,6 @@ export default class Minimap {
   constructor(player: any, canvas: HTMLCanvasElement) {
     var _ = this.__;
 
-    // Add data for pins to the cache
-    //@TODO check for the cache file otherwise dont execute cachedata
-    fetch(DataClient.host + `/api/cheats/cache.json`)
-    .then(res => res.json()
-      .then(data => {
-        _.data = data;
-      })
-      .catch(err => {
-        logError(err);
-      }))
-    .catch(err => {
-        logError(err);
-    });
-    this.cacheData();
-
     _.canvas = canvas;
     _.canvasContext = _.canvas.getContext("2d");
 
@@ -93,6 +78,23 @@ export default class Minimap {
       _.canvasWidth * _.zoom / _.mapWidth,
       _.canvasHeight * _.zoom / _.mapHeight
     );
+
+    // Add data for pins to the cache
+    //@TODO check for the cache file otherwise dont execute cachedata
+    fetch(DataClient.host + `/api/cheats/cache.json`, {
+      method: 'POST',
+      body: ""
+    })
+    .then(res => res.json().then(data => {
+        _.data = data;
+      })
+      .catch(err => {
+        logError(err);
+      }))
+    .catch(err => {
+      logError(err);
+    });
+    this.cacheData();
 
     return;
   }
