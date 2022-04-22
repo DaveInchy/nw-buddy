@@ -1,4 +1,5 @@
 const express = require('express');
+const cache = require("./pins.json");
 
 class Player {
     user = undefined;
@@ -46,7 +47,6 @@ class DataServer {
     }
 
     getPinsJSON = (request, response) => {
-        const cache = require('./pins.json');
         let text = JSON.toString(cache, getCircularReplacer());
         console.log(`${request.url} => ${text}`);
 
