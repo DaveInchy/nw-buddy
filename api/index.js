@@ -47,7 +47,7 @@ class DataServer {
     }
 
     getPinsJSON = (request, response) => {
-        let text = JSON.toString(cache, getCircularReplacer());
+        let text = JSON.stringify(cache, getCircularReplacer());
         console.log(`${request.url} => ${text}`);
 
         response.setHeader('Access-Control-Allow-Header', '*');
