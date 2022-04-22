@@ -4,6 +4,7 @@ import StorageInterface from './storage';
 import { logError, logMessage } from './debug';
 import { getCircularReplacer } from './global';
 import CacheInterface from './cache';
+import DataClient from './data';
 
 /*
  * ClassName:       Minimap
@@ -18,7 +19,7 @@ export default class Minimap {
   public _once: boolean = true;
 
   public __ = {
-    data: {},
+    data: [],
     zoom: 1.0,
 
     canvas: undefined,
@@ -51,7 +52,17 @@ export default class Minimap {
 
     // Add data for pins to the cache
     //@TODO check for the cache file otherwise dont execute cachedata
-    _.data = require("./assets/cache.json");
+    fetch(DataClient.host + `/api/cheats/cache.json`)
+    .then(res => res.json()
+      .then(data => {
+        _.data = data;
+      })
+      .catch(err => {
+        logError(err);
+      }))
+    .catch(err => {
+        logError(err);
+    });
     this.cacheData();
 
     _.canvas = canvas;
@@ -191,7 +202,7 @@ export default class Minimap {
     const _ = this.__;
     const data: any = _.data;
 
-    StorageInterface.clear();
+    // StorageInterface.clear();
     for (let key in data) {
       if (key === typeof "object") {
         logMessage(key, `Object: ${JSON.stringify(data[key])}`);

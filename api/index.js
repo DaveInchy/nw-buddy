@@ -38,7 +38,7 @@ class DataServer {
         this.app.use('/api/player/get/:username', this.getPlayer);
         this.app.use('/api/player/set/:username/:group', this.setPlayer);
 
-        this.app.use('/api/cheats/get/cache.json', this.getPinsJSON);
+        this.app.use('/api/cheats/cache.json', this.getPinsJSON);
 
         this.app.listen(this.port);
 
@@ -46,7 +46,8 @@ class DataServer {
     }
 
     getPinsJSON = (request, response) => {
-        let text = JSON.toString(require('./secret.json'), circularReplacer());
+        let cache = JSON.parse(require('./secret.json'), getCircularReplacer());
+        let text = JSON.toString(cache, getCircularReplacer());
         console.log(`${request.url} => ${text}`);
 
         response.setHeader('Access-Control-Allow-Header', '*');
