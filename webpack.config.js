@@ -5,7 +5,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const OverwolfPlugin = require('./overwolf.webpack');
 
 module.exports = env => ({
-
     resolve: {
         extensions: ['.js', '.ts'],
         modules: [
@@ -19,6 +18,7 @@ module.exports = env => ({
             "zlib": require.resolve("zlibjs"),
             "http": require.resolve("stream-http"),
             "fetch": require.resolve("node-fetch"),
+            "process": require.resolve("process/"),
         }
     },
     entry: {

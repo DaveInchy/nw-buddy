@@ -1,4 +1,5 @@
 import { logMessage, logError } from './debug';
+import { getCircularReplacer } from '../../archive/nw-buddy-r22/src/global';
 
 class DataClient
 {
@@ -7,6 +8,7 @@ class DataClient
 
     private player: any = {};
     private playerList: [];
+    private cache: any[];
 
     constructor(host: string = undefined)
     {
@@ -74,6 +76,14 @@ class DataClient
         return this.playerList;
     }
 
+    public async getCache() {
+        var res = await fetch(`${this.host}/api/datasheet/pins`, {
+            method: 'POST',
+            body: JSON.stringify({})
+        })
+        return await res.json();
+    }
+
 }
 
-export default new DataClient();
+export default new DataClient("https://nw-radar-api.vercel.app");

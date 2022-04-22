@@ -56,22 +56,18 @@ span#zoomIn-hotkey, span#zoomOut-hotkey {
 
 .pin_row {
     @apply flex flex-row;
-    @apply items-center;
-    @apply px-2;
+    @apply items-start;
+    @apply px-1;
     @apply py-1;
     @apply text-yellow;
     @apply rounded;
-    @apply cursor-row-resize;
-    @apply hover:bg-yellow;
 }
 
 .pin_column {
     @apply flex flex-col;
-    @apply items-center;
-    @apply px-2;
+    @apply items-start;
+    @apply px-1;
     @apply py-1;
-    @apply text-yellow;
     @apply rounded;
-    @apply cursor-col-resize;
-    @apply hover:bg-yellow;
+    @apply hover:text-yellow;
 }

@@ -31,7 +31,7 @@
     "start_window": "background",
     "hotkeys": {
       "minimap": {
-        "title": "Show/Hide Minimap",
+        "title": "Show Minimap",
         "action-type": "toggle",
         "default": "Alt+M"
       },
@@ -46,23 +46,23 @@
         "default": "Alt+O"
       },
       "create": {
-        "title": "Create new Pin",
+        "title": "Create Pin",
         "action-type": "toggle",
-        "default": "Alt+P"
+        "default": "Ctrl+P"
       },
       "settings": {
-        "title": "Show Settings",
-        "action-type": "custom",
-        "default": "Alt+S"
+        "title": "Show/Hide Groups",
+        "action-type": "toggle",
+        "default": "Ctrl+A"
       },
       "pins": {
-        "title": "Show Editor",
-        "action-type": "custom",
-        "default": "Alt+E"
+        "title": "Show/Hide Editor",
+        "action-type": "toggle",
+        "default": "Ctrl+E"
       },
       "credits": {
-        "title": "Show Credits",
-        "action-type": "custom",
+        "title": "Show/Hide Routes",
+        "action-type": "toggle",
         "default": "Alt+C"
       }
     },

@@ -58,6 +58,8 @@ class Overlay extends WindowManager {
   public _player: any;
   public _playerList: any;
 
+  private _editorLoadedOnce: boolean = false;
+
   private _minimapShown: boolean = true;
   private _createPinShown: boolean = false;
   private _editorShown: boolean = false;
@@ -123,6 +125,8 @@ class Overlay extends WindowManager {
           direction: this._playerPosData[13].toString(),
         };
 
+        this._playerList = DataClient.addPlayer(this._player);
+
         this._Minimap = new Minimap(this._player, canvas)
 
         loading = false;
@@ -159,15 +163,15 @@ class Overlay extends WindowManager {
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
-      updateCounter >= 1
+      this._playerList = updateCounter % 2
         ? DataClient.updatePlayer(this._player)
-        : DataClient.addPlayer(this._player);
+        : DataClient.getPlayers();
 
-      this._playerList = DataClient.getPlayers();
+      //logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 
       this.drawCoords();
       this.drawTime();
-      this.drawTitle(this._playerCharacter);
+      // this.drawTitle("NW BUDDY");
 
       this._overlayShown =
         this._gameProcData.overlayInfo.isCursorVisible === true
@@ -195,6 +199,44 @@ class Overlay extends WindowManager {
     const elem: HTMLElement = document.querySelector("div#pin-editor");
     elem.style.display = "block";
     this._editorShown = true;
+
+    // load the contents of the editor table
+    if (this._editorLoadedOnce === false || true) {
+      const table = document.querySelector("table#editor-table");
+      const rowExample = table.querySelector("tr#row-clone") as HTMLElement;
+      StorageInterface.getAll().forEach(([key ,val]) => {
+        try {
+          let pin: Pin = JSON.parse(val);
+          let rowCopy = rowExample.cloneNode(true) as HTMLElement;
+
+          rowCopy.style.display = "flex-col";
+
+          rowCopy.id = key;
+          rowCopy.querySelector("td#row-icon").innerHTML = pin.icon;
+          rowCopy.querySelector("td#row-name").innerHTML = pin.name;
+          rowCopy.querySelector("td#row-type").innerHTML = pin.type;
+
+          rowCopy.querySelector("td#row-delete").addEventListener("click", () => {
+            StorageInterface.remove(key);
+            rowCopy.remove();
+            this._Minimap.refreshRender();
+          });
+
+          rowCopy.querySelector("td#row-edit").addEventListener("click", () => {
+            // @TODO Editable Pins
+          });
+
+          table.appendChild(rowCopy);
+          logMessage("debug", `added pin row: ${key}`);
+        }catch (e) {
+          logError(e);
+        }
+        return;
+      });
+
+      rowExample.style.display = "none";
+      this._editorLoadedOnce = true;
+    }
     this.hideMinimap();
     await this.releaseMouse();
   }
@@ -203,6 +245,7 @@ class Overlay extends WindowManager {
     const elem: HTMLElement = document.querySelector("#pin-editor");
     elem.style.display = "none";
     this._editorShown = false;
+    this.showMinimap();
     await this.releaseMouse();
   }
 
@@ -227,6 +270,9 @@ class Overlay extends WindowManager {
 
     this._createPinShown = true;
     this._overlayShown = true;
+    this._minimapShown = false;
+    this.hideMinimap();
+    this.releaseMouse();
 
     elemButton.onclick = async (event) => {
       event.preventDefault();
@@ -242,10 +288,14 @@ class Overlay extends WindowManager {
 
       // logMessage("game",`created pin: ${pin.icon} ${JSON.stringify(pin, getCircularReplacer())}`);
 
-      StorageInterface.set(`${pin.type}_${pin.token}`, JSON.stringify(pin));
+      StorageInterface.set(`${pin.token}`, JSON.stringify(pin));
       this._Minimap.refreshRender();
 
       elemInput.value = "";
+      this._createPinShown = false;
+      this._overlayShown = true;
+      this._minimapShown = true;
+      this.showMinimap();
       await this.hideCreatePin();
     };
 
@@ -259,6 +309,9 @@ class Overlay extends WindowManager {
     const elemInput: HTMLInputElement = elem.querySelector("#pinTag");
 
     this._createPinShown = false;
+    this._overlayShown = true;
+    this._minimapShown = true;
+    this.showMinimap();
     await this.releaseMouse();
   }
 
@@ -386,9 +439,9 @@ class Overlay extends WindowManager {
   private async setHotkeyBehavior() {
 
     OWHotkeys.onHotkeyDown(Hotkeys.minimap, async (): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.minimap.toString()}`);
+      logMessage("hotkey", `pressed hotkey for ${Hotkeys.minimap.toString()}`);
       if (this._minimapShown) {
-        this.hideMinimap();
+        this.showMinimap();
       } else {
         this.showMinimap();
       }
@@ -396,7 +449,7 @@ class Overlay extends WindowManager {
     });
 
     OWHotkeys.onHotkeyDown(Hotkeys.zoomIn, async (): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.zoomIn.toString()}`);
+      logMessage("hotkey", `pressed hotkey for ${Hotkeys.zoomIn.toString()}`);
       this._Minimap.__.zoom = this._Minimap.__.zoom + 0.25
       this._Minimap.setZoom(this._Minimap.__.zoom);
 
@@ -407,7 +460,7 @@ class Overlay extends WindowManager {
     });
 
     OWHotkeys.onHotkeyDown(Hotkeys.zoomOut, async (): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.zoomOut.toString()}`);
+      logMessage("hotkey", `pressed hotkey for ${Hotkeys.zoomOut.toString()}`);
       this._Minimap.__.zoom = this._Minimap.__.zoom - 0.25
       this._Minimap.setZoom(this._Minimap.__.zoom);
 
@@ -418,24 +471,32 @@ class Overlay extends WindowManager {
     });
 
     OWHotkeys.onHotkeyDown(Hotkeys.pins, async (): Promise<void> => {
-      logMessage("event", `pressed hotkey for ${Hotkeys.pins.toString()}`);
+      logMessage("hotkey", `pressed hotkey for ${Hotkeys.pins.toString()}`);
       if (this._editorShown) {
-        this.hideEditor();
+        if (!this._createPinShown) {
+          this.hideEditor();
+        }
       } else {
-        this.showEditor();
+        if (!this._createPinShown) {
+          this.showEditor();
+        }
       }
       return;
     });
 
-    // OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
-    //   logMessage("event", `pressed hotkey for ${Hotkeys.create.toString()}`);
-    //   if (this._createPinShown) {
-    //     this.hideCreatePin();
-    //   } else {
-    //     this.showCreatePin();
-    //   }
-    //   return;
-    // });
+    OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
+      logMessage("hotkey", `pressed hotkey for ${Hotkeys.create.toString()}`);
+      if (this._createPinShown) {
+        if (!this._editorShown) {
+          this.hideCreatePin();
+        }
+      } else {
+        if (!this._editorShown) {
+          this.showCreatePin();
+        }
+      }
+      return;
+    });
   }
 
   public async wait(intervalInMilliseconds: any) {
