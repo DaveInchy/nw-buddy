@@ -46,7 +46,7 @@ class DataServer {
     }
 
     getPinsJSON = (request, response) => {
-        const cache = require('api/pins.json');
+        const cache = require('./pins.json');
         let text = JSON.toString(cache, getCircularReplacer());
         console.log(`${request.url} => ${text}`);
 
