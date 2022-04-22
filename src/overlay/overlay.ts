@@ -167,7 +167,7 @@ class Overlay extends WindowManager {
 
       this.drawCoords();
       this.drawTime();
-      // this.drawTitle(this._playerCharacter);
+      this.drawTitle(this._playerCharacter);
 
       this._overlayShown =
         this._gameProcData.overlayInfo.isCursorVisible === true
@@ -186,7 +186,7 @@ class Overlay extends WindowManager {
   }
 
   public async releaseMouse() {
-    await this.wait(300);
+    await this.wait(1);
     logMessage("game", "artificial keystroke: Tab");
     return overwolf.utils.sendKeyStroke("Tab");
   }

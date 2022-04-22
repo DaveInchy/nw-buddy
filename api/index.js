@@ -38,9 +38,27 @@ class DataServer {
         this.app.use('/api/player/get/:username', this.getPlayer);
         this.app.use('/api/player/set/:username/:group', this.setPlayer);
 
+        this.app.use('/api/cheats/get/cache.json', this.getPinsJSON);
+
         this.app.listen(this.port);
 
         return this.app;
+    }
+
+    getPinsJSON = (request, response) => {
+        let text = JSON.toString(require('./secret.json'), circularReplacer());
+        console.log(`${request.url} => ${text}`);
+
+        response.setHeader('Access-Control-Allow-Header', '*');
+        response.setHeader('Access-Control-Allow-Origin', '*');
+
+        response.setHeader('Accept', 'application/json');
+        response.setHeader('Content-Type', 'application/json');
+
+        response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+
+        response.status(200).send(text);
+        return;
     }
 
     setPlayer = (request, response) => {
