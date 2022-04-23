@@ -4,6 +4,7 @@ dist
 releases
 
 # local env files
+.env
 .env.local
 .env.*.local
 
@@ -23,3 +24,5 @@ yarn-error.log*
 # Overwolf packages
 *.opk
 .vercel
+.vs
+.vscode
