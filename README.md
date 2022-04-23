@@ -3,11 +3,7 @@
 
 An Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game.
 
-<hr>
-
 ## How to use
-
-<br>
 
 1. Go to the releases download page on github and select the latest .opk file.
 2. Install overwolf before you go to the next step.
@@ -15,11 +11,7 @@ An Overwolf overlay that helps players find new friends and keep track of their 
 4. Start the game and rightclick the overwolf icon and select "New World Buddy".
 5. Use the shortcut key combination shown below the radar to toggle the radar on and off.
 
-<hr>
-
 ## Features
-
-<br>
 
 - Light -weight design
 - Easy to use
@@ -28,13 +20,9 @@ An Overwolf overlay that helps players find new friends and keep track of their 
 - Saved locally
 - Location editor to remove/edit and link pins
 
-<hr>
-
 ## Changelog
 
-<br>
-
-### 22.4.22 Release:
+### 22.4.22 Release
 
     - Added A LOT of code as completed features.
     - Added a new feature: "Location editor"
