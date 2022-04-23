@@ -1,53 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <meta name="msapplication-TileColor" content="#333">
+  <meta name="msapplication-TileImage" content="/icons/Icon.png">
+  <meta name="theme-color" content="#333">
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="../../css/general.css" />
-  <link rel="stylesheet" href="../../css/header.css" />
-  <link rel="stylesheet" href="../../css/ingame.css" />
-  <link rel="stylesheet" href="../../css/modal.css" />
+
   <title>New World Buddy</title>
-  <style>
-    h1, h2, h3, h4, h5, h6, p {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      font-weight: bolder;
-    }
-  </style>
-
-
 </head>
-<body style="background: none;">
+<body style="border: 0px solid cyan">
 
-  <main style="display: none;">
+  <main style="border: 0px solid yellow;">
 
-    <div id="minimap">
+    <div id="minimap" style="display: none;">
 
-      <div id="minimap-title" style="position: absolute; top: 400px; right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
-        <h1 style="color: rgb(197, 161, 0); font-size: 2.8em; letter-spacing: 1px; line-height: 22px; font-variant: all-small-caps; padding: 0px;">~ <span id="title"></span> ~</h1>
+      <div id="minimap-title" style="position: absolute; bottom: calc(250px + 40px + 50px + 16vw); right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
+        <h1 style="font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;"><span id="title"></span></h1>
       </div>
 
-      <div id="minimap-context" class="group" style="width: 16vw; height: 16vw; border-radius: 1000px; border: 5px solid rgb(197, 161, 0); position: absolute; top: calc(400px + 50px); right: 50px; z-index: 10; overflow:hidden;">
+      <div id="minimap-context" class="rounded-lg" style="background-image: url(./img/bg-dialog.png); background-size: 120% 120%; background-position: center; background-repeat: repeat-x; width: 16vw; height: 16vw; border: 8px solid  rgb(14, 14, 14);; position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
 
-        <canvas width="9000" height="10200" id="minimap-canvas" class="transform duration-300" style="position:relative; padding: 0; top: 50%; left: 50%; width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap.png'); background-size:cover; opacity: 90%; z-index: 8;">
+        <canvas width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-300" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap-transparent.webp'); background-size: cover; opacity: 100%; z-index: 0;">
         </canvas>
 
-        <svg id="compassNeedle" class="transform-gpu duration-500" style="max-width: 24px; max-height: 24px; position: absolute; top: 50%; left: 50%; z-index: 10; margin-left: -12px; margin-top: -12px;" xmlns="http://www.w3.org/2000/svg" fill="none" class="" viewBox="0 0 24 24" stroke="white" stroke-width="3">
-          <path stroke-linecap="round" stroke-linejoin="square" d="M5 15l7-7 7 7" />
-        </svg>
+        <img src="../../img/map/compass-needle-yellow.svg" id="compassNeedle" class="transform-none" style="max-width: 200px; max-height: 250px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -100px; margin-top: -100px;" />
 
       </div>
 
-      <div id="minimap-info" style="position: absolute; top: calc(400px + 50px + 16vw + 10px); right: 50px; width: 16vw; height: auto; z-index: 10;">
-        <div style="display:inline-block; width: 16vw; font-weight:bolder; color: rgb(197, 161, 0); font-size: 2.0em; letter-spacing: -2px; line-height: 22px; font-variant: all-small-caps;">
-          <p style="display: inline; float: left;">⚔️ <span id="minimap-versus">PvP</span> <span class="font-extralight">ON</span></p>
-          <p style="display: inline; float: right;" class="font-extralight">Hotkey <span id="hotkey" class="font-extrabold">Alt+W</span> 🖱️</p>
+      <div id="minimap-info" style="background-color: rgba(30, 34, 34, 0.799); background-size:  120% 120%; background-position: center; position: absolute; bottom: calc(180px); right: 50px; width: 16vw; height: auto; z-index: 10; border: 8px solid rgb(14, 14, 14);" class="p-2 clip rounded-lg">
+        <div style="display:inline-block; width: 100%; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;">
+            ⏳ <span id="minimap-current-time" class="font-bold"></span> <span class="font-normal">CET</span>
+          </p>
+          <p style="display: inline; float: right;">
+            <span id="minimap-position" class="font-bold"></span> 🧭
+          </p>
         </div>
-        <div style="display:inline-block; width: 16vw; font-weight:bolder; color: rgb(197, 161, 0); font-size: 2.0em; letter-spacing: -2px; line-height: 22px; font-variant: all-small-caps;">
-          <p style="display: inline; float: left;">🕑 <span id="minimap-current-time"></span> <span class="font-extralight">CET</span></p>
-          <p style="display: inline; float: right;"><span id="minimap-position"></span> 🧭</p>
+
+        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">🔎 IN <span class="w-6 inline-block"></span><span id="zoomIn-hotkey" class="font-bold">AL</span></p>
+          <p style="display: inline; float: right;" class="font-normal">Zoom <span id="zoom-value" class="font-bold">1.0</span> x⚙️</p>
+        </div>
+
+
+        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
+          <p style="display: inline; float: left;" class="font-normal">🔍 OUT  <span class="w-2 inline-block"></span><span id="zoomOut-hotkey" class="font-bold">AL</span> </p>
+          <p style="display: inline; float: right;" class="font-normal"></p>
         </div>
       </div>
 
+    </div>
+
+    <div id="pin-editor" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display:none;" class="w-1/3 h-full p-16">
+      <div class="flex justify-center items-start w-full h-full">
+        <div id="pin-list" class="w-full">
+          <h2 class="text-4xl text-left">User Create-ed Map pins</h2>
+          <table id="editor-table" class="overflow-scroll h-full w-full">
+            <thead class="w-full bg-yellow text-black rounded-sm px-8">
+              <tr class="w-full pin_row text-center">
+                <th class="text-light text-xl text-left w-2/12">ICO</th>
+                <th class="text-light text-xl text-left w-3/12">TAG</th>
+                <th class="text-light text-xl text-left w-3/12">TYPE</th>
+                <th class="text-light text-xl text-left w-2/12">DEL</th>
+                <th class="text-light text-xl text-left w-2/12">CHG</th>
+              </tr>
+            </thead>
+            <tbody class="w-full">
+              <tr id="row-clone" class="w-full pin_row">
+                <td id="row-icon" class="pin_column w-2/12">
+                  🪃
+                </td>
+                <td id="row-name" class="pin_column w-3/12">
+                  Hemp
+                </td>
+                <td id="row-type" class="pin_column w-3/12">
+                  Type
+                </td>
+                <td id="row-delete" class="pin_column w-2/12">
+                  <button class="text-white hover:text-dark p-1 w-full bg-red hover:bg-orange rounded-sm">⛔</button>
+                </td>
+                <td id="row-edit" class="pin_column w-2/12">
+                  <button class="text-white hover:text-dark p-1 w-full bg-purple hover:bg-blue rounded-sm">💾</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="create-pin" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="mx-auto mt-1/4 w-2/4 h-1/2 py-6">
+      <div class="flex w-full h-full justify-center items-center">
+
+        <div class="w-full">
+
+          <h1 class="text-gray-light font-normal text-4xl text-center">Create Pin</h1>
+          <hr class="w-8/12 text-white border-y-1  my-3 mx-auto rounded" style="border-color: rgb(197, 161, 0);" />
+          <p class="text-light text-xl text-center font-new-world">Give the Pin a tag name, so you can identify it later.<br />
+            <input id="pinTag" style="border-color: rgb(197, 161, 0);" class="text-center rounded-l-lg mt-3 mb-2  bg-dark text-light py-0 px-3 text-md border-2 focus:outline-0" type="text" placeholder="None" value="" />
+            <button id="pinButton" style="border-color: rgb(197, 161, 0);" class="text-center rounded-r-lg mt-3 mb-2 border-2 bg-dark text-light py-0 px-3 text-md active:border-0 focus:outline-0">Create</button>
+          </p>
+
+        </div>
+
+      </div>
     </div>
 
   </main>

@@ -1,0 +1,24 @@
+body {
+  display: flex;
+  flex: 1;
+  position: relative;
+  font-size: 14px;
+  width: 100vw;
+  height: 100vh;
+  padding-bottom: 50px;
+  padding-top: 50px;
+}
+
+main {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 50px;
+}
+
+@font-face {
+  font-family: 'New World';
+  src: url('./font/IMFellDWPica-Regular.ttf');
+}

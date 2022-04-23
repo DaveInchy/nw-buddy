@@ -1,6 +1,10 @@
 {
     "rewrites": [
         {
+            "source": "/api/pins.json",
+            "destination": "/pins.json"
+        },
+        {
             "source": "/api/(.*)",
             "destination": "/api"
         }

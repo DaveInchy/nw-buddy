@@ -1,10 +1,12 @@
 //@depricated legacy
 export const logMessage = async (type, message) => {
-    var http = await fetch('http://localhost:8420/'
+    var http = await fetch('http://localhost:8433/'
         + '?time=' + encodeURIComponent(`${Date.now()}`)
         + '&subject=' + encodeURIComponent(`${type}`)
         + '&message=' + encodeURIComponent(`${message}`)
-        + '&type=' + encodeURIComponent(`${type}`));
+        + '&type=' + encodeURIComponent(`${type}`), {
+            method: 'GET',
+        });
     return http;
 };
 
@@ -15,7 +17,7 @@ export const logError = async function (error) {
 
 class DebugClient {
 
-    public static host: string = 'http://localhost:8420/';
+    public static host: string = 'http://localhost:8433/';
 
     constructor()
     {

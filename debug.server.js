@@ -62,7 +62,8 @@ class DebugServer {
                 );
 
                 res.setHeader('Content-Type', 'application/json');
-                res.send(output);
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.send(JSON.stringify(data, getCircularReplacer()));
                 res.end();
             }
         );
@@ -92,4 +93,4 @@ class DebugServer {
 
 }
 
-module.exports.default = new DebugServer(8420);
+module.exports.default = new DebugServer(8433);

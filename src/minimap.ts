@@ -1,4 +1,11 @@
 import Vector2 from './vector2';
+import Pin from './pin';
+import StorageInterface from './storage';
+import { logError, logMessage } from './debug';
+import { getCircularReplacer } from './global';
+import CacheInterface from './cache';
+import DataClient from './data';
+
 /*
  * ClassName:       Minimap
  * Description:     A two dimensional Minimap Canvas object
@@ -9,141 +16,531 @@ import Vector2 from './vector2';
  * ------------------------------------------------- */
 export default class Minimap {
 
-    constructor() {
-        return this;
-    }
+  public _once: boolean = true;
 
-    static renderCanvas(canvas: HTMLCanvasElement, player: any) {
+  public __ = {
+    data: [],
+    zoom: 1.0,
 
-        var ctx: CanvasRenderingContext2D = canvas.getContext("2d");
+    canvas: undefined,
+    canvasContext: undefined,
 
-        // playerdata
-        var playerName = player.user ? player.user : "Player";
-        var playerDirection = player.direction;
-        var playerMapCoords: Vector2 =
-            new Vector2(
-                player.x,
-                player.y
-            );
+    playerName: undefined,
+    playerDirection: undefined,
+    playerMapCoords: undefined,
 
-        // canvas data
-        var canvasLeft: number = 0;
-        var canvasRight: number = canvas.width;
-        var canvasTop: number = 0;
-        var canvasBottom: number = canvas.height;
-        var canvasWidth: number = canvasRight - canvasLeft;
-        var canvasHeight: number = canvasBottom - canvasTop;
+    canvasLeft: undefined,
+    canvasRight: undefined,
+    canvasTop: undefined,
+    canvasBottom: undefined,
+    canvasWidth: undefined,
+    canvasHeight: undefined,
 
-        // map constants // DONT CHANGE THIS SHOULD WORK
-        var mapLeft: number = 4520; // West Min 5240
-        var mapRight: number = 14240; // East Max 14240
-        var mapTop: number = 10120; // North Max 10240 / 10100 / 10200
-        var mapBottom: number = 100; // South Min 0
-        var mapWidth: number = mapLeft - mapRight; // mapLeft - mapRight
-        var mapHeight: number = mapBottom - mapTop; // -mapTop - mapBottom
-        // DONT DONT DONT DONT DONT DONT CHANGE CHANGE CHANGE CHANGE CHANGE //
+    mapLeft: undefined,
+    mapRight: undefined,
+    mapTop: undefined,
+    mapBottom: undefined,
+    mapWidth: undefined,
+    mapHeight: undefined,
 
-        // tuning the numbers
-        var mapToCanvasRatioWidth = canvasWidth / mapWidth;
-        var mapToCanvasRatioHeight = canvasHeight / mapHeight;
+    mapToCanvasRatio: undefined,
+    directionAngle: undefined
+  };
 
-        var playerCanvasCoords: Vector2 = new Vector2(
-          //playerMapCoords.x > mapCorrectFrom.x ? (playerMapCorrection.x - mapLeft) * mapToCanvasRatioWidth : (playerMapCoords.x - mapLeft) * mapToCanvasRatioWidth,
-          //playerMapCoords.y > mapCorrectFrom.y ? (mapTop - playerMapCorrection.y) * mapToCanvasRatioHeight : (mapTop - playerMapCoords.y) * mapToCanvasRatioHeight
-          (playerMapCoords.x - mapLeft) * mapToCanvasRatioWidth, // X: (playerMapCoords.x - mapLeft) * mapToCanvasRatioWidth
-          //(-mapHeight -
-          (mapTop - playerMapCoords.y) * mapToCanvasRatioHeight // Y: (-mapHeight - (playerMapCoords.y)) * mapToCanvasRatioHeight
-        );
+  constructor(player: any, canvas: HTMLCanvasElement) {
+    var _ = this.__;
 
-        // move the canvas's center to the player position with relative position
-        canvas.style.marginLeft = playerCanvasCoords.x + "px";
-        canvas.style.marginTop = playerCanvasCoords.y + "px";
+    // this.cacheDownload();
 
-        // draw and animation of the player pointer
-        this.rotateNeedle(this.getRotationFromDirection(playerDirection));
+    _.canvas = canvas;
+    _.canvasContext = _.canvas.getContext("2d");
 
-        // render a grid over the background of the canvas
-        var once = true
-        once ? this.renderGrid(
-            canvasLeft, canvasRight, canvasWidth,
-            canvasTop, canvasBottom, canvasHeight,
-            ctx
-        ) : once=false;
+    _.playerName = player.user ? player.user : "Player";
+    _.playerDirection = player.direction;
+    _.playerMapCoords = new Vector2(player.x, player.y);
 
-        return this;
-    }
+    _.canvasLeft = 0;
+    _.canvasRight = canvas.width * _.zoom;
+    _.canvasTop = 0;
+    _.canvasBottom = canvas.height * _.zoom;
+    _.canvasWidth = _.canvasRight - _.canvasLeft;
+    _.canvasHeight = _.canvasBottom - _.canvasTop;
 
-    static rotateNeedle(angle: number) {
-        var needle: HTMLElement = document.getElementById("compassNeedle");
-        needle.style.transform = "rotate(" + angle + "deg)";
+    // map constants // DONT CHANGE THIS SHOULD WORK
+    _.mapLeft = 4520; // West Min 5240
+    _.mapRight = 14240; // East Max 14240
+    _.mapTop = 10120; // North Max 10240 / 10100 / 10200
+    _.mapBottom = 100; // South Min 0
+    _.mapWidth = _.mapLeft - _.mapRight; // mapLeft - mapRight
+    _.mapHeight = _.mapBottom - _.mapTop; // -mapTop - mapBottom
+    // DONT DONT DONT DONT DONT DONT CHANGE CHANGE CHANGE CHANGE CHANGE //
+
+    // tuning the numbers
+    _.mapToCanvasRatio = new Vector2(
+      _.canvasWidth * _.zoom / _.mapWidth,
+      _.canvasHeight * _.zoom / _.mapHeight
+    );
+
+    return;
+  }
+
+  public async cacheDownload()
+  {
+    logMessage("cache", "Cache download ..");
+    DataClient.getCache().then(json => {
+      logMessage("cache", "Cache fully download ...");
+      this.__.data = json;
+      this.cacheData();
+      this.refreshRender();
+      logMessage("cache", "Cache rendered ..");
+    }).catch(err => {
+      logError("Cache Failed to Load.");
+    });
+  }
+
+  public async renderCanvas(player: any) {
+
+    this.__.playerMapCoords = new Vector2(player.x, player.y);
+
+    this.setZoom(this.__.zoom);
+
+    var playerCanvasCoords: Vector2 = new Vector2(
+      (this.__.playerMapCoords.x - this.__.mapLeft) *
+        this.__.mapToCanvasRatio.x,
+      (this.__.mapTop - this.__.playerMapCoords.y) *
+        this.__.mapToCanvasRatio.y
+    );
+
+    // move the canvas's center to the player position with relative position
+    this.__.canvas.style.marginLeft = playerCanvasCoords.x + "px";
+    this.__.canvas.style.marginTop = playerCanvasCoords.y + "px";
+
+    // draw and animation of the player pointer
+    var a = this.getRotation(player.direction);
+    this.rotateNeedle(this.getDirectionAngle(player));
+    this.__.directionAngle = a;
+
+    this.renderLayers(player);
+
+    return this;
+  }
+
+  public async setZoom(amount: number = 1) {
+    this.__.zoom = amount
+
+    this.__.canvasLeft = 0;
+    this.__.canvasRight = this.__.canvas.width * this.__.zoom;
+    this.__.canvasTop = 0;
+    this.__.canvasBottom = this.__.canvas.height * this.__.zoom;
+    this.__.canvasWidth = this.__.canvasRight - this.__.canvasLeft;
+    this.__.canvasHeight = this.__.canvasBottom - this.__.canvasTop;
+
+    this.__.canvas.style.width = parseInt(this.__.canvasWidth) + "px";
+    this.__.canvas.style.height = parseInt(this.__.canvasHeight) + "px";
+
+    this.__.mapToCanvasRatio = new Vector2(
+      this.__.canvasWidth / this.__.mapWidth,
+      this.__.canvasHeight / this.__.mapHeight
+    );
+
+    return;
+  }
+
+  private renderLayers = async (player: any) => {
+    this._once
+      ? this.renderGrid(player) &&
+        this.renderPins() &&
+        (this._once = false)
+      : (this._once = false);
+
+    return;
+  };
+
+  public async refreshRender() {
+    this.__.canvasContext.clearRect(
+      0,
+      0,
+      this.__.canvas.width,
+      this.__.canvas.height
+    );
+    this._once = true;
+
+    return;
+  }
+
+  private rotateNeedle(angle: number) {
+    var needle: HTMLElement = document.getElementById("compassNeedle");
+    needle.style.transform = 'rotate(' + angle + 'deg)'
+    needle.style.animationDuration = '1ms'
+    return;
+  }
+
+  private getRotation = (playerDirection: string = "N"): number => {
+    let sequence = [
+      "N", // 0
+      "NE", // 45
+      "E", // 90
+      "SE", // 135
+      "S", // 180
+      "SW", // 225
+      "W", // 270
+      "NW", // 315
+    ];
+
+    return sequence.indexOf(playerDirection) * 45;
+  }
+
+  //@TODO fix this to actually work
+  private getDirectionAngle(player: any) {
+    var prev = this.__.directionAngle;
+    var curr = this.getRotation(player.direction)
+    var diff = prev-curr;
+
+    this.__.directionAngle = curr;
+    return curr;
+  }
+
+  public async cacheData() {
+    const _ = this.__;
+    const data: any = _.data;
+
+    // StorageInterface.clear();
+    for (let key in data) {
+      if (key === typeof "object") {
+        logMessage(key, `Object: ${JSON.stringify(data[key])}`);
+      }
+      if (data.hasOwnProperty(key)) {
+        if (!key.toLowerCase().includes("areas") &&
+          !key.toLowerCase().includes("documents") &&
+          !key.toLowerCase().includes("events") &&
+          !key.toLowerCase().includes("fishing") &&
+          !key.toLowerCase().includes("monsters") &&
+          !key.toLowerCase().includes("npc") &&
+          !key.toLowerCase().includes("pois")) {
+
+          for (let key2 in data[key]) {
+            if (data[key][key2] === typeof "object") {
+              logMessage(key, `${key2} Object: ${JSON.stringify(data[key][key2])}`);
+            }
+            if (data[key].hasOwnProperty(key2)) {
+
+              for (let key3 in data[key][key2]) {
+                if (data[key][key2].hasOwnProperty(key3)) {
+
+                  if (key.toLowerCase() === "chests" && data[key][key2][key3].y !== undefined && data[key][key2][key3].x !== undefined) {
+
+                    let getTier = (str) => {
+                      let split = key2.split(/([0-9]+)/);
+                      return parseInt(split[1]);;
+                    };
+
+                    let title = key3;
+                    let type = key2.toLowerCase();
+
+                    let pin = new Pin(
+                      key.toLowerCase(),
+                      getTier(type),
+                      undefined,
+                      data[key][key2][key3].x,
+                      data[key][key2][key3].y,
+                      1
+                    )
+
+                    CacheInterface.set(title, JSON.stringify(pin));
+                    //logMessage(key, `${title} added to cache => ${JSON.stringify(pin)}`);
+                  }
+
+                  if (key.toLowerCase() === "ores" && data[key][key2][key3].y !== undefined && data[key][key2][key3].x !== undefined) {
+
+                    let getTier = (str): number => {
+                      switch (str) {
+                        case "silver":
+                          return 2;
+                        case "gold":
+                          return 3;
+                        case "platinium":
+                          return 4;
+                        case "iron":
+                          return 1;
+                        case "starmetal":
+                          return 4;
+                        case "orichalcum":
+                          return 5;
+                        case "crystal":
+                          return 3;
+                        case "lodestone":
+                          return 1;
+                        case "saltpeter":
+                          return 1;
+                        case "seeping_stone":
+                          return 1;
+                        default:
+                          return 1;
+                      }
+                    }
+
+                    let id = key3;
+                    let type = key2.toLowerCase();
+
+                    let pin = new Pin(
+                      type,
+                      getTier(type),
+                      undefined,
+                      data[key][key2][key3].x,
+                      data[key][key2][key3].y,
+                      1
+                    )
+
+                    CacheInterface.set(id, JSON.stringify(pin));
+                  }
+
+                  if (key.toLowerCase() === "plants" && data[key][key2][key3].y !== undefined && data[key][key2][key3].x !== undefined) {
+
+                    let getProps = (str): [string, number] => {
+                      let type = "plant";
+                      let tier = 1;
+                      switch (str) {
+                        case "herb":
+                          type = "herb";
+                          tier = 1;
+                          break;
+                        case "nut":
+                          type = "nut";
+                          tier = 1;
+                          break;
+                        case "honey":
+                          type = "honey";
+                          tier = 1;
+                          break;
+                        case "azoth_water":
+                          type = "azoth";
+                          tier = 5;
+                          break;
+                        case "barley":
+                          type = "barley";
+                          tier = 1;
+                          break;
+                        case "hemp":
+                          type = "fiber";
+                          tier = 1;
+                          break;
+                        case "hemp_t4":
+                          type = "silk";
+                          tier = 4;
+                          break;
+                        case "hemp_t5":
+                          type = "wire";
+                          tier = 5;
+                          break;
+                        case "berry":
+                          type = "berry";
+                          tier = 1;
+                          break;
+                        case "strawberries":
+                          type = "strawberries";
+                          tier = 1;
+                          break;
+                        case "blueberry":
+                          type = "blueberry";
+                          tier = 1;
+                          break;
+                        case "cranberry":
+                          type = "cranberry";
+                          tier = 1;
+                          break;
+                        case "Single_Pumpkin":
+                          type = "pumpkin";
+                          tier = 1;
+                          break;
+                        case "potato":
+                          type = "potato";
+                          tier = 1;
+                          break;
+                        case "squash":
+                          type = "squash";
+                          tier = 1;
+                          break;
+                        case "broccoli":
+                          type = "broccoli";
+                          tier = 1;
+                          break;
+                        case "cabbage":
+                          type = "cabbage";
+                          tier = 1;
+                          break;
+                        case "carrot":
+                          type = "carrot";
+                          tier = 1;
+                          break;
+                        case "corn":
+                          type = "corn";
+                          tier = 1;
+                          break;
+                      }
+                      return [type, tier];
+                    }
+
+                    let id = key3;
+                    let props = (key2.includes("_") && !key2.includes("azoth") && !key2.includes("hemp")) ? ["plant", 1] : getProps(key2);
+                    let type: string = props[0].toString();
+                    let tier: number = parseInt(props[1].toString());
+
+                    let pin = new Pin(
+                      type,
+                      tier,
+                      undefined,
+                      data[key][key2][key3].x,
+                      data[key][key2][key3].y,
+                      1
+                    );
+
+                    CacheInterface.set(id, JSON.stringify(pin));
+                  }
+
+                  if (key.toLowerCase() === "woods" && data[key][key2][key3].y !== undefined && data[key][key2][key3].x !== undefined) {
+                    let id = key3;
+                    let type = key2.toLowerCase();
+                    let tier = type === "wyrdwood" ? 4 : type === "ironwood" ? 5 : 1;
+
+                    let pin = new Pin(
+                      type,
+                      tier,
+                      undefined,
+                      data[key][key2][key3].x,
+                      data[key][key2][key3].y,
+                      1
+                    );
+
+                    CacheInterface.set(id, JSON.stringify(pin));
+                  }
+
+                  if (key.toLowerCase() === "essences" && data[key][key2][key3].y !== undefined && data[key][key2][key3].x !== undefined) {
+
+                    let getProps = (str: string): [string, string] => {
+                      return [
+                        str.split("_")[0],
+                        str.split("_")[1]
+                      ];
+                    }
+
+                    let id = key3;
+                    let props = getProps(key2.toLowerCase());
+                    let tier = props[1].toString() == "boid" ? 1 : props[1].toString() == "plant" ? 3 : 5;
+                    let elem = props[0].toString();
+
+                    let pin = new Pin(
+                      elem + " mote",
+                      tier,
+                      undefined,
+                      data[key][key2][key3].x,
+                      data[key][key2][key3].y,
+                      1
+                    );
+
+                    CacheInterface.set(id, JSON.stringify(pin));
+                  }
+
+                } // end key4 loop
+              } // end key3 loop
+            }
+          } // end key2 loop
+        } // filter end
+      }
+    } // end key loop
+  }
+
+  async renderPins() {
+
+    // Reset the zoom because the pins are not in the right location (zoom value is not calculated)
+    this.setZoom(1.0);
+
+    // Get pins from localstorage
+    var pins: [string, any][] = StorageInterface.getAll();
+        // Add pins from local stored cache file
+        pins = pins.concat(CacheInterface.getAll());
+
+    // Loop through all the keyvalue pairs
+    pins.forEach(([key, value]) => {
+
+      let title: string = key;
+      let pin: Pin = JSON.parse(value, getCircularReplacer());
+
+      if (pin.icon === undefined || pin.icon === null) {
         return;
+      }
+
+      var pinX = -((pin.x - this.__.mapLeft) * this.__.mapToCanvasRatio.x);
+      var pinY = -((this.__.mapTop - this.__.mapBottom - (pin.y - this.__.mapBottom)) * this.__.mapToCanvasRatio.y);
+
+      // draw a little circle dot on the location
+      this.__.canvasContext.fillStyle = "rgba(0,0,0,0.5)";
+      this.__.canvasContext.fillRect(pinX - 1, pinY - 1, 3, 3);
+
+      //draw text on top of the pin with the tag as title
+      this.__.canvasContext.font = pin.size.width + "px monospace";
+      this.__.canvasContext.textAlign = "center";
+      this.__.canvasContext.fillStyle = "#fff";
+      this.__.canvasContext.fillText(pin.icon, pinX, pinY - (pin.size.height / 4));
+
+      //@TODO add a label while debugging is turned on
+      //@TODO implement global debugging switch
+    });
+
+    return true;
+  }
+
+  async renderGrid(player: any) {
+    const chunksPerAxis = 100;
+
+    function step(length) {
+      return Math.floor(length / chunksPerAxis);
     }
 
+    this.__.canvasContext.font = "24px 'New World'";
+    this.__.canvasContext.lineWidth = 1;
 
-    static getRotationFromDirection(playerDirection: string) {
-        switch(playerDirection) {
-            case "N":
-                return 0;
-            case "NE":
-                return 45;
-            case "E":
-                return 90;
-            case "SE":
-                return 135;
-            case "S":
-                return 180;
-            case "SW":
-                return 225;
-            case "W":
-                return 270;
-            case "NW":
-                return 315;
-            default:
-                return 360;
-        }
-    }
+    var rgba_dark = "rgba(0,0,0,0.1)";
+    var rgba_red = "rgba(255,0,0,0.1)";
+    var rgba_light = "rgba(255,255,255,0.1)";
+    var rgba_yellow = "rgba(192,161,0,0.1)";
 
-    static async renderGrid(
-        canvasLeft: number, canvasRight: number, canvasWidth: number,
-        canvasTop: number, canvasBottom: number, canvasHeight: number,
-        canvasContext: CanvasRenderingContext2D
+    for (
+      let x = this.__.canvasLeft;
+      x < this.__.canvasRight;
+      x += step(this.__.canvasWidth)
     ) {
+      x % (step(this.__.canvasWidth) * 2)
+        ? (this.__.canvasContext.strokeStyle = rgba_light)
+        : (this.__.canvasContext.strokeStyle = rgba_yellow);
 
-        const chunksPerAxis = 100;
+      this.__.canvasContext.beginPath();
+      this.__.canvasContext.moveTo(x, 0);
+      this.__.canvasContext.lineTo(x, this.__.canvasHeight);
+      this.__.canvasContext.stroke();
 
-        function step(length) {
-            return Math.floor(length / chunksPerAxis);
-        }
-
-        canvasContext.font = '32px Monospace'
-        canvasContext.fillStyle = 'white'
-        canvasContext.lineWidth = 1;
-
-        for (let x = canvasLeft; x < canvasRight; x += step(canvasWidth)) {
-            x % (step(canvasWidth) * 2) ? canvasContext.strokeStyle = '#fff' : canvasContext.strokeStyle = '#eee'
-
-            canvasContext.beginPath()
-            canvasContext.moveTo(x, 0)
-            canvasContext.lineTo(x, canvasHeight)
-            canvasContext.stroke()
-
-            canvasContext.fillText(x.toString(), x, 15)
-        }
-
-        for (let y = canvasTop; y < canvasBottom; y += step(canvasHeight)) {
-            y % (step(canvasHeight) * 2) ? canvasContext.strokeStyle = '#fff' : canvasContext.strokeStyle = '#fff'
-
-            canvasContext.beginPath()
-            canvasContext.moveTo(0, y)
-            canvasContext.lineTo(canvasWidth, y)
-            canvasContext.stroke()
-
-            canvasContext.fillText(y.toString(), 0, y)
-        }
-
-        canvasContext.restore()
-
-        return canvasContext;
+      this.__.canvasContext.fillText(x.toString(), x, 15);
     }
+
+    for (
+      let y = this.__.canvasTop;
+      y < this.__.canvasBottom;
+      y += step(this.__.canvasWidth)
+    ) {
+      y % (step(this.__.canvasWidth) * 2)
+        ? (this.__.canvasContext.strokeStyle = rgba_yellow)
+        : (this.__.canvasContext.strokeStyle = rgba_light);
+
+      this.__.canvasContext.beginPath();
+      this.__.canvasContext.moveTo(0, y);
+      this.__.canvasContext.lineTo(this.__.canvasWidth, y);
+      this.__.canvasContext.stroke();
+
+      this.__.canvasContext.fillText(y.toString(), 0, y);
+    }
+
+    this.__.canvasContext.restore();
+
+    return true;
+  }
 
 }

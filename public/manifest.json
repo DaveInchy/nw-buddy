@@ -1,49 +1,74 @@
 {
-  "$schema": "https://raw.githubusercontent.com/overwolf/community-gists/master/overwolf-manifest-schema.json",
   "manifest_version": 1,
   "type": "WebApp",
   "meta": {
     "name": "New World Buddy",
-    "author": "Dave Inchy",
-    "version": "22.03.22",
-    "minimum-overwolf-version": "0.180.0",
-    "description": "A TOS Compliant overwolf overlay for New World",
-    "dock_button_title": "New World Buddy",
+    "author": "DaveInchy",
+    "version": "22.04.14",
+    "minimum-overwolf-version": "0.190.0",
+    "description": "An AGS TOS Compliant lightweight Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game. It features all the features you would expect from a minimap client including some features to hook it with your discord etc. This program is written with upmost code optimization so its very light-weight.",
+    "dock_button_title": "NW Buddy",
     "icon": "icons/Icon.png",
-    "icon_gray": "icons/IconNormal.png",
-    "launcher_icon": "icons/Icon.png",
-    "window_icon": "icons/Icon.png"
+    "icon_gray": "icons/IconMouseNormal.png",
+    "icon_hover": "icons/IconMouseOver.png",
+    "launcher_icon": "icons/favicon.ico",
+    "window_icon": "icons/WindowIcon.png"
   },
   "permissions": [
     "Hotkeys",
     "GameInfo",
     "GameControl",
-    "VideoCaptureSettings",
     "Web",
-    "Camera",
-    "Microphone",
     "Logging",
     "Extensions",
-    "Streaming",
-    "DesktopStreaming",
     "Profile",
     "Clipboard",
     "Media",
     "FileSystem",
-    "Tray",
-    "shutdown"
+    "Tray"
   ],
   "data": {
     "start_window": "background",
     "hotkeys": {
-      "showhide": {
-        "title": "Show/Hide",
+      "minimap": {
+        "title": "Show Minimap",
         "action-type": "toggle",
-        "default": "Alt+W"
+        "default": "Alt+M"
+      },
+      "zoomIn": {
+        "title": "Zoom in",
+        "action-type": "custom",
+        "default": "Alt+I"
+      },
+      "zoomOut": {
+        "title": "Zoom out",
+        "action-type": "custom",
+        "default": "Alt+O"
+      },
+      "create": {
+        "title": "Create Pin",
+        "action-type": "toggle",
+        "default": "Ctrl+P"
+      },
+      "group": {
+        "title": "Show/Hide Group",
+        "action-type": "toggle",
+        "default": "Ctrl+A"
+      },
+      "editor": {
+        "title": "Show/Hide Editor",
+        "action-type": "toggle",
+        "default": "Ctrl+E"
+      },
+      "routes": {
+        "title": "Show/Hide Routes",
+        "action-type": "toggle",
+        "default": "Ctrl+R"
       }
     },
     "protocol_override_domains": {
-      "localhost": "http"
+      "localhost": "http",
+      "vercel.app": "https"
     },
     "externally_connectable": {
       "matches": [
@@ -68,17 +93,21 @@
         "allow_local_file_access": true,
         "keep_window_location": true,
         "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": true,
-        "resizable": false,
+        "ignore_keyboard_events": false,
+        "resizable": true,
         "transparent": true,
         "override_on_update": true,
         "min_size": {
           "width": 1280,
           "height": 720
         },
-        "size": {
+        "max_size": {
           "width": 1920,
           "height": 1080
+        },
+        "size": {
+          "width": 1280,
+          "height": 720
         }
       }
     },
