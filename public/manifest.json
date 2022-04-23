@@ -50,20 +50,20 @@
         "action-type": "toggle",
         "default": "Ctrl+P"
       },
-      "settings": {
-        "title": "Show/Hide Groups",
+      "group": {
+        "title": "Show/Hide Group",
         "action-type": "toggle",
         "default": "Ctrl+A"
       },
-      "pins": {
+      "editor": {
         "title": "Show/Hide Editor",
         "action-type": "toggle",
         "default": "Ctrl+E"
       },
-      "credits": {
+      "routes": {
         "title": "Show/Hide Routes",
         "action-type": "toggle",
-        "default": "Alt+C"
+        "default": "Ctrl+R"
       }
     },
     "protocol_override_domains": {

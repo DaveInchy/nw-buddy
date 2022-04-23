@@ -14,12 +14,9 @@ import {
   WindowNames,
   GamesFeatures,
   GameClassId,
-  Config,
-  getCircularReplacer
 } from "../global";
 
 // Typescript Class imports
-import Resources from "../resources";
 import DataClient from "../data";
 import Minimap from "../minimap";
 import Pin from "../pin";
@@ -470,8 +467,8 @@ class Overlay extends WindowManager {
       return;
     });
 
-    OWHotkeys.onHotkeyDown(Hotkeys.pins, async (): Promise<void> => {
-      logMessage("hotkey", `pressed hotkey for ${Hotkeys.pins.toString()}`);
+    OWHotkeys.onHotkeyDown(Hotkeys.editor, async (): Promise<void> => {
+      logMessage("hotkey", `pressed hotkey for ${Hotkeys.editor.toString()}`);
       if (this._editorShown) {
         if (!this._createPinShown) {
           this.hideEditor();
