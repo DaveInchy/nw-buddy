@@ -1,10 +1,10 @@
-import Vector2 from './vector2';
-import Pin from './pin';
-import StorageInterface from './storage';
+
 import { logError, logMessage } from './debug';
-import { getCircularReplacer } from './global';
+import { getCircularReplacer } from './global'; import Vector2 from './vector2';
+import StorageInterface from './storage';
 import CacheInterface from './cache';
 import DataClient from './data';
+import Pin from './pin';
 
 /*
  * ClassName:       Minimap
@@ -50,7 +50,7 @@ export default class Minimap {
   constructor(player: any, canvas: HTMLCanvasElement) {
     var _ = this.__;
 
-    // this.cacheDownload();
+    this.cacheDownload();
 
     _.canvas = canvas;
     _.canvasContext = _.canvas.getContext("2d");

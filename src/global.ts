@@ -31,7 +31,7 @@ export const WindowNames = {
 export const Hotkeys = {
   minimap: 'minimap',
   create: 'create',
-  pins: 'pins',
+  editor: 'editor',
   groups: 'groups',
   routes: 'routes',
   zoomIn: 'zoomIn',
