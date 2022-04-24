@@ -13,7 +13,7 @@ export class Window{
     this.currWindow = new OWWindow(windowName);
 
     var header: HTMLElement;
-    if(windowName === 'console') {
+    if(windowName !== 'overlay') {
       header = document.getElementById('header');
       const closeButton = document.getElementById('closeButton');
       const maximizeButton = document.getElementById('maximizeButton');

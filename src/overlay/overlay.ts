@@ -2,28 +2,19 @@ import {
   IOWGamesEventsDelegate,
   OWGames,
   OWGamesEvents,
-  OWHotkeys,
-  OWWindow
+  OWHotkeys
 } from "@overwolf/overwolf-api-ts";
 
 // Typescript imports
 import { logMessage, logError } from "../debug";
 import { Window as WindowManager } from "../window";
-import {
-  Hotkeys,
-  WindowNames,
-  GamesFeatures,
-  GameClassId,
-  Config,
-  getCircularReplacer
-} from "../global";
+import { Hotkeys, WindowNames, GamesFeatures, GameClassId } from "../global";
 
 // Typescript Class imports
-import Resources from "../resources";
+import StorageInterface from "../storage";
 import DataClient from "../data";
 import Minimap from "../minimap";
 import Pin from "../pin";
-import StorageInterface from "../storage";
 
 // CSS imports
 import "../assets/tailwind.css";
@@ -47,8 +38,8 @@ class Overlay extends WindowManager {
   private _gameProcData: Object | any;
   private _gameEventData: Object | any;
 
-  _gameInfoUpdates: overwolf.Event<any>;
-  _gameEventsUpdates: overwolf.Event<owEvents.NewGameEvents>;
+  public _gameInfoUpdates: overwolf.Event<any>;
+  public _gameEventsUpdates: overwolf.Event<owEvents.NewGameEvents>;
 
   private _Minimap: Minimap;
 
@@ -125,8 +116,6 @@ class Overlay extends WindowManager {
           direction: this._playerPosData[13].toString(),
         };
 
-        this._playerList = DataClient.addPlayer(this._player);
-
         this._Minimap = new Minimap(this._player, canvas)
 
         loading = false;
@@ -163,9 +152,10 @@ class Overlay extends WindowManager {
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
-      this._playerList = updateCounter % 2
-        ? DataClient.updatePlayer(this._player)
+      this._playerList = updateCounter % ticksPerSecond
+        ? DataClient.addPlayer(this._player) && DataClient.updatePlayer(this._player)
         : DataClient.getPlayers();
+
 
       //logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 

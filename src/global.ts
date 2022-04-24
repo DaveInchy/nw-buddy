@@ -32,8 +32,8 @@ export const Hotkeys = {
   minimap: 'minimap',
   create: 'create',
   pins: 'pins',
-  settings: 'settings',
-  credits: 'credits',
+  groups: 'groups',
+  routes: 'routes',
   zoomIn: 'zoomIn',
   zoomOut: 'zoomOut',
 };

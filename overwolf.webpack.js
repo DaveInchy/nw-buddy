@@ -62,7 +62,7 @@ module.exports = class OverwolfPlugin {
     const
       version = pkg.version,
       name = manifest.meta.name,
-      opkPath = path.join(__dirname, `releases/${name}-${version}${(suffix) ? `.${suffix}` : ''}.opk`);
+      opkPath = path.join(__dirname, `releases/nw-buddy_${version}${(suffix) ? `.${suffix}` : ''}.opk`);
 
     await this.deleteFile(opkPath);
     await zip.zip(dist, opkPath);

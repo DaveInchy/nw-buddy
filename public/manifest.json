@@ -4,8 +4,8 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "22.04.14",
-    "minimum-overwolf-version": "0.190.0",
+    "version": "22.04.24",
+    "minimum-overwolf-version": "0.180.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game. It features all the features you would expect from a minimap client including some features to hook it with your discord etc. This program is written with upmost code optimization so its very light-weight.",
     "dock_button_title": "NW Buddy",
     "icon": "icons/Icon.png",
@@ -50,7 +50,7 @@
         "action-type": "toggle",
         "default": "Ctrl+P"
       },
-      "settings": {
+      "groups": {
         "title": "Show/Hide Groups",
         "action-type": "toggle",
         "default": "Ctrl+A"
@@ -60,7 +60,7 @@
         "action-type": "toggle",
         "default": "Ctrl+E"
       },
-      "credits": {
+      "routes": {
         "title": "Show/Hide Routes",
         "action-type": "toggle",
         "default": "Alt+C"

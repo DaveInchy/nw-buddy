@@ -10,7 +10,7 @@ export const logMessage = async (type, message) => {
     return http;
 };
 
-//@depricated legacy
+//@deprecated legacy
 export const logError = async function (error) {
     return await logMessage('error', error);
 }
@@ -19,26 +19,27 @@ class DebugClient {
 
     public static host: string = 'http://localhost:8433/';
 
-    constructor()
+    public constructor()
     {
-        return;
+        return this;
     }
 
-    public send = async (subject: string = "default", message: string = "debugging message default", type: 'error' | 'message' = 'message'): Promise<any> =>
+    public static logMessage = async (subject: string = "default", message: string = "debugging message default", type: 'error' | 'message' = 'message'): Promise<any> =>
     {
         var http: Response = await fetch(`${DebugClient.host}`
             + '?time=' + encodeURIComponent(`${Date.now()}`)
             + '&subject=' + encodeURIComponent(`${subject.toString()}`)
             + '&message=' + encodeURIComponent(`${message}`)
             + '&type=' + encodeURIComponent(`${type}`));
-        return http.json();
+        return;
     }
 
-    public sendError = async (message: string = "error while debugging"): Promise<any> =>
+    public static logError = async (message: string = "error while debugging"): Promise<any> =>
     {
-        return await this.send('error', message.toString(), 'error');
+        var err = await DebugClient.logMessage('error', message.toString(), 'error');
+        return;
     }
 
 }
 
-export default new DebugClient() as DebugClient;
+export default DebugClient;
