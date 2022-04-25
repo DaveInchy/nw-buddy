@@ -50,7 +50,7 @@ export default class Minimap {
   constructor(player: any, canvas: HTMLCanvasElement) {
     var _ = this.__;
 
-    this.cacheDownload();
+    // this.cacheDownload();
 
     _.canvas = canvas;
     _.canvasContext = _.canvas.getContext("2d");
