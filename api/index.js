@@ -2,21 +2,29 @@ const express = require('express');
 const cache = require("./pins.json");
 
 class Player {
+
     user = undefined;
     data = undefined;
     group = undefined;
+
     constructor(user, group, data) {
+
         this.user = user;
         this.data = data;
         this.group = group;
+
+        console.log(`new Player() => ${this.user} has been constructed with data: ${this.data}`);
+
         return new Object ({
             "type": "player",
-            "user": user,
-            "group": group,
-            "x": data.x,
-            "y": data.y,
-            "z": data.z,
-            "direction": data.direction,
+            "user": this.user,
+            "group": this.group,
+            "coords": {
+                "x": this.data.x,
+                "y": this.data.y,
+                "z": this.data.z,
+                "direction": this.data.direction,
+            },
         });
     }
 }
@@ -32,14 +40,14 @@ class DataServer {
     constructor() {
         this.app = express();
 
-        this.app.use('/api/player/set', this.setPlayer);
-        this.app.use('/api/player/update', this.setPlayer);
-        this.app.use('/api/player/list', this.listPlayers);
-
         this.app.use('/api/datasheet/pins', this.getPinsJSON);
 
-        this.app.listen(this.port);
+        this.app.use('/api/player/set', this.setPlayer);
+        this.app.use('/api/player/get/:username', this.getPlayer);
+        this.app.use('/api/player/list', this.listPlayers);
+        this.app.use('/api/player/list/:group', this.listGroup);
 
+        this.app.listen(this.port);
         return this;
     }
 
@@ -61,7 +69,7 @@ class DataServer {
     }
 
     getPlayer = (request, response) => {
-        let username        = request.params.username;
+        let username = request.params.username;
         this.players.forEach((element, index) => {
             if (element.user === username) {
                 response.setHeader('Access-Control-Allow-Header', '*');
@@ -83,27 +91,33 @@ class DataServer {
         const hasQuery      = Object.keys(request.query).length > 0;
         const hasHeaders    = Object.keys(request.headers).length > 0;
 
-        var player = hasQuery ? {
-            "user": request.query.user,
-            "x": request.query.x,
-            "y": request.query.y,
-            "z": request.query.z,
-            "direction": request.query.direction,
-        } : {};
+        var player = new Player(
+            request.query.user ? request.query.user : "propabot",
+            request.query.group ? request.query.group : "public",
+            hasQuery ? {
+                "user": request.query.user ? request.query.user : "propabot",
+                "x": request.query.x ? request.query.x : 0,
+                "y": request.query.y ? request.query.y : 0,
+                "z": request.query.z ? request.query.z : 0,
+                "direction": request.query.direction ? request.query.direction : "N",
+                "group": request.query.group ? request.query.group : "public"
+            } : undefined
+        );
 
         console.log("checking if " + player.user.toString() + " already exists in live data ...");
-        var playerExists = this.players ? this.players.find( element => element.user === player.user ) : never;
 
-        if (!playerExists)
+        var playerFound = this.players
+            ? this.players.find( element => element.user === player.user )
+            : false;
+
+        if (!playerFound)
         {
-            this.players.push(new Player(player.user, "untested", player));
+            this.players.push(player);
             console.log("added player " + player.user.toString() + " to live data ...");
-        }
-        else
-        {
+        } else {
             this.players.forEach(function(element, index, array) {
                 if(element.user === player.user) {
-                    array[index] = new Player(player.user, "untested", player);
+                    array[index] = player;
                     console.log("updated " + player.user.toString() + " in live data ...");
                 }
             });
@@ -115,7 +129,7 @@ class DataServer {
         var data            = hasQuery ? request.query : {};
             data.players    = this.players ? this.players : [];
 
-        console.log(`${request.url} => ${data.players}`);
+        console.log(`${request.url} => ${headers}`);
 
         response.setHeader('Accept', 'application/json');
         response.setHeader('Cache-Control', 's-max-age=1, no-cache');

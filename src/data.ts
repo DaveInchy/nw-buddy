@@ -24,7 +24,8 @@ class DataClient
             + `&x=${this.player.x}`
             + `&y=${this.player.y}`
             + `&z=${this.player.z}`
-            + `&direction=${encodeURIComponent(this.player.direction)}`, {
+            + `&direction=${encodeURIComponent(this.player.direction)}`
+            + `&group=${encodeURIComponent(this.player.group)}`, {
             method: 'POST',
             body: JSON.stringify(this.player)
         }).then(res => {
@@ -38,28 +39,6 @@ class DataClient
         });
         return this.playerList;
     }
-
-    public updatePlayer = (player: any) => {
-        this.player = player;
-        fetch(`${this.host}/api/player/update`
-            + `?user=${encodeURIComponent(this.player.user)}`
-            + `&x=${this.player.x}`
-            + `&y=${this.player.y}`
-            + `&z=${this.player.z}`
-            + `&direction=${encodeURIComponent(this.player.direction)}`, {
-            method: 'POST',
-            body: JSON.stringify(this.player),
-        }).then(res => {
-            res.json().then(data => {
-                this.playerList = data;
-            }).catch(err => {
-                logError("res.json() => " + err);
-            });
-        }).catch(err => {
-            logError("updatePlayers() => " + err);
-        });
-        return this.playerList;
-    };
 
     public getPlayers = () => {
         fetch(`${this.host}/api/player/list`, {

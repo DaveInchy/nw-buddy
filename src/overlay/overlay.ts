@@ -34,6 +34,7 @@ class Overlay extends WindowManager {
 
   public _gameId: number;
   public _gameData: Object | any;
+  public _gameMap: string | any;
 
   private _gameProcData: Object | any;
   private _gameEventData: Object | any;
@@ -114,6 +115,7 @@ class Overlay extends WindowManager {
           y: this._playerPosData[3],
           z: this._playerPosData[5],
           direction: this._playerPosData[13].toString(),
+          group: this._gameProcData.sessionId,
         };
 
         this._Minimap = new Minimap(this._player, canvas)
@@ -139,6 +141,7 @@ class Overlay extends WindowManager {
       // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
 
+      this._gameMap = this._gameEventData.res.game_info.map;
       this._playerCharacter = this._gameEventData.res.game_info.player_name;
       this._playerLocation = this._gameEventData.res.game_info.location;
       this._playerPosData = this._playerLocation.split(",");
@@ -149,12 +152,11 @@ class Overlay extends WindowManager {
         y: this._playerPosData[3],
         z: this._playerPosData[5],
         direction: this._playerPosData[13].toString(),
+        group: this._gameProcData.sessionId.toString(),
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
-      this._playerList = updateCounter % ticksPerSecond
-        ? DataClient.setPlayer(this._player)
-        : this._playerList; //DataClient.setPlayer(this._playerCharacter, this._player, "TESTING2");
+      this._playerList = DataClient.setPlayer(this._player);
 
 
       logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
