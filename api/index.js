@@ -140,43 +140,8 @@ class DataServer {
         return;
     }
 
-    updatePlayer = (request, response) => {
-        const hasQuery      = Object.keys(request.query).length > 0;
-        const hasHeaders    = Object.keys(request.headers).length > 0;
-
-        var player = hasQuery
-        ? {
-            "user": request.query.user,
-            "x": request.query.x,
-            "y": request.query.y,
-            "z": request.query.z,
-            "direction": request.query.direction,
-        }
-        : {};
-
-        console.log("updating player " + player.user.toString() + " in live data ...");
-
-        this.players.forEach(function(element, index) {
-            if(element.user === player.user) {
-                element = player;
-                console.log("updated player successfully ...");
-            }
-        });
-
-        console.log("retreiving all players in database...");
-
-        var data            = hasQuery ? request.query : {};
-            data.headers    = hasHeaders ? request.headers : {};
-            data.players    = this.players || [];
-
-        console.log(`${request.url} => ${data.players}`);
-
-        response.setHeader('Accept', 'application/json');
-        response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-        response.setHeader('Access-Control-Allow-Header', '*');
-        response.setHeader('Access-Control-Allow-Origin', '*');
-
-        response.send(JSON.stringify(data.players, getCircularReplacer()));
+    listGroup = (request, response) => {
+        response.status(200).send(JSON.stringify(this.players, getCircularReplacer()));
         return;
     }
 
@@ -223,4 +188,4 @@ const getCircularReplacer = () => {
     };
 };
 
-module.exports = new DataServer().app;
+module.exports.default = new DataServer().app;
