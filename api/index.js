@@ -93,13 +93,16 @@ class DataServer {
         console.log("checking if " + player.user.toString() + " already exists in live data ...");
         var playerExists = this.players.find( element => element.user === player.user ) && true;
 
-        if (!playerExists) {
-            this.players.push(player);
+        if (!playerExists)
+        {
+            this.players.push(new Player(player.user, "untested", player));
             console.log("added player " + player.user.toString() + " to live data ...");
-        } else {
-            this.players.forEach(function(element, index) {
+        }
+        else
+        {
+            this.players.forEach(function(element, index, array) {
                 if(element.user === player.user) {
-                    this.players[index] = player;
+                    array[index] = new Player(player.user, "untested", player);
                     console.log("updated " + player.user.toString() + " in live data ...");
                 }
             });
