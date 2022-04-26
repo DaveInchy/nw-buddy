@@ -32,12 +32,9 @@ class DataServer {
     constructor() {
         this.app = express();
 
-        this.app.use('/api/player/add', this.addPlayer);
-        this.app.use('/api/player/update', this.updatePlayer);
+        this.app.use('/api/player/set', this.setPlayer);
+        this.app.use('/api/player/update', this.setPlayer);
         this.app.use('/api/player/list', this.listPlayers);
-
-        this.app.use('/api/player/get/:username', this.getPlayer);
-        this.app.use('/api/player/set/:username/:group', this.setPlayer);
 
         this.app.use('/api/datasheet/pins', this.getPinsJSON);
 
@@ -63,51 +60,6 @@ class DataServer {
         return;
     }
 
-    setPlayer = (request, response) => {
-
-        let method          = request.method;
-        let username        = request.params.username;
-        let group           = request.params.group;
-        let data            = Object.keys(request.body).length > 0;
-            data            = data && method === 'POST'
-                            ? request.body
-                            : response.status(400).send('[{ type: "error", message: "post method without body" }]');
-        let player          = new Player(username, group, data);
-        let playerFound     = this.players.find(element => element.user === player.user);
-
-        if (!playerFound && player)
-        {
-
-            this.players.push(player);
-            console.log("added player " + player.user.toString() + " to data ...");
-
-        }
-        else if (playerFound && player)
-        {
-
-            this.players.forEach((element, index) => {
-                if (element.user === player.user) {
-                    this.players[index] = player;
-                    console.log("updated player " + player.user.toString() + " in data ...");
-                }
-            });
-
-        }
-
-        console.log(`${request.url} => ${this.players}`);
-
-        response.setHeader('Access-Control-Allow-Header', '*');
-        response.setHeader('Access-Control-Allow-Origin', '*');
-
-        response.setHeader('Accept', 'application/json');
-        response.setHeader('Content-Type', 'application/json');
-
-        response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
-
-        response.status(200).send(JSON.stringify(this.players, getCircularReplacer()));
-        return;
-    }
-
     getPlayer = (request, response) => {
         let username        = request.params.username;
         this.players.forEach((element, index) => {
@@ -127,7 +79,7 @@ class DataServer {
         return;
     }
 
-    addPlayer = (request, response) => {
+    setPlayer = (request, response) => {
         const hasQuery      = Object.keys(request.query).length > 0;
         const hasHeaders    = Object.keys(request.headers).length > 0;
 
@@ -144,6 +96,13 @@ class DataServer {
         if (!playerExists) {
             this.players.push(player);
             console.log("added player " + player.user.toString() + " to live data ...");
+        } else {
+            this.players.forEach(function(element, index) {
+                if(element.user === player.user) {
+                    element = player;
+                    console.log("updated " + player.user.toString() + " in live data ...");
+                }
+            });
         }
 
         console.log("retreiving all players in database...");

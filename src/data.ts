@@ -1,5 +1,6 @@
 import { logMessage, logError } from './debug';
 import { getCircularReplacer } from '../../archive/nw-buddy-r22/src/global';
+import { createHash, Hash } from 'crypto';
 
 class DataClient
 {
@@ -16,7 +17,16 @@ class DataClient
         return;
     }
 
-    public addPlayer = (player: any) => {
+    public setPlayer = async (username: string, player: any, group: string) => {
+        logMessage("live", `setPlayer(${username}, ${player}, ${group})`);
+        let res = await fetch(`${this.host}/api/player/set/${username}/${group}`, {
+            method: 'POST',
+            body: JSON.stringify(player, getCircularReplacer()),
+        });
+        return await res.json();
+    }
+
+    public setPlayer = (player: any, group: string = "gid_000100") => {
         this.player = player;
         fetch(`${this.host}/api/player/add`
             + `?user=${encodeURIComponent(this.player.user)}`
