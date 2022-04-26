@@ -27,7 +27,7 @@ class DataServer {
 
     port = 8080;
 
-    players = [];
+    players = [{}];
 
     constructor() {
         this.app = express();
@@ -91,7 +91,7 @@ class DataServer {
         } : {};
 
         console.log("checking if " + player.user.toString() + " already exists in live data ...");
-        var playerExists = this.players.find( element => element.user === player.user ) && true;
+        var playerExists = this.players ? this.players.find( element => element.user === player.user ) : never;
 
         if (!playerExists)
         {
