@@ -1,10 +1,11 @@
 export default class OverlayInterface
 {
+    _instance = null;
     public constructor(
         public readonly Identifier: string,
         public readonly Selector: string,
-        private Container?: HTMLElement,
-        private Children?: HTMLElement[],
+        public Container?: HTMLElement,
+        public Children?: HTMLElement[],
     )
     {
         return this;
@@ -22,5 +23,11 @@ export default class OverlayInterface
                 this.getElement().style[Style.property] = Style.value;
             }
         }
+    }
+
+    public createInterface = (): HTMLElement =>
+    {
+        this._instance = this.getElement();
+        return this._instance;
     }
 }

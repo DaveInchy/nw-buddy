@@ -15,6 +15,34 @@ const PluginName = 'OverwolfPlugin';
 module.exports = class OverwolfPlugin {
   constructor(env) {
     this.env = env
+
+    const
+      packagePath = path.resolve(__dirname, './package.json'),
+      manifestPath = path.resolve(__dirname, './public/manifest.json');
+
+    const
+      pkg = this.readFile(packagePath),
+      manifest = this.readFile(manifestPath);
+
+    if ( !pkg )
+      throw 'could not read package.json';
+
+    if ( !manifest )
+      throw 'could not read manifest.json';
+
+    const
+      version = pkg.version,
+      name = pkg.name;
+
+    var newDate = new Date();
+    var base = newDate.getUTCFullYear();
+    var major = newDate.getUTCMonth();
+    var minor = newDate.getUTCDate();
+    var revision = newDate.getUTCHours();
+    var build = newDate.getUTCMinutes();
+    var newVersion = `${base.toString().split(20)[1]}.${major}.${minor}`;
+
+    this.env.setVersion = newVersion === version  ? `${newVersion}.${revision}.${build}` : newVersion;
   }
   apply(compiler) {
     compiler.hooks.run.tapPromise(PluginName, async (compilation) => {
@@ -61,8 +89,8 @@ module.exports = class OverwolfPlugin {
 
     const
       version = pkg.version,
-      name = manifest.meta.name,
-      opkPath = path.join(__dirname, `releases/nw-buddy_${version}${(suffix) ? `.${suffix}` : ''}.opk`);
+      name = pkg.name,
+      opkPath = path.join(__dirname, `releases/${name}_${version}${(suffix) ? `.${suffix}` : ''}.opk`);
 
     await this.deleteFile(opkPath);
     await zip.zip(dist, opkPath);

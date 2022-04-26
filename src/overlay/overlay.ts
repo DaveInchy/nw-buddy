@@ -156,10 +156,9 @@ class Overlay extends WindowManager {
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
-      this._playerList = DataClient.setPlayer(this._player);
-
-
-      logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
+      this._playerList = DataClient.setPlayer(this._player); // returns playerlist
+      // [{"type":"player","user":"n'Adina","group":"0c218ed2585c4353b77fbbb2d6e915a8","coords":{"x":"8695.59","y":"4233.43","z":"179.55","direction":"SW"}}]
+      //logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 
       this.drawCoords();
       this.drawTime();

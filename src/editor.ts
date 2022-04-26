@@ -3,13 +3,13 @@ import CacheInterface from './cache';
 import StorageInterface from './storage';
 import OverlayInterface from './interface';
 
-export default class Editor extends OverlayInterface
+export class Editor extends OverlayInterface
 {
     public constructor(
-        Identifier: string,
-        Selector: string,
-        Container?: HTMLElement,
-        Children?: HTMLElement[],
+        public readonly Identifier: string,
+        public readonly Selector: string,
+        public Container?: HTMLElement,
+        public Children?: HTMLElement[],
     )
     {
         super(Identifier, Selector, Container, Children);
@@ -17,3 +17,5 @@ export default class Editor extends OverlayInterface
     }
 
 }
+const editor = new Editor('pin-editor', '#editor').createInterface();
+export default editor;
