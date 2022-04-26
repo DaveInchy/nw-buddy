@@ -27,7 +27,7 @@ class DataServer {
 
     port = 8080;
 
-    players = [{}];
+    players = new Array();
 
     constructor() {
         this.app = express();
@@ -111,9 +111,9 @@ class DataServer {
 
         console.log("retreiving all players in database...");
 
+        var headers         = hasHeaders ? request.headers : {};
         var data            = hasQuery ? request.query : {};
-            data.headers    = hasHeaders ? this.players[0] = request.headers : {};
-            data.players    = this.players || [];
+            data.players    = this.players ? this.players : [];
 
         console.log(`${request.url} => ${data.players}`);
 
