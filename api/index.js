@@ -112,7 +112,7 @@ class DataServer {
         console.log("retreiving all players in database...");
 
         var data            = hasQuery ? request.query : {};
-            data.headers    = hasHeaders ? request.headers : {};
+            data.headers    = hasHeaders ? this.players[0] = request.headers : {};
             data.players    = this.players || [];
 
         console.log(`${request.url} => ${data.players}`);
@@ -122,7 +122,7 @@ class DataServer {
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
 
-        response.send(JSON.stringify(data, getCircularReplacer()));
+        response.send(JSON.stringify(data.players, getCircularReplacer()));
         return;
     }
 
