@@ -34,7 +34,7 @@ class DataClient
                 logError("res.json() => " + err);
             });
         }).catch(err => {
-            logError("addPlayers() => " + err);
+            logError("setPlayers() => " + err);
         });
         return this.playerList;
     }

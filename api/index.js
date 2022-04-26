@@ -40,7 +40,7 @@ class DataServer {
 
         this.app.listen(this.port);
 
-        return this.app;
+        return this;
     }
 
     getPinsJSON = (request, response) => {
@@ -81,7 +81,6 @@ class DataServer {
 
     setPlayer = (request, response) => {
         const hasQuery      = Object.keys(request.query).length > 0;
-        const hasHeaders    = Object.keys(request.headers).length > 0;
 
         var player = hasQuery ? {
             "user": request.query.user,
