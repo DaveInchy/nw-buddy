@@ -4,8 +4,8 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "22.04.25",
-    "minimum-overwolf-version": "0.180.0",
+    "version": "22.5.0",
+    "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
     "icon": "icons/IconMouseOver.png",
@@ -46,7 +46,7 @@
         "default": "Alt+O"
       },
       "create": {
-        "title": "Create Pin",
+        "title": "Create Marker/Route",
         "action-type": "toggle",
         "default": "Ctrl+P"
       },

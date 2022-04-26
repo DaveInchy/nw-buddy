@@ -22,6 +22,7 @@ import "../assets/tailwind.css";
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
 import owUtils = overwolf.utils;
+import Player from './../player';
 
 class Overlay extends WindowManager {
   private static _instance: Overlay;
@@ -56,6 +57,7 @@ class Overlay extends WindowManager {
   private _createPinShown: boolean = false;
   private _editorShown: boolean = false;
   private _overlayShown: boolean;
+  private _group: string;
 
   private constructor() {
     super(WindowNames.overlay);
@@ -146,6 +148,15 @@ class Overlay extends WindowManager {
       this._playerLocation = this._gameEventData.res.game_info.location;
       this._playerPosData = this._playerLocation.split(",");
 
+      this._group = Player(this._playerCharacter, this._gameEventData.sessionId, {
+        user: this._playerCharacter,
+        x: this._playerPosData[1],
+        y: this._playerPosData[3],
+        z: this._playerPosData[5],
+        direction: this._playerPosData[13].toString(),
+        group: this._gameProcData.sessionId.toString(),
+      }).group;
+
       this._player = {
         user: this._playerCharacter,
         x: this._playerPosData[1],
@@ -153,7 +164,7 @@ class Overlay extends WindowManager {
         z: this._playerPosData[5],
         direction: this._playerPosData[13].toString(),
         group: this._gameProcData.sessionId.toString(),
-      };
+      }
 
       // https://nw-radar-api.vercel.app/api/player/list
       this._playerList = DataClient.setPlayer(this._player); // returns playerlist

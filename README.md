@@ -34,7 +34,7 @@ lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl ege
 <br>
 
 ```
-### ⛳ Release [22.04.24] ###
+### ⛳ Release [22.5.0] ###
 
 <🔴 Not Started />
 
