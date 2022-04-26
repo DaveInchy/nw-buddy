@@ -17,18 +17,9 @@ class DataClient
         return;
     }
 
-    public setPlayer = async (username: string, player: any, group: string) => {
-        logMessage("live", `setPlayer(${username}, ${player}, ${group})`);
-        let res = await fetch(`${this.host}/api/player/set/${username}/${group}`, {
-            method: 'POST',
-            body: JSON.stringify(player, getCircularReplacer()),
-        });
-        return await res.json();
-    }
-
-    public setPlayer = (player: any, group: string = "gid_000100") => {
+    public setPlayer = (player: any) => {
         this.player = player;
-        fetch(`${this.host}/api/player/add`
+        fetch(`${this.host}/api/player/set`
             + `?user=${encodeURIComponent(this.player.user)}`
             + `&x=${this.player.x}`
             + `&y=${this.player.y}`

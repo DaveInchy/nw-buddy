@@ -92,14 +92,15 @@ class DataServer {
         } : {};
 
         console.log("checking if " + player.user.toString() + " already exists in live data ...");
-        var playerExists = this.players.find( element => element.user === player.user );
+        var playerExists = this.players.find( element => element.user === player.user ) && true;
+
         if (!playerExists) {
             this.players.push(player);
             console.log("added player " + player.user.toString() + " to live data ...");
         } else {
             this.players.forEach(function(element, index) {
                 if(element.user === player.user) {
-                    element = player;
+                    this.players[index] = player;
                     console.log("updated " + player.user.toString() + " in live data ...");
                 }
             });
@@ -114,7 +115,7 @@ class DataServer {
         console.log(`${request.url} => ${data.players}`);
 
         response.setHeader('Accept', 'application/json');
-        response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+        response.setHeader('Cache-Control', 's-max-age=1, no-cache');
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
 
