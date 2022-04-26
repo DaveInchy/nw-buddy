@@ -81,6 +81,7 @@ class DataServer {
 
     setPlayer = (request, response) => {
         const hasQuery      = Object.keys(request.query).length > 0;
+        const hasHeaders    = Object.keys(request.headers).length > 0;
 
         var player = hasQuery ? {
             "user": request.query.user,
@@ -121,7 +122,7 @@ class DataServer {
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
 
-        response.send(JSON.stringify(data.players, getCircularReplacer()));
+        response.send(JSON.stringify(data, getCircularReplacer()));
         return;
     }
 
