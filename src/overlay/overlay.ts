@@ -8,7 +8,7 @@ import {
 // Typescript imports
 import { logMessage, logError } from "../debug";
 import { Window as WindowManager } from "../window";
-import { Hotkeys, WindowNames, GamesFeatures, GameClassId } from "../global";
+import { Hotkeys, WindowNames, GamesFeatures, GameClassId, getCircularReplacer } from "../global";
 
 // Typescript Class imports
 import StorageInterface from "../storage";
@@ -157,7 +157,7 @@ class Overlay extends WindowManager {
         : DataClient.getPlayers();
 
 
-      //logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
+      logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 
       this.drawCoords();
       this.drawTime();

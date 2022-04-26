@@ -4,7 +4,7 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "22.04.24",
+    "version": "22.04.25",
     "minimum-overwolf-version": "0.180.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -102,8 +102,8 @@
           "height": 720
         },
         "max_size": {
-          "width": 1920,
-          "height": 1080
+          "width": 2560,
+          "height": 1440
         },
         "size": {
           "width": 1280,
