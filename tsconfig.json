@@ -6,7 +6,9 @@
     "experimentalDecorators": true,
     "types": [
       "@types/node",
-      "@overwolf/types"
+      "@overwolf/types",
+      "node",
+      "react",
     ],
     "rootDirs": [
       "./src",
@@ -23,6 +25,7 @@
   "exclude": [
     "node_modules",
     "api",
-    "debug.server.js"
+    "debug.server.js",
+    "public",
   ]
 }

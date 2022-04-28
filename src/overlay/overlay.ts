@@ -14,10 +14,12 @@ import { Hotkeys, WindowNames, GamesFeatures, GameClassId, getCircularReplacer }
 import StorageInterface from "../storage";
 import DataClient from "../data";
 import Minimap from "../minimap";
+import Player, { playerModel } from '../player';
 import Pin from "../pin";
 
 // CSS imports
 import "../assets/tailwind.css";
+import "../assets/overlay.css";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
@@ -47,8 +49,8 @@ class Overlay extends WindowManager {
   public _playerPosData: Array<string>;
   public _playerCharacter: string;
   public _playerLocation: any;
-  public _player: any;
-  public _playerList: any;
+  public _player: playerModel;
+  public _playerList: playerModel[];
 
   private _editorLoadedOnce: boolean = false;
 
@@ -56,6 +58,7 @@ class Overlay extends WindowManager {
   private _createPinShown: boolean = false;
   private _editorShown: boolean = false;
   private _overlayShown: boolean;
+  private _group: string;
 
   private constructor() {
     super(WindowNames.overlay);
@@ -88,14 +91,8 @@ class Overlay extends WindowManager {
     logMessage("startup","loading game data ...");
 
     while (loading) {
-
-      loadCounter++;
-      await this.wait(loadInterval * 1000);
-
-      logMessage("startup","try again => [" + loadInterval * loadCounter + " sec]");
-
+      logMessage("startup", "try again => [" + loadInterval * loadCounter + " sec]");
       try {
-
         await this.listenForEvents();
 
         this.setToggleHotkeyText();
@@ -110,12 +107,16 @@ class Overlay extends WindowManager {
         this._playerPosData = this._playerLocation.split(",");
 
         this._player = {
+          type: "player",
           user: this._playerCharacter,
-          x: this._playerPosData[1],
-          y: this._playerPosData[3],
-          z: this._playerPosData[5],
-          direction: this._playerPosData[13].toString(),
-          group: this._gameProcData.sessionId,
+          coords: {
+            x: Number(this._playerPosData[1]),
+            y: Number(this._playerPosData[3]),
+            z: Number(this._playerPosData[5]),
+            direction: this._playerPosData[13],
+          },
+          group: this._gameProcData.sessionId.toString(),
+          map: this._gameMap ? this._gameMap : "mainland",
         };
 
         this._Minimap = new Minimap(this._player, canvas)
@@ -126,6 +127,8 @@ class Overlay extends WindowManager {
         logError("error loading game data ...");
         logError(e);
       }
+      await this.wait(1000 / ticksPerSecond);
+      loadCounter++;
     }
 
     logMessage("startup", "starting runtime service ...");
@@ -136,42 +139,42 @@ class Overlay extends WindowManager {
       await this.getProcData();
       // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
-
       await this.getEventData();
       // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
       // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
-
       this._gameMap = this._gameEventData.res.game_info.map;
       this._playerCharacter = this._gameEventData.res.game_info.player_name;
       this._playerLocation = this._gameEventData.res.game_info.location;
       this._playerPosData = this._playerLocation.split(",");
-
       this._player = {
+        type: "player",
         user: this._playerCharacter,
-        x: this._playerPosData[1],
-        y: this._playerPosData[3],
-        z: this._playerPosData[5],
-        direction: this._playerPosData[13].toString(),
+        coords: {
+          x: Number(this._playerPosData[1]),
+          y: Number(this._playerPosData[3]),
+          z: Number(this._playerPosData[5]),
+          direction: this._playerPosData[13].toString(),
+        },
         group: this._gameProcData.sessionId.toString(),
+        map: this._gameMap.toString(),
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
       this._playerList = DataClient.setPlayer(this._player); // returns playerlist
       // [{"type":"player","user":"n'Adina","group":"0c218ed2585c4353b77fbbb2d6e915a8","coords":{"x":"8695.59","y":"4233.43","z":"179.55","direction":"SW"}}]
-      //logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
+      // logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 
       this.drawCoords();
       this.drawTime();
-      // this.drawTitle("NW BUDDY");
+      this.drawTitle(this._playerCharacter);
 
-      this._overlayShown =
-        this._gameProcData.overlayInfo.isCursorVisible === true
-          ? ((this._createPinShown || this._editorShown)
-            ? this.currWindow.maximize() && true
-            : this.currWindow.minimize() && false)
-          : this.currWindow.maximize() && false;
+      this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
+      ? ((this._createPinShown || this._editorShown)
+        ? this.currWindow.maximize() && true
+        : this.currWindow.minimize() && false)
+      : this.currWindow.maximize() && false;
 
-      this._Minimap.renderCanvas(this._player);
+      this._Minimap.renderCanvas(this._player, this._playerList);
 
       updateCounter <= 1 ? this.showMinimap() : null;
 
@@ -272,17 +275,17 @@ class Overlay extends WindowManager {
         elemInput.value.toLowerCase(),
         1,
         undefined,
-        this._player.x,
-        this._player.y,
-        this._player.z
+        this._player.coords.x,
+        this._player.coords.y,
+        this._player.coords.z
       );
 
       // logMessage("game",`created pin: ${pin.icon} ${JSON.stringify(pin, getCircularReplacer())}`);
 
       StorageInterface.set(`${pin.token}`, JSON.stringify(pin));
       this._Minimap.refreshRender();
-
       elemInput.value = "";
+
       this._createPinShown = false;
       this._overlayShown = true;
       this._minimapShown = true;
@@ -393,6 +396,7 @@ class Overlay extends WindowManager {
 
   private async setZoomHotkeysText() {
     const gameClassId = GameClassId;
+
     const hotkeyZoomIn = await OWHotkeys.getHotkeyText(
       Hotkeys.zoomIn,
       gameClassId
@@ -401,10 +405,20 @@ class Overlay extends WindowManager {
       Hotkeys.zoomOut,
       gameClassId
     );
+
+    hotkeyZoomIn === undefined || hotkeyZoomIn === null || hotkeyZoomIn === "undefined" || hotkeyZoomIn === "unassigned"
+    ? "Alt+I"
+    : hotkeyZoomIn;
+
+    hotkeyZoomOut === undefined || hotkeyZoomOut === null || hotkeyZoomOut === "undefined" || hotkeyZoomOut === "unassigned"
+    ? "Alt+O"
+    : hotkeyZoomOut;
+
     const hotkeyElemZoomIn = document.getElementById("zoomIn-hotkey");
     const hotkeyElemZoomOut = document.getElementById("zoomOut-hotkey");
-    hotkeyElemZoomIn.innerHTML = hotkeyZoomIn;
-    hotkeyElemZoomOut.innerHTML = hotkeyZoomOut;
+
+    hotkeyElemZoomIn.textContent = hotkeyZoomIn;
+    hotkeyElemZoomOut.textContent = hotkeyZoomOut;
   }
 
   private async setToggleHotkeyText() {

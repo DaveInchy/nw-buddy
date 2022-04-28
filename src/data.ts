@@ -1,15 +1,15 @@
 import { logMessage, logError } from './debug';
 import { getCircularReplacer } from '../../archive/nw-buddy-r22/src/global';
 import { createHash, Hash } from 'crypto';
+import { playerModel } from './player';
 
 class DataClient
 {
 
     public host: string;
 
-    private player: any = {};
-    private playerList: [];
-    private cache: any[];
+    private player: playerModel;
+    private playerList: playerModel[];
 
     constructor(host: string = undefined)
     {
@@ -17,17 +17,17 @@ class DataClient
         return;
     }
 
-    public setPlayer = (player: any) => {
-        this.player = player;
+    public setPlayer = (player: playerModel) => {
         fetch(`${this.host}/api/player/set`
-            + `?user=${encodeURIComponent(this.player.user)}`
-            + `&x=${this.player.x}`
-            + `&y=${this.player.y}`
-            + `&z=${this.player.z}`
-            + `&direction=${encodeURIComponent(this.player.direction)}`
-            + `&group=${encodeURIComponent(this.player.group)}`, {
+            + `?user=${encodeURIComponent(player.user)}`
+            + `&group=${encodeURIComponent(player.group)}`
+            + `&x=${player.coords.x}`
+            + `&y=${player.coords.y}`
+            + `&z=${player.coords.z}`
+            + `&direction=${encodeURIComponent(player.coords.direction)}`
+            + `&map=${encodeURIComponent(player.map)}`, {
             method: 'POST',
-            body: JSON.stringify(this.player)
+            body: JSON.stringify(player)
         }).then(res => {
             res.json().then(data => {
                 this.playerList = data;
@@ -66,4 +66,4 @@ class DataClient
 
 }
 
-export default new DataClient("https://nw-radar-api.vercel.app");
+export default new DataClient("https://doonline.nl");

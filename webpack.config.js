@@ -23,16 +23,24 @@ module.exports = env => ({
     },
     entry: {
         background: './src/background/background.ts',
+        desktop: './src/desktop/desktop.ts',
         overlay: './src/overlay/overlay.ts',
     },
     devtool: 'inline-source-map',
+    devServer: {
+        port: 3000,
+        watchContentBase: true
+    },
     module: {
         rules: [
             {
                 test: /\.ts?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                    }
+                ],
             },
             {
                 test: /\.css$/,
@@ -55,13 +63,44 @@ module.exports = env => ({
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            "presets": [
+                                "@babel/preset-env",
+                                "@babel/preset-react"
+                            ]
+                        }
+                    },
+                ]
             },
+            {
+                test: /\.(tsx|jsx)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            "presets": [
+                                "@babel/preset-env",
+                                "@babel/preset-react"
+                            ]
+                        }
+                    },
+                    {
+                        loader: 'ts-loader',
+                        options: { transpileOnly: true },
+                    }
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif|ico)$/,
+                exclude: /node_modules/,
+                use: [
+                    'file-loader'
+                ]
+            }
         ]
     },
     resolve: {
@@ -86,10 +125,15 @@ module.exports = env => ({
             chunks: ['background']
         }),
         new HtmlWebpackPlugin({
+            template: './src/desktop/desktop.html',
+            filename: path.resolve(__dirname, './dist/desktop.html'),
+            chunks: ['desktop']
+        }),
+        new HtmlWebpackPlugin({
             template: './src/overlay/overlay.html',
             filename: path.resolve(__dirname, './dist/overlay.html'),
             chunks: ['overlay']
         }),
         new OverwolfPlugin(env),
-    ]
+    ],
 })

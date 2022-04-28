@@ -1,4 +1,7 @@
-type playerModel = {
+
+import Vector2 from './vector2';
+
+export type playerModel = {
     type: string;
     user: string;
     group: string;
@@ -6,20 +9,20 @@ type playerModel = {
         x: number;
         y: number;
         z: number;
-        direction: "N" | "E" | "S" | "W" | "NE" | "SE" | "SW" | "NW";
-    }
+        direction: string | "N" | "E" | "S" | "W" | "NE" | "SE" | "SW" | "NW";
+    };
+    map: string;
 }
 
-class playerClass {
+export class playerClass {
 
-    private user: string;
-    private data: any;
-    private group: string;
+    public user: string;
+    public data: any;
+    public group: string;
+    public mapPos: Vector2;
 
-    _instance: playerModel;
-
-    private init = (): playerModel => {
-        var player: playerModel = {
+    public Model = (): playerModel => {
+        return {
             "type": "player",
             "user": this.user,
             "group": this.group,
@@ -29,8 +32,8 @@ class playerClass {
                 "z": this.data.z,
                 "direction": this.data.direction,
             },
+            "map": this.data.map ? this.data.map : "mainland",
         };
-        return player;
     }
 
     constructor(user, group, data) {
@@ -38,8 +41,7 @@ class playerClass {
         this.user = user;
         this.data = data;
         this.group = group;
-
-        this._instance = this.init();
+        this.mapPos = new Vector2(0, 0);
 
         return this;
     }
@@ -47,5 +49,10 @@ class playerClass {
 
 export default function Player(user, group, data): playerModel
 {
-    return new playerClass(user, group, data)._instance;
+    return new playerClass(user, group, data).Model();
+}
+
+export function otherPlayer(user, group, data): playerClass
+{
+    return new playerClass(user, group, data);
 }

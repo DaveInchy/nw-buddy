@@ -1,11 +1,12 @@
 
 import { logError, logMessage } from './debug';
-import { getCircularReplacer } from './global'; import Vector2 from './vector2';
+import { getCircularReplacer } from './global';
+import Vector2 from './vector2';
 import StorageInterface from './storage';
 import CacheInterface from './cache';
 import DataClient from './data';
 import Pin from './pin';
-
+import { playerModel } from './player';
 /*
  * ClassName:       Minimap
  * Description:     A two dimensional Minimap Canvas object
@@ -47,7 +48,7 @@ export default class Minimap {
     directionAngle: undefined
   };
 
-  constructor(player: any, canvas: HTMLCanvasElement) {
+  constructor(player: playerModel, canvas: HTMLCanvasElement) {
     var _ = this.__;
 
     this.cacheDownload();
@@ -56,8 +57,8 @@ export default class Minimap {
     _.canvasContext = _.canvas.getContext("2d");
 
     _.playerName = player.user ? player.user : "Player";
-    _.playerDirection = player.direction;
-    _.playerMapCoords = new Vector2(player.x, player.y);
+    _.playerDirection = player.coords.direction;
+    _.playerMapCoords = new Vector2(player.coords.x, player.coords.y);
 
     _.canvasLeft = 0;
     _.canvasRight = canvas.width * _.zoom;
@@ -98,11 +99,9 @@ export default class Minimap {
     });
   }
 
-  public async renderCanvas(player: any) {
+  public async renderCanvas(player: playerModel, playerList: playerModel[]) {
 
-    this.__.playerMapCoords = new Vector2(player.x, player.y);
-
-    this.setZoom(this.__.zoom);
+    this.__.playerMapCoords = new Vector2(player.coords.x, player.coords.y);
 
     var playerCanvasCoords: Vector2 = new Vector2(
       (this.__.playerMapCoords.x - this.__.mapLeft) *
@@ -115,12 +114,38 @@ export default class Minimap {
     this.__.canvas.style.marginLeft = playerCanvasCoords.x + "px";
     this.__.canvas.style.marginTop = playerCanvasCoords.y + "px";
 
+    var ctx: CanvasRenderingContext2D = this.__.canvas.getContext("2d");
+    const renderOtherPlayers = (otherPlayers: playerModel[]) =>
+    {
+      for (var i = 0; i < otherPlayers.length; i++)
+      {
+        var oPlayerMapCoords = new Vector2(otherPlayers[i].coords.x, otherPlayers[i].coords.y);
+
+        var otherPlayer: playerModel = otherPlayers[i];
+
+        var oPlayerCanvasCoords: Vector2 = new Vector2(
+          (oPlayerMapCoords.x - this.__.mapLeft) * this.__.mapToCanvasRatio.x,
+          (this.__.mapTop - oPlayerMapCoords.y) * this.__.mapToCanvasRatio.y
+        );
+
+        var icon: CanvasImageSource = new Image();
+            icon.src = "./assets/images/icons/player.svg";
+            icon.style.position = "relative";
+            icon.style.left = oPlayerCanvasCoords.x + "px";
+            icon.style.top = oPlayerCanvasCoords.y + "px";
+        ctx.drawImage(icon, oPlayerCanvasCoords.x, oPlayerCanvasCoords.y)
+        // logMessage("render", "rendering player: " + otherPlayer.user)
+      }
+    }
+
     // draw and animation of the player pointer
-    var a = this.getRotation(player.direction);
+    var a = this.getRotation(player.coords.direction);
     this.rotateNeedle(this.getDirectionAngle(player));
     this.__.directionAngle = a;
 
-    this.renderLayers(player);
+    this.renderLayers();
+
+    renderOtherPlayers(playerList);
 
     return this;
   }
@@ -146,9 +171,9 @@ export default class Minimap {
     return;
   }
 
-  private renderLayers = async (player: any) => {
+  private renderLayers = async () => {
     this._once
-      ? this.renderGrid(player) &&
+      ? this.renderGrid() &&
         this.renderPins() &&
         (this._once = false)
       : (this._once = false);
@@ -175,7 +200,7 @@ export default class Minimap {
     return;
   }
 
-  private getRotation = (playerDirection: string = "N"): number => {
+  public getRotation = (playerDirection: string = "N"): number => {
     let sequence = [
       "N", // 0
       "NE", // 45
@@ -191,9 +216,9 @@ export default class Minimap {
   }
 
   //@TODO fix this to actually work
-  private getDirectionAngle(player: any) {
+  private getDirectionAngle(player: playerModel) {
     var prev = this.__.directionAngle;
-    var curr = this.getRotation(player.direction)
+    var curr = this.getRotation(player.coords.direction)
     var diff = prev-curr;
 
     this.__.directionAngle = curr;
@@ -473,11 +498,11 @@ export default class Minimap {
       var pinY = -((this.__.mapTop - this.__.mapBottom - (pin.y - this.__.mapBottom)) * this.__.mapToCanvasRatio.y);
 
       // draw a little circle dot on the location
-      this.__.canvasContext.fillStyle = "rgba(0,0,0,0.5)";
+      this.__.canvasContext.fillStyle = "rgba(255,255,255,0.5)";
       this.__.canvasContext.fillRect(pinX - 1, pinY - 1, 3, 3);
 
       //draw text on top of the pin with the tag as title
-      this.__.canvasContext.font = pin.size.width + "px monospace";
+      this.__.canvasContext.font = pin.size.width + "px 'New World', sans-serif";
       this.__.canvasContext.textAlign = "center";
       this.__.canvasContext.fillStyle = "#fff";
       this.__.canvasContext.fillText(pin.icon, pinX, pinY - (pin.size.height / 4));
@@ -489,7 +514,7 @@ export default class Minimap {
     return true;
   }
 
-  async renderGrid(player: any) {
+  async renderGrid() {
     const chunksPerAxis = 100;
 
     function step(length) {
@@ -501,8 +526,8 @@ export default class Minimap {
 
     var rgba_dark = "rgba(0,0,0,0.1)";
     var rgba_red = "rgba(255,0,0,0.1)";
-    var rgba_light = "rgba(255,255,255,0.1)";
-    var rgba_yellow = "rgba(192,161,0,0.1)";
+    var rgba_light = "rgba(255,255,255,0.2)";
+    var rgba_yellow = "rgba(192,161,0,0.2)";
 
     for (
       let x = this.__.canvasLeft;

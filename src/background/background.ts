@@ -17,7 +17,7 @@ class BackgroundController {
   private constructor() {
     // Populating the background controller's window dictionary
     this._windows[WindowNames.overlay] = new OWWindow(WindowNames.overlay);
-    //this._windows[WindowNames.console] = new OWWindow(WindowNames.console);
+    this._windows[WindowNames.desktop] = new OWWindow(WindowNames.desktop);
 
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
@@ -45,7 +45,7 @@ class BackgroundController {
 
     if (await this.isSupportedGameRunning()) {
       logMessage("info", "A supported game is running");
-      //this._windows[WindowNames.console].restore() && logMessage("info", "Console window restored");
+      this._windows[WindowNames.desktop].restore() && logMessage("info", "Desktop window restored");
       this._windows[WindowNames.overlay].restore() && logMessage("info", "Overlay window restored");
     }
   }
@@ -59,9 +59,9 @@ class BackgroundController {
 
     if (await this.isSupportedGameRunning()) {
       this._windows[WindowNames.overlay].restore();
-      //this._windows[WindowNames.console].restore();
+      this._windows[WindowNames.desktop].restore();
     } else {
-      //this._windows[WindowNames.console].close();
+      this._windows[WindowNames.desktop].close();
       this._windows[WindowNames.overlay].close();
     }
   }
@@ -74,9 +74,9 @@ class BackgroundController {
 
     if (info.isRunning) {
       this._windows[WindowNames.overlay].restore();
-      //this._windows[WindowNames.console].restore();
+      this._windows[WindowNames.desktop].restore();
     } else {
-      //this._windows[WindowNames.console].close();
+      this._windows[WindowNames.desktop].close();
       this._windows[WindowNames.overlay].close();
     }
   }

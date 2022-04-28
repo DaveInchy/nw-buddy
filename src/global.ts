@@ -27,7 +27,9 @@ export const GamesFeatures = new Map<number, string[]>([
 export const GameClassIds = Array.from(GamesFeatures.keys());
 
 export const WindowNames = {
-  overlay: 'overlay'
+  overlay: 'overlay',
+  desktop: 'desktop',
+  background: 'background',
 };
 
 export const Hotkeys = {
@@ -40,9 +42,7 @@ export const Hotkeys = {
   zoomOut: 'zoomOut',
 };
 
-export const Config = [
-  {
-    config: require('../package.json'),
-    metadata: require('../public/manifest.json').meta
-  }
-];
+export const Config = {
+  package: require('../package.json'),
+  metadata: require('../public/manifest.json').meta
+}
