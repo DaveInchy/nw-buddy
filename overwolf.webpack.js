@@ -36,7 +36,7 @@ module.exports = class OverwolfPlugin {
 
     var newDate = new Date();
     var base = newDate.getUTCFullYear();
-    var major = newDate.getUTCMonth();
+    var major = newDate.getUTCMonth() + 1;
     var minor = newDate.getUTCDate();
     var revision = newDate.getUTCHours();
     var build = newDate.getUTCMinutes();

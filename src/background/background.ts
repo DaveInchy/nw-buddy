@@ -45,8 +45,11 @@ class BackgroundController {
 
     if (await this.isSupportedGameRunning()) {
       logMessage("info", "A supported game is running");
-      this._windows[WindowNames.desktop].restore() && logMessage("info", "Desktop window restored");
+      this._windows[WindowNames.desktop].restore() && logMessage("info", "Desktop window closed");
       this._windows[WindowNames.overlay].restore() && logMessage("info", "Overlay window restored");
+    } else {
+      this._windows[WindowNames.desktop].close() && logMessage("info", "Desktop window restored");
+      this._windows[WindowNames.overlay].close() && logMessage("info", "Overlay window restored");
     }
   }
 

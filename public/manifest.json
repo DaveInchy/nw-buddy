@@ -5,7 +5,7 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "0.22.5",
+    "version": "0.22.6",
     "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -64,7 +64,7 @@
       "routes": {
         "title": "Show/Hide Routes",
         "action-type": "toggle",
-        "default": "Alt+C"
+        "default": "Ctrl+R"
       }
     },
     "protocol_override_domains": {
@@ -89,18 +89,19 @@
       },
       "desktop": {
         "file": "desktop.html",
-        "background_optimization": false,
+        "desktop_only": true,
+        "disable_rightclick": true,
+        "background_optimization": true,
         "is_background_page": false,
-        "focus_game_takeover": "HideOnFocus",
-        "grab_focus_on_desktop": true,
+        "grab_focus_on_desktop": false,
         "show_in_taskbar": true,
         "native_window": true,
-        "use_os_windowing": true,
         "show_maximize": true,
         "show_minimize": true,
         "keep_window_location": true,
+        "enable_osr_acceleration": true,
         "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": false,
+        "ignore_keyboard_events": true,
         "resizable": true,
         "transparent": false,
         "override_on_update": false,
@@ -118,19 +119,17 @@
         "in_game_only": true,
         "focus_game_takeover": "ShowOnFocus",
         "allow_local_file_access": true,
+        "background_optimization": true,
         "keep_window_location": true,
+        "enable_osr_acceleration": true,
         "optimize_accelerate_rendering": true,
         "ignore_keyboard_events": false,
         "resizable": true,
         "transparent": true,
-        "override_on_update": true,
+        "override_on_update": false,
         "min_size": {
           "width": 1280,
           "height": 720
-        },
-        "max_size": {
-          "width": 2560,
-          "height": 1440
         },
         "size": {
           "width": 1280,

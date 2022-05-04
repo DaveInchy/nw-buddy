@@ -7,7 +7,7 @@ import {
 
 // Typescript imports
 import { logMessage, logError } from "../debug";
-import { Window as WindowManager } from "../window";
+import WindowManager from "../window";
 import { Hotkeys, WindowNames, GamesFeatures, GameClassId, getCircularReplacer } from "../global";
 
 // Typescript Class imports
@@ -121,6 +121,8 @@ class Overlay extends WindowManager {
 
         this._Minimap = new Minimap(this._player, canvas)
 
+        this.setHotkeyBehavior();
+
         loading = false;
         logMessage("startup", "success loading game data ...");
       } catch (e) {
@@ -181,6 +183,24 @@ class Overlay extends WindowManager {
       await this.wait(1000 / ticksPerSecond);
       updateCounter++;
     }
+  }
+
+  async setWindowBehavior() {
+    try {
+      if (WindowNames.overlay === this.windowName) {
+        if (!this.maximized) {
+          this.currWindow.maximize();
+        } else {
+          this.currWindow.restore();
+        }
+        this.maximized = !this.maximized;
+      }
+    }
+    catch (err) {
+      logError(err);
+    }
+
+    return true;
   }
 
   public async releaseMouse() {
@@ -310,7 +330,7 @@ class Overlay extends WindowManager {
   }
 
   public async drawTitle(title: string) {
-    const elem = document.getElementById("title");
+    const elem = document.getElementById("app-title");
     elem.innerHTML = title;
   }
 

@@ -1,88 +1,34 @@
-import "core-js";
+import "core-js/actual";
 
 import { OWWindow } from "@overwolf/overwolf-api-ts";
-import { logMessage, logError } from "./debug";
+import { logError, logMessage } from './debug';
 import { WindowNames } from "./global";
 
-export class Window
-{
-    protected _instance: OWWindow;
-    protected _windows: Record<string, OWWindow> = {};
-    public currWindow: OWWindow;
+export default class owWindow {
 
-    public constructor(windowName)
-    {
-      this._windows[windowName] = new OWWindow(windowName);
-      this.currWindow = this._windows[windowName];
-      this._instance = this._windows[windowName];
-      this.prepare();
-      return;
-    }
-
-    public prepare() {
-    {
-        this.currWindow.getWindowState().then(
-            (state) =>
-            {
-                if (state.window_state === "minimized")
-                {
-                    this.currWindow.maximize();
-                } else
-                {
-                    this.currWindow.minimize();
-                }
-            }
-        );
-    }
-  }
-}
-
-export default class WindowManager extends Window
-{
-  protected maximized: boolean = false;
-  protected windowName: string;
+  maximized: boolean;
+  windowName: string;
+  currWindow: OWWindow;
+  mainWindow: OWWindow;
 
   constructor(windowName) {
-    super(windowName);
 
+    this.maximized = false;
     this.windowName = windowName;
+    this.mainWindow = new OWWindow('background');
+    this.currWindow = new OWWindow(windowName);
 
-    var header: HTMLElement;
-    if(windowName === WindowNames.desktop) {
-      header = document.getElementById('header');
-      const closeButton = document.getElementById('closeButton');
-      const maximizeButton = document.getElementById('maximizeButton');
-      const minimizeButton = document.getElementById('minimizeButton');
-
-      closeButton.addEventListener('click', () => {
-        this._windows[windowName].close();
-      });
-
-      minimizeButton.addEventListener('click', () => {
-        this._windows[windowName].minimize();
-      });
-
-      maximizeButton.addEventListener('click', () => {
-        if (!this.maximized) {
-          this._windows[windowName].maximize();
-        } else {
-          this._windows[windowName].restore();
-        }
-
-        this.maximized = !this.maximized;
-      });
-    } else {
-      header = document.getElementById('minimap-title');
-    }
-    this.setDrag(header);
+    return this;
   }
 
-  public async getWindowState() {
-    logMessage('info', `Getting window state for ${JSON.stringify(this._windows[this.windowName])}`);
-    return await this._windows[this.windowName].getWindowState();
+
+
+  async getWindowState() {
+    logMessage('info', `Getting window state for ${JSON.stringify(this.currWindow)}`);
+    return await this.currWindow.getWindowState();
   }
 
-  public async setDrag(elem) {
-    this._windows[this.windowName].dragMove(elem);
+  async setDrag(elem) {
+    this.currWindow.dragMove(elem);
   }
 }

@@ -1,3 +1,10 @@
+@import './tailwind.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
 body {
   display: flex;
   flex: 1;
@@ -5,8 +12,7 @@ body {
   font-size: 14px;
   width: 100vw;
   height: 100vh;
-  padding-bottom: 50px;
-  padding-top: 50px;
+  padding: 0PX;
 }
 
 main {
@@ -15,60 +21,65 @@ main {
   position: relative;
   overflow: hidden;
   width: 100%;
-  padding: 50px;
+  padding: 0px;
 }
 
 @font-face {
   font-family: 'New World';
-  src: url('./font/IMFellDWPica-Regular.ttf');
+  src: url('../font/IMFellDWPica-Regular.ttf');
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap');
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'New World', sans-serif;
+    @apply font-new-world;
     font-weight: bolder;
     font-size: 1.8rem;
-    @apply text-yellow;
+    color: rgb(192,161,0);
 }
 
 h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
-    font-family: 'New World', sans-serif;
+    @apply font-new-world;
     font-size: 1.0em;
     @apply text-black;
 }
 
 * > span {
-    font-family: inherit;
+    @apply font-mono;
     font-size: 1.0em;
     color: #fefefe;
 }
 
 thead > tr > th > span, thead > tr > th, tbody > tr > td > span, tbody > tr > td {
-    font-family: 'Roboto Mono', monospace;
+    @apply font-new-world;
     font-size: 18px !important;
     letter-spacing: -1px;
     color: #fefefe;
 }
 
 p, a, p > span, a > span {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    @apply font-mono;
     font-size: 18px !important;
     letter-spacing: -2px;
     color: rgb(192,161,0);
 }
 
-div#minimap-info {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-    font-size: 16px !important;
-    letter-spacing: -2px;
-    color: rgb(192,161,0);
+span#minimap-current-time {
+    @apply font-new-world lowercase;
 }
 
-span#zoomIn-hotkey, span#zoomOut-hotkey {
-    border: 2px solid rgb(192,161,0);
-    background-color: #000;
-    @apply text-yellow rounded-md px-2 font-normal;
+div#minimap-info {
+    @apply font-new-world;
+    font-size: 14px !important;
+    letter-spacing: -1px;
+    @apply text-slate-400
+}
+
+span#zoomIn-hotkey, span#zoomOut-hotkey, span#settings-hotkey {
+    @apply font-mono;
+    @apply border-0 border-rose-400 text-rose-200;
+    @apply px-2;
+    border-radius: 0.1rem;
 }
 
 .pin_row {
@@ -76,7 +87,7 @@ span#zoomIn-hotkey, span#zoomOut-hotkey {
     @apply items-start;
     @apply px-1;
     @apply py-1;
-    @apply text-yellow;
+    @apply text-rose-400;
     @apply rounded;
 }
 
@@ -86,5 +97,5 @@ span#zoomIn-hotkey, span#zoomOut-hotkey {
     @apply px-1;
     @apply py-1;
     @apply rounded;
-    @apply hover:text-yellow;
+    @apply hover:text-white;
 }

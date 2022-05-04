@@ -3,7 +3,7 @@
 <head>
 
   <meta name="msapplication-TileColor" content="#333">
-  <meta name="msapplication-TileImage" content="/icons/Icon.png">
+  <meta name="msapplication-TileImage" content="./icons/Icon.png">
   <meta name="theme-color" content="#333">
   <meta charset="UTF-8" />
 
@@ -15,39 +15,33 @@
 
     <div id="minimap" style="display: none;">
 
-      <div id="minimap-title" style="position: absolute; bottom: calc(250px + 40px + 50px + 16vw); right: 50px; width: 16vw; height: auto; text-align: center; z-index: 10;">
-        <h1 style="font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;"><span id="title"></span></h1>
+      <div id="minimap-title" style="position: absolute; bottom: calc(420px + 15vw); right: 50px; width: 15vw; height: auto; text-align: center; z-index: 10;">
+        <h1 style="font-size: 52px; letter-spacing: 1px; line-height: 22px; padding: 0px; font-weight: bold;"><span id="minimap-current-time" class="bg-gradient-to-bl from-rose-800 to-rose-600 text-transparent text-6xl bg-clip-text font-extrabold text-center uppercase text-clip"></span></h1>
       </div>
 
-      <div id="minimap-context" class="rounded-lg" style="background-image: url(./img/bg-dialog.png); background-size: 120% 120%; background-position: center; background-repeat: repeat-x; width: 16vw; height: 16vw; border: 8px solid  rgb(14, 14, 14);; position: absolute; bottom: calc(250px + 20px + 50px); right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
+      <div id="minimap-context" class="rounded-xs border-2 border-slate-600 bg-slate-700" style="width: 15vw; height: 15vw; position: absolute; bottom: 400PX; right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
 
-        <canvas width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-300" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap-transparent.webp'); background-size: cover; opacity: 100%; z-index: 0;">
+        <canvas defer width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-500" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap-transparent.webp'); background-size: cover; opacity: 100%; z-index: 0;">
         </canvas>
 
-        <img src="../../img/map/compass-needle-yellow.svg" id="compassNeedle" class="transform-none" style="max-width: 200px; max-height: 250px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -100px; margin-top: -100px;" />
+        <img defer src="../../img/compass-needle-pink.svg" id="compassNeedle" class="transform-none" style="max-width: 200px; max-height: 250px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -100px; margin-top: -100px;" />
 
       </div>
 
-      <div id="minimap-info" style="background-color: rgba(30, 34, 34, 0.799); background-size:  120% 120%; background-position: center; position: absolute; bottom: calc(180px); right: 50px; width: 16vw; height: auto; z-index: 10; border: 8px solid rgb(14, 14, 14);" class="p-2 clip rounded-lg">
-        <div style="display:inline-block; width: 100%; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;">
-            ⏳ <span id="minimap-current-time" class="font-bold"></span> <span class="font-normal">CET</span>
-          </p>
+      <div id="minimap-info" style="position: absolute; top: 50px; left: 25px; width: 400PX; height: auto; z-index: 10;" class="p-2 clip rounded-xs border-2 bg-slate-800 border-slate-600">
+
+        <div style="display:inline-block; width: 100%; font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase text-slate-400">
+          <p style="display: inline; float: left;" class="font-normal text-slate-400">🔍 OUT  <span class="w-2 inline-block"></span><span id="zoomOut-hotkey" class="font-bold text-rose-600 bg-slate-600">ALT</span> </p>
           <p style="display: inline; float: right;">
-            <span id="minimap-position" class="font-bold"></span> 🧭
+            <span id="minimap-position" class="font-bold text-rose-400">0, 0</span> 🧭
           </p>
         </div>
 
-        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;" class="font-normal">🔎 IN <span class="w-6 inline-block"></span><span id="zoomIn-hotkey" class="font-bold">AL</span></p>
-          <p style="display: inline; float: right;" class="font-normal">Zoom <span id="zoom-value" class="font-bold">1.0</span> x⚙️</p>
+        <div style="display:inline-block; width: 100%; font-weight:bold; font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase text-slate-400">
+          <p style="display: inline; float: left;" class="font-normal text-slate-400">🔎 IN <span class="w-4 inline-block"></span><span id="zoomIn-hotkey" class="font-bold text-rose-600 bg-slate-600">ALT</span></p>
+          <p style="display: inline; float: right;" class="font-normal text-slate-400">Zoom <span id="zoom-value" class="font-bold text-rose-400">1</span>x ⚙️</p>
         </div>
 
-
-        <div style="display:inline-block; width: 100%; font-weight:bold; color: rgb(197, 161, 0); font-size: 1.2rem; letter-spacing: -2px; line-height: 22px;" class="uppercase">
-          <p style="display: inline; float: left;" class="font-normal">🔍 OUT  <span class="w-2 inline-block"></span><span id="zoomOut-hotkey" class="font-bold">AL</span> </p>
-          <p style="display: inline; float: right;" class="font-normal"></p>
-        </div>
       </div>
 
     </div>

@@ -275,17 +275,20 @@
   </style>
 </head>
 
-<body class="bg-dark p-0 m-0 w-full h-full">
+<body class="p-0 m-0 w-screen h-screen">
 
-    <header class="app-header m-0 p-2 top-0 left-0 relative bg-black text-yellow">
-        <img src="../icons/Icon.png" />
-        <h1 class="text-4xl">New World Buddy</h1>
+    <header id="header" class="app-header bg-slate-900">
+      <img src="../../icons/favicon.ico" class="h-auto w-10" />
+      <h1 class="font-mono" style="color: rgba(255,255,255,0.6); text-align: center; line-height: 32px; font-size: 16px; margin-top: 2px;">New World Buddy - Your Personal Companion</h1>
+      <div class="window-controls-group">
+        <button id="minimizeButton" class="window-control window-control-minimize" />
+        <button id="maximizeButton" class="window-control window-control-maximize" />
+        <button id="closeButton" class="window-control window-control-close" />
+      </div>
     </header>
-
-    <div id="root">
+    <div id="root" class="bg-black p-0 m-0 w-full h-full hover:snap-y hover:snap-proximity overflow-y-scroll">
 
     </div>
-
     <script>
     // Standard Google Universal Analytics code
     // (function (i, s, o, g, r, a, m) {

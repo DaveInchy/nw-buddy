@@ -7,7 +7,7 @@ import {
 
 // Typescript imports
 import { logMessage, logError } from "../debug";
-import { Window as WindowManager } from "../window";
+import WindowManager from "../window";
 import { Hotkeys, WindowNames, GamesFeatures, GameClassId, getCircularReplacer } from "../global";
 
 // Typescript Class imports
@@ -17,7 +17,7 @@ import Minimap from "../minimap";
 import Player from '../player';
 import Pin from "../pin";
 
-import ReactApp from "../assets/components/react";
+import ReactApp from "./react";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
@@ -30,11 +30,45 @@ class DesktopWindow extends WindowManager {
         super(WindowNames.desktop);
         logMessage("startup", "constructing desktop window instance");
 
-        // this.setHotkeyBehavior();
+        this.setWindowBehavior();
     }
 
-    setHotkeyBehavior() {
-        throw new Error("Method not implemented.");
+    async setWindowBehavior() {
+        try {
+            var header = document.getElementById('header');
+
+            const closeButton = document.getElementById('closeButton');
+            const maximizeButton = document.getElementById('maximizeButton');
+            const minimizeButton = document.getElementById('minimizeButton');
+
+            this.setDrag(header);
+
+            closeButton.addEventListener('click', () => {
+                this.currWindow.close();
+                logMessage('desktop', 'Closed desktop window');
+            });
+
+            minimizeButton.addEventListener('click', () => {
+                this.currWindow.minimize();
+                logMessage('desktop', 'Minimized desktop window');
+            });
+
+            maximizeButton.addEventListener('click', () => {
+                if (!this.maximized) {
+                    this.currWindow.maximize();
+                } else {
+                    this.currWindow.restore();
+                }
+                this.maximized = !this.maximized;
+                logMessage('desktop', 'Maximized desktop window');
+            });
+
+        }
+        catch (err) {
+            logError(err);
+        }
+
+        return true;
     }
 
     public static instance() {
