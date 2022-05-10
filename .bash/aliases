@@ -1,0 +1,9 @@
+alias vscode="code .";
+alias vsfolder="code .";
+alias vsparent="code ..";
+
+[ $(/bin/bash neofetch || exit 0) -ne $(exit 0) ] && \
+alias mypc="neofetch" || \
+_error="neofetch not found";
+
+echo ${_error:-'------------>'}

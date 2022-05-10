@@ -18,7 +18,6 @@ export const GamesFeatures = new Map<number, string[]>([
     GameClassId,
     [
       "gep_internal", // Events that are registered by the game
-      "gep_external", // Events that are registered by the game
       "game_info", // Basic info about the game and installation
     ]
   ]

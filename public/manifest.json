@@ -89,38 +89,38 @@
       },
       "desktop": {
         "file": "desktop.html",
-        "desktop_only": true,
-        "disable_rightclick": true,
+        "in_game_only": true,
+        "focus_game_takeover": "always",
+        "disable_blur": true,
+        "allow_local_file_access": true,
         "background_optimization": true,
-        "is_background_page": false,
-        "grab_focus_on_desktop": false,
-        "show_in_taskbar": true,
-        "native_window": true,
-        "show_maximize": true,
-        "show_minimize": true,
-        "keep_window_location": true,
+        "keep_window_location": false,
+        "forcecapture": true,
+        "disable_rightclick": true,
         "enable_osr_acceleration": true,
         "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": true,
+        "ignore_keyboard_events": false,
         "resizable": true,
-        "transparent": false,
-        "override_on_update": false,
+        "use_os_windowing": true,
+        "transparent": true,
+        "override_on_update": true,
         "min_size": {
-          "width": 640,
-          "height": 480
-        },
-        "size": {
           "width": 1280,
-          "height": 720
+          "height": 840
         }
       },
       "overlay": {
         "file": "overlay.html",
+        "use_os_windowing": true,
         "in_game_only": true,
         "focus_game_takeover": "ShowOnFocus",
+        "disable_blur": true,
         "allow_local_file_access": true,
         "background_optimization": true,
         "keep_window_location": true,
+        "forcecapture": true,
+        "disable_rightclick": true,
+        "show_in_taskbar": false,
         "enable_osr_acceleration": true,
         "optimize_accelerate_rendering": true,
         "ignore_keyboard_events": false,
@@ -129,11 +129,7 @@
         "override_on_update": false,
         "min_size": {
           "width": 1280,
-          "height": 720
-        },
-        "size": {
-          "width": 1280,
-          "height": 720
+          "height": 840
         }
       }
     },

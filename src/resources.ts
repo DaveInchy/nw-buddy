@@ -31,7 +31,7 @@ const Resources: Array<{
   {
     name: "mote",
     icon: `🉑`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "air",
@@ -239,7 +239,7 @@ const Resources: Array<{
   {
     name: "magical",
     icon: `🪄`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "azoth",
@@ -268,7 +268,7 @@ const Resources: Array<{
   {
     name: "woods",
     icon: `🌲`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "wyrdwood",
@@ -290,7 +290,7 @@ const Resources: Array<{
   {
     name: "ore",
     icon: `⛏️`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "ireon",
@@ -334,7 +334,7 @@ const Resources: Array<{
   {
     name: "fiber",
     icon: `🌾`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "hemp",
@@ -355,7 +355,7 @@ const Resources: Array<{
   {
     name: "stone",
     icon: `🗿`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "lodestone",
@@ -382,7 +382,7 @@ const Resources: Array<{
   {
     name: "plant",
     icon: `🌱`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "dyes",
@@ -437,7 +437,7 @@ const Resources: Array<{
   {
     name: "vegetable",
     icon: `🍆`,
-    size: { width: 16, height: 16 },
+    size: { width: 24, height: 24 },
     types: [
       {
         name: "carrot",

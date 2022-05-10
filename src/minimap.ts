@@ -129,7 +129,7 @@ export default class Minimap {
         );
 
         var icon: CanvasImageSource = new Image();
-            icon.src = "./assets/images/icons/player.svg";
+            icon.src = "./assets/img/compass-needle-yellow.svg";
             icon.style.position = "relative";
             icon.style.left = oPlayerCanvasCoords.x + "px";
             icon.style.top = oPlayerCanvasCoords.y + "px";
@@ -536,7 +536,7 @@ export default class Minimap {
     ) {
       x % (step(this.__.canvasWidth) * 2)
         ? (this.__.canvasContext.strokeStyle = rgba_light)
-        : (this.__.canvasContext.strokeStyle = rgba_yellow);
+        : (this.__.canvasContext.strokeStyle = rgba_red);
 
       this.__.canvasContext.beginPath();
       this.__.canvasContext.moveTo(x, 0);
@@ -552,8 +552,8 @@ export default class Minimap {
       y += step(this.__.canvasWidth)
     ) {
       y % (step(this.__.canvasWidth) * 2)
-        ? (this.__.canvasContext.strokeStyle = rgba_yellow)
-        : (this.__.canvasContext.strokeStyle = rgba_light);
+        ? (this.__.canvasContext.strokeStyle = rgba_red)
+        : (this.__.canvasContext.strokeStyle = rgba_dark);
 
       this.__.canvasContext.beginPath();
       this.__.canvasContext.moveTo(0, y);

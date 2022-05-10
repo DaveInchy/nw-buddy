@@ -1,8 +1,14 @@
+const plugin = require('tailwindcss/plugin')
 const tailwindConfig = {
   content: ["./src/**/*.{html,js,ts,jsx,tsx,css,scss,sass,less,styl,md,mdx,json,yml,yaml}"],
   darkMode: 'media',
   theme: {
     extend: {
+      textShadow: {
+        sm: '0 1px 2px var(--tw-shadow-color)',
+        DEFAULT: '0 2px 4px var(--tw-shadow-color)',
+        lg: '0 8px 16px var(--tw-shadow-color)',
+      },
       colors: {
         "gray-dark": "#273444",
         "gray-light": "#d3dce6",
@@ -102,6 +108,16 @@ const tailwindConfig = {
     },
   },
   plugins: [
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      )
+    }),
   ],
 }
 

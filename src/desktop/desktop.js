@@ -1,119 +1,152 @@
-import React from 'react';
+import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
+import StorageInterface from '../storage';
+import { logMessage, logError } from '../debug';
 
-import "../assets/overlay.css";
+import "../assets/css/overlay.css";
+import "../assets/css/tailwind.css";
 
-export default class DesktopComponent extends React.Component {
+import xIcon from "../assets/img/new-world/ui/smallx_06_05_2022.png";
 
-    render() {
-        return (
+import checkIconActive from "../assets/img/new-world/icons/icon_checkmark_active.png";
+import checkIconInactive from "../assets/img/new-world/icons/icon_checkmark_inactive.png";
+
+import bookIcon from "../assets/img/nw_artbook.png"
+import nwBackground from "../assets/img/new-world/textures/continent-diff.png";
+import bannerBackground from "../assets/img/new-world/backgrounds/banner-bg1.png";
+
+globalThis.nwBackground = nwBackground;
+globalThis.bookIcon = bookIcon;
+globalThis.checkIconActive = checkIconActive;
+globalThis.checkIconInactive = checkIconInactive;
+globalThis.crossIcon = xIcon;
+
+import runicCircleA from "../assets/img/new-world/banner_runebiga.png";
+import runicCircleB from "../assets/img/new-world/banner_runebigb.png";
+import runicCircleC from "../assets/img/new-world/banner_runebigc.png";
+import runicCircleBackground from "../assets/img/new-world/banner_runebg.png";
+import runicCircleInner from "../assets/img/new-world/banner_runeinner.png";
+import runicCircleTitle from "../assets/img/new-world/banner_titleinner.png";
+
+export default function DesktopComponent({props})
+{
+    const [offset, setOffset] = useState(0);
+    const [checkmark, setCheckmark] = useState(false);
+    const circleInnerElem1 = useRef(null);
+    const circleBackgroundElem1 = useRef(null);
+    const circleElem1 = useRef(null);
+    const circleElem2 = useRef(null);
+    const circleElem3 = useRef(null);
+    const checkElem1 = useRef(null);
+    const closeElem1 = useRef(null);
+    const Storage = StorageInterface;
+
+    const closeSplash = () => {
+        window.close();
+        logMessage("action", "Splash closed");
+    }
+
+    const disableSplash = () => {
+        Storage.set("splash_enabled", false);
+        logMessage("action", "Splash disabled");
+    }
+
+    const enableSplash = () => {
+        Storage.set("splash_enabled", true);
+        logMessage("action", "Splash enabled");
+    }
+
+    const rotateCircle = (elem, offset) => {
+        elem.current.style.transform = `rotate(${offset}deg)`;
+        return offset;
+    }
+
+    useEffect(() => {
+        logMessage("action", "React mounted desktop");
+        setTimeout(() => {
+            setCheckmark(StorageInterface.get("splash_enabled") !== true ? false : true);
+        }, 1000);
+    }, []);
+
+    // call every render refresh
+    useLayoutEffect(() => {
+        setTimeout(() => {
+            setOffset(offset + 1);
+        }, 150);
+    }, [offset]);
+
+    useEffect(() => {
+        rotateCircle(circleElem1, offset * 1.5);
+        rotateCircle(circleElem2, -(offset * 1.75));
+        rotateCircle(circleElem3, offset * 1.25);
+    }, [offset]);
+
+    useLayoutEffect(() => {
+        if (checkmark) {
+            enableSplash();
+        } else {
+            disableSplash();
+        }
+    }, [checkmark]);
+
+    useEffect(() => {
+        if (checkmark) {
+            checkElem1.current.src = checkIconActive;
+        } else {
+            checkElem1.current.src = checkIconInactive;
+        }
+    }, [checkmark]);
+
+    return (
+        <>
             <React.StrictMode>
-                <Section id={1} bg={"bg-slate-900"} >
-                    <div class="h-screen flex flex-col justify-center items-center">
-                        <h4 class="flex flex-col justify-center items-center"><span class="text-4xl font-new-world text-slate-800 mt-5">thanks for using</span></h4>
-                        <h1 className={"bg-gradient-to-tr from-red-600 to-rose-600 text-transparent text-8xl bg-clip-text font-extrabold text-center uppercase text-clip"}>New World<br/>
-                        <hr class="my-2 border-2 rounded border-slate-800"/>Buddy</h1>
-                        <div className="btn animate-bounce mt-5 cursor-pointer">
-                            <span className="btn-text text-clip text-6xl">🖱️</span>
+                <Section id={1}>
+                    <div className="flex flex-col items-center justify-center">
+                        <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-0 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+                            <img ref={circleBackgroundElem1} src={runicCircleBackground} className={`relative opacity-50 animate-pulse duration-1000 w-[500px] h-[500px] transform-gpu transition-all`} />
+                        </div>
+                        <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-0 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+                            <img ref={circleInnerElem1} src={runicCircleInner} className={`relative opacity-50 w-[600px] h-[600px] duration-1000 animate-pulse transform-gpu transition-all`} />
+                        </div>
+                        <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-0 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+                            <img ref={circleElem1} src={runicCircleA} className={`relative opacity-100 animate-pulse duration-500 w-[1000px] h-[1000px] transform-gpu transition-all`} />
+                        </div>
+                        <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-0 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+                            <img ref={circleElem2} src={runicCircleB} className={`relative opacity-100 animate-pulse duration-800 w-[750px] h-[750px] transform-gpu transition-all`} />
+                        </div>
+                        <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-0 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+                            <img ref={circleElem3} src={runicCircleC} className={`relative opacity-100 animate-pulse duration-700 w-[666px] h-[666px] transform-gpu transition-all`} />
+                        </div>
+                        <div class="absolute z-20 top-[20px] right-[20px] w-auto h-[30px]">
+                            <img ref={checkElem1} src={checkmark ? checkIconActive : checkIconInactive} className="inline-block float-right w-auto h-[100%] justify-center align-center mr-5" onClick={() => setCheckmark(!checkmark ? true : false)} />
+                            <span className="inline-block text-slate-200 mr-5 float-right h-[100%] justify-center align-center text-2xl font-new-world font-thin" style={{ lineHeight: "30px" }}>dont show window again?</span>
+                        </div>
+                        <div class="absolute z-20 top-[20px] left-[20px] w-auto h-[30px]">
+                            <img ref={closeElem1} src={xIcon} className="inline-block float-left w-auto h-[100%] justify-center align-center mr-5" onClick={() => closeSplash()} />
+                            <span className="inline-block text-slate-200 mr-5 float-left h-[100%] justify-center align-center text-2xl font-new-world font-thin" style={{ lineHeight: "30px" }}></span>
+                        </div>
+                        <div className="flex flex-col h-screen justify-center items-center -translate-y-[30px]">
+                            <h4 class="flex flex-col justify-center items-center">
+                                <span className="text-4xl font-new-world text-slate-400 mt-5 z-20 opacity-60">thanks for using</span>
+                            </h4>
+                            <h1 className={"bg-gradient-to-bl from-amber-600 to-amber-400 text-transparent text-8xl bg-clip-text font-semibold text-center uppercase text-clip z-20 opacity-80"}>
+                                New World<br />
+                                <hr class="my-2 border-[1px] rounded border-slate-200" />
+                                Buddy
+                            </h1>
                         </div>
                     </div>
                 </Section>
-                <Section id={2} bg={"bg-slate-800"}>
-                    <Index />
-                </Section>
             </React.StrictMode>
-        );
-    }
+        </>
+    );
 }
 
 
 class Section extends React.Component {
     render() {
         return (
-            <div id={`section_${Number(this.props.id).toString()}`} className={"flex flex-col w-full justify-center items-center p-1 snap-center" + ` ${this.props.bg ? this.props.bg : "bg-none"}`}>
+            <div id={`section_${this.props.id}`} className={"flex flex-col w-screen h-screen overflow-visible bg-[#00000080] rounded-2xl justify-center items-center p-0 snap-center" + ` ${this.props.bg ? this.props.bg : ""}` + ` ${this.props.depth ? this.props.depth : "z-10"} w-full h-full`} style={{ backgroundImage: this.props.bgSrc ? "url(" + this.props.bgSrc + ")" : null, backgroundPosition: "center", backgroundSize: "102vw 102vh" }}>
                 {this.props.children}
-            </div>
-        );
-    }
-}
-
-class Index extends React.Component {
-
-    render() {
-        return (
-            <div className="flex flex-col w-full justify-center items-center">
-                <div class="h-screen lg:w-2/3 xs:container flex flex-col justify-center items-center">
-                    <h1 className={"bg-gradient-to-tr from-red-600 to-rose-600 text-transparent text-6xl bg-clip-text font-extrabold text-center uppercase text-clip"}>
-                        Help &amp; Support<br/>
-                        <hr class="my-2 border-2 rounded border-slate-900"/>
-                    </h1>
-                    <div id="card_get-started-wrapper" class="w-full flex flex-grid justify-center items-center">
-                        <div class="flex flex-col w-1/3 h-72 border-2 rounded-sm border-slate-800 bg-slate-700 text-rose-800 p-4 my-2 mx-2 justify-between items-center shadow-lg shadow-slate-900">
-                            <h3 className={"bg-gradient-to-tr from-black to-slate-900 text-transparent text-2xl bg-clip-text font-extrabold text-center capitalize text-clip"}>Keyboard Hotkeys<br /><hr class="border-slate-800 h-1 rounded-xs border-2 my-1 w-32 mx-auto" /></h3>
-
-                            <p class="text-slate-200 text-[18px] font-normal text-justified text-center">Can't figure out why things work the way they do? Here you'll find information on how to contact the support staff.</p>
-
-                            <button onclick="(this, button) => { console.log(`Pressed a button ${this}`) }" class="bg-rose-600 hove:bg-rose-800 text-white p-2 px-4 rounded-full m-1 justify-self-end">Read More</button>
-                        </div>
-                        <div class="flex flex-col w-1/3 h-72 border-2 rounded-sm border-slate-800 bg-slate-700 text-rose-800 p-4 my-2 mx-2 justify-between items-center shadow-lg shadow-slate-900">
-                            <h3 className={"bg-gradient-to-tr from-black to-slate-900 text-transparent text-2xl bg-clip-text font-extrabold text-center capitalize text-clip"}>Search Database<br /><hr class="border-slate-800 h-1 rounded-xs border-2 my-1 w-32 mx-auto" /></h3>
-
-                            <p class="text-slate-200 text-[18px] font-normal text-justified text-center">Can't figure out why things work the way they do? Here you'll find information on how to contact the support staff.</p>
-
-                            <button onclick="(this, button) => { console.log(`Pressed a button ${this}`) }" class="bg-rose-600 hove:bg-rose-800 text-white p-2 px-4 rounded-full m-1 justify-self-end">Read More</button>
-                        </div>
-                        <div class="flex flex-col w-1/3 h-72 border-2 rounded-sm border-slate-800 bg-slate-700 text-rose-800 p-4 my-2 mx-2 justify-between items-center shadow-lg shadow-slate-900">
-                            <h3 className={"bg-gradient-to-tr from-black to-slate-900 text-transparent text-2xl bg-clip-text font-extrabold text-center capitalize text-clip"}>Features<br /><hr class="border-slate-800 h-1 rounded-xs border-2 my-1 w-32 mx-auto" /></h3>
-
-                            <p class="text-slate-200 text-[18px] font-normal text-justified text-center">Can't figure out why things work the way they do? Here you'll find information on how to contact the support staff.</p>
-
-                            <button onclick="(this, button) => { console.log(`Pressed a button ${this}`) }" class="bg-rose-600 hove:bg-rose-800 text-white p-2 px-4 rounded-full m-1 justify-self-end">Read More</button>
-                        </div>
-                    </div>
-                    <div id="card_get-support-wrapper" class="w-full flex flex-grid justify-center items-center">
-                        <div class="flex flex-col w-1/3 h-72 border-2 rounded-sm border-slate-800 bg-slate-700 text-rose-800 p-4 my-2 mx-2 justify-between items-center shadow-lg shadow-slate-900">
-                            <h3 className={"bg-gradient-to-tr from-black to-slate-900 text-transparent text-2xl bg-clip-text font-extrabold text-center capitalize text-clip"}>Subscription<br /><hr class="border-slate-800 h-1 rounded-xs border-2 my-1 w-32 mx-auto" /></h3>
-
-                            <p class="text-slate-200 text-[18px] font-normal text-justified text-center">Sick of closing ads? To be honest i'd rather dont show ads on this product. But there is a way to get rid of them! and unlock awesome features.</p>
-
-                            <button onclick="(this, button) => { console.log(`Pressed a button ${this}`) }" class="bg-rose-600 hove:bg-rose-800 text-white p-2 px-4 rounded-full m-1 justify-self-end">Read More</button>
-                        </div>
-                        <div class="flex flex-col w-1/3 h-72 border-2 rounded-sm border-slate-800 bg-slate-700 text-rose-800 p-4 my-2 mx-2 justify-between items-center shadow-lg shadow-slate-900">
-                            <h3 className={"bg-gradient-to-tr from-black to-slate-900 text-transparent text-2xl bg-clip-text font-extrabold text-center capitalize text-clip"}>Support &amp; FAQ<br /><hr class="border-slate-800 h-1 rounded-xs border-2 my-1 w-32 mx-auto" /></h3>
-
-                            <p class="text-slate-200 text-[18px] font-normal text-justified text-center">Can't figure out why things work the way they do? Here you'll find information on how to contact the support staff.</p>
-
-                            <button onclick="(this, button) => { console.log(`Pressed a button ${this}`) }" class="bg-rose-600 hove:bg-rose-800 text-white p-2 px-4 rounded-full m-1 justify-self-end">Read More</button>
-                        </div>
-                        <div class="flex flex-col w-1/3 h-72 border-2 rounded-sm border-slate-800 bg-slate-700 text-rose-800 p-4 my-2 mx-2 justify-between items-center shadow-lg shadow-slate-900">
-                            <h3 className={"bg-gradient-to-tr from-black to-slate-900 text-transparent text-2xl bg-clip-text font-extrabold text-center capitalize text-clip"}>Feedback<br/><hr class="border-slate-800 h-1 rounded-xs border-2 my-1 w-32 mx-auto"/></h3>
-
-                            <p class="text-slate-200 text-[18px] font-normal text-justified text-center">We'd be glad to recieve some feedback on this product. Here you'll find more info on how to propose features or bug fixes.</p>
-
-                            <button onclick="(this, button) => { console.log(`Pressed a button ${this}`) }" class="bg-rose-600 hove:bg-rose-800 text-white p-2 px-4 rounded-full m-1 justify-self-end">Read More</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-class ChangeLog extends React.Component {
-    render() {
-        return (
-            <div class="w-full rounded p-5">
-                <h2 className={"text-white text-4xl bg-clip-text my-5"}>
-                    Changelog: [0.22.5]
-                </h2>
-                <ul class="text-slate-200 text-2xl bg-slate-900 w-full rounded-xl p-5 text-left h-auto list-decimal list-inside">
-                    <li class="text-light hover:text-gray-500">Start using "changelog" over "change log" since it's the common usage.</li>
-                    <li class="text-light hover:text-gray-500">Start versioning with 0.22.5 based on the current version at 22.5.0.</li>
-                    <li class="text-light hover:text-gray-500">Rewrite "What makes unicorns cry?" section.</li>
-                    <li class="text-light hover:text-gray-500">Rewrite "Ignoring Deprecations" sub-section to clarify the ideal scenario.</li>
-                    <li class="text-light hover:text-gray-500">Improve "Commit log diffs" sub-section to further argument against them.</li>
-                    <li class="text-light hover:text-gray-500">Merge "Why can’t people just use a git log diff?" with "Commit log diffs"</li>
-                    <li class="text-light hover:text-gray-500">Added Links to latest released version in previous versions.</li>
-                </ul>
             </div>
         );
     }

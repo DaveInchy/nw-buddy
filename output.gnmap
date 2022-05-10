@@ -1,0 +1,4 @@
+# Nmap 7.92 scan initiated Sat May  7 11:17:23 2022 as: nmap -n -Pn -sS -p0-65535 -oA output 192.87.140.201
+Host: 192.87.140.201 ()	Status: Up
+Host: 192.87.140.201 ()	Ports: 21/open/tcp//ftp///, 80/open/tcp//http///, 443/open/tcp//https///, 2222/open/tcp//EtherNetIP-1///
+# Nmap done at Sat May  7 11:26:08 2022 -- 1 IP address (1 host up) scanned in 525.23 seconds

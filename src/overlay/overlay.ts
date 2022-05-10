@@ -18,12 +18,14 @@ import Player, { playerModel } from '../player';
 import Pin from "../pin";
 
 // CSS imports
-import "../assets/tailwind.css";
-import "../assets/overlay.css";
+import "../assets/css/overlay.css";
+import "../assets/css/tailwind.css";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
 import owUtils = overwolf.utils;
+
+import Sidebar from "./sidebar.js";
 
 class Overlay extends WindowManager {
   private static _instance: Overlay;
@@ -59,6 +61,8 @@ class Overlay extends WindowManager {
   private _editorShown: boolean = false;
   private _overlayShown: boolean;
   private _group: string;
+  sidebarShown: boolean;
+  _Worldmap: Minimap;
 
   private constructor() {
     super(WindowNames.overlay);
@@ -129,9 +133,11 @@ class Overlay extends WindowManager {
         logError("error loading game data ...");
         logError(e);
       }
-      await this.wait(1000 / ticksPerSecond);
+      await this.wait(1000 * loadInterval);
       loadCounter++;
     }
+
+    Sidebar;
 
     logMessage("startup", "starting runtime service ...");
     // var domState = new DocumentStateController();
@@ -171,36 +177,19 @@ class Overlay extends WindowManager {
       this.drawTitle(this._playerCharacter);
 
       this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
-      ? ((this._createPinShown || this._editorShown)
+      ? ((this._createPinShown === true || this._editorShown === true || this.sidebarShown === true)
         ? this.currWindow.maximize() && true
         : this.currWindow.minimize() && false)
       : this.currWindow.maximize() && false;
 
       this._Minimap.renderCanvas(this._player, this._playerList);
+      typeof this._Worldmap === 'object' ? this._Worldmap.renderCanvas(this._player, this._playerList) && this._Worldmap.setZoom(0.4) : null;
 
       updateCounter <= 1 ? this.showMinimap() : null;
 
       await this.wait(1000 / ticksPerSecond);
       updateCounter++;
     }
-  }
-
-  async setWindowBehavior() {
-    try {
-      if (WindowNames.overlay === this.windowName) {
-        if (!this.maximized) {
-          this.currWindow.maximize();
-        } else {
-          this.currWindow.restore();
-        }
-        this.maximized = !this.maximized;
-      }
-    }
-    catch (err) {
-      logError(err);
-    }
-
-    return true;
   }
 
   public async releaseMouse() {
@@ -331,7 +320,7 @@ class Overlay extends WindowManager {
 
   public async drawTitle(title: string) {
     const elem = document.getElementById("app-title");
-    elem.innerHTML = title;
+    elem.textContent = title;
   }
 
   public async listenForEvents() {
@@ -383,10 +372,12 @@ class Overlay extends WindowManager {
     var coords = this._playerPosData;
     var x = coords[1];
     var y = coords[3];
+    var z = coords[5];
+    var direction = coords[13];
 
     var elem = document.getElementById("minimap-position");
-    elem.innerHTML = `${x.toString().split(".")[0]}, ${
-      y.toString().split(".")[0]
+    elem.innerHTML = `${direction.toString()} :: ${x.toString().split(".")[0]}, ${
+      y.toString().split(".")[0]}, ${z.toString().split(".")[0]
     }`; // , ${z.toString().split('.')[0]}`;
   }
 
@@ -498,12 +489,14 @@ class Overlay extends WindowManager {
     OWHotkeys.onHotkeyDown(Hotkeys.editor, async (): Promise<void> => {
       logMessage("hotkey", `pressed hotkey for ${Hotkeys.editor.toString()}`);
       if (this._editorShown) {
-        if (!this._createPinShown) {
-          this.hideEditor();
+        if (!this.sidebarShown) {
+          this.hideSidebar();
+          this.showMinimap();
         }
       } else {
-        if (!this._createPinShown) {
-          this.showEditor();
+        if (!this.sidebarShown) {
+          this.showSidebar();
+          this.hideMinimap();
         }
       }
       return;
@@ -522,6 +515,25 @@ class Overlay extends WindowManager {
       }
       return;
     });
+  }
+
+  showSidebar() {
+    var sidebar = document.getElementById("sidebar");
+    var worldmap = document.getElementById("worldmap");
+    this._Worldmap = new Minimap(this._player, document.querySelector("canvas#worldmap-canvas") as HTMLCanvasElement)
+    sidebar.style.display = "block";
+    worldmap.style.display = "block";
+    this.sidebarShown = true;
+    this.releaseMouse();
+  }
+
+  hideSidebar() {
+    var sidebar = document.getElementById("sidebar");
+    var worldmap = document.getElementById("worldmap");
+    sidebar.style.display = "none";
+    worldmap.style.display = "none";
+    this.sidebarShown = false;
+    this.releaseMouse();
   }
 
   public async wait(intervalInMilliseconds: any) {

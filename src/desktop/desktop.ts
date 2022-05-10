@@ -29,40 +29,16 @@ class DesktopWindow extends WindowManager {
     private constructor() {
         super(WindowNames.desktop);
         logMessage("startup", "constructing desktop window instance");
-
-        this.setWindowBehavior();
     }
 
     async setWindowBehavior() {
         try {
-            var header = document.getElementById('header');
-
-            const closeButton = document.getElementById('closeButton');
-            const maximizeButton = document.getElementById('maximizeButton');
-            const minimizeButton = document.getElementById('minimizeButton');
-
-            this.setDrag(header);
-
-            closeButton.addEventListener('click', () => {
-                this.currWindow.close();
-                logMessage('desktop', 'Closed desktop window');
-            });
-
-            minimizeButton.addEventListener('click', () => {
-                this.currWindow.minimize();
-                logMessage('desktop', 'Minimized desktop window');
-            });
-
-            maximizeButton.addEventListener('click', () => {
-                if (!this.maximized) {
-                    this.currWindow.maximize();
-                } else {
-                    this.currWindow.restore();
-                }
-                this.maximized = !this.maximized;
-                logMessage('desktop', 'Maximized desktop window');
-            });
-
+            if (!this.maximized) {
+                this.currWindow.maximize();
+            } else {
+                this.currWindow.maximize();
+            }
+            this.maximized = !this.maximized;
         }
         catch (err) {
             logError(err);
@@ -80,6 +56,7 @@ class DesktopWindow extends WindowManager {
     }
 
     public async run() {
+        this.setWindowBehavior();
         var App = ReactApp;
     }
 

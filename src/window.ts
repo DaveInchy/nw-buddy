@@ -18,10 +18,26 @@ export default class owWindow {
     this.mainWindow = new OWWindow('background');
     this.currWindow = new OWWindow(windowName);
 
+    this.setWindowBehavior()
+
     return this;
   }
 
+  async setWindowBehavior() {
+    try {
+      if (!this.maximized) {
+        this.currWindow.maximize();
+      } else {
+        this.currWindow.maximize();
+      }
+      this.maximized = !this.maximized;
+    }
+    catch (err) {
+      logError(err);
+    }
 
+    return true;
+  }
 
   async getWindowState() {
     logMessage('info', `Getting window state for ${JSON.stringify(this.currWindow)}`);
