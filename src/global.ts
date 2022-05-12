@@ -26,16 +26,17 @@ export const GamesFeatures = new Map<number, string[]>([
 export const GameClassIds = Array.from(GamesFeatures.keys());
 
 export const WindowNames = {
-  overlay: 'overlay',
-  desktop: 'desktop',
-  background: 'background',
+  minimap: 'minimap',
+  tilemap: 'tilemap',
+  welcome: 'welcome',
+  service: 'service',
 };
 
 export const Hotkeys = {
   minimap: 'minimap',
   create: 'create',
   editor: 'editor',
-  groups: 'groups',
+  worldmap: 'worldmap',
   routes: 'routes',
   zoomIn: 'zoomIn',
   zoomOut: 'zoomOut',

@@ -99,6 +99,38 @@ export default class Minimap {
     });
   }
 
+  public reqAllPlayerNames = async () => {
+    var axios = require('axios');
+    return await axios.get("https://doonline.nl/api/player/list", {
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Bearer-Token": StorageInterface.get("bearer").toString(),
+      }
+    }).then(res => {
+      return res.data.players.map(player => {
+        return player.user;
+      });
+    }).catch(err => {
+      logError("Failed to get player list => \n" + err);
+    });
+  }
+
+  public reqPlayerByName = async (username) => {
+    var axios = require('axios');
+    return await axios.get("https://doonline.nl/api/player/get/" + username, {
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Bearer-Token": StorageInterface.get("bearer").toString(),
+      }
+    }).then(res => {
+      return res.data;
+    }).catch(err => {
+      logError("Failed to get player => \n" + err);
+    });
+  }
+
   public async renderCanvas(player: playerModel, playerList: playerModel[]) {
 
     this.__.playerMapCoords = new Vector2(player.coords.x, player.coords.y);

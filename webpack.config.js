@@ -22,9 +22,9 @@ module.exports = env => ({
         }
     },
     entry: {
-        background: './src/background/background.ts',
-        desktop: './src/desktop/desktop.ts',
-        overlay: './src/overlay/overlay.ts',
+        service: './src/background/service.ts',
+        welcome: './src/windows/welcome.ts',
+        minimap: './src/windows/minimap.ts',
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -120,19 +120,19 @@ module.exports = env => ({
             patterns: [ { from: "public", to: "./" } ],
         }),
         new HtmlWebpackPlugin({
-            template: './src/background/background.html',
-            filename: path.resolve(__dirname, './dist/background.html'),
-            chunks: ['background']
+            template: './src/background/service.html',
+            filename: path.resolve(__dirname, './dist/service.html'),
+            chunks: ['service']
         }),
         new HtmlWebpackPlugin({
-            template: './src/desktop/desktop.html',
-            filename: path.resolve(__dirname, './dist/desktop.html'),
-            chunks: ['desktop']
+            template: './src/welcome/index.html',
+            filename: path.resolve(__dirname, './dist/welcome.html'),
+            chunks: ['welcome']
         }),
         new HtmlWebpackPlugin({
-            template: './src/overlay/overlay.html',
-            filename: path.resolve(__dirname, './dist/overlay.html'),
-            chunks: ['overlay']
+            template: './src/minimap/index.html',
+            filename: path.resolve(__dirname, './dist/minimap.html'),
+            chunks: ['minimap']
         }),
         new OverwolfPlugin(env),
     ],

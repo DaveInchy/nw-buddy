@@ -1,7 +1,8 @@
 import {
   OWGames,
   OWGameListener,
-  OWWindow
+  OWWindow,
+  OWGameListenerDelegate
 } from '@overwolf/overwolf-api-ts';
 
 import { WindowNames, GameClassIds } from "../global";
@@ -16,14 +17,23 @@ class BackgroundController {
 
   private constructor() {
     // Populating the background controller's window dictionary
-    this._windows[WindowNames.overlay] = new OWWindow(WindowNames.overlay);
-    this._windows[WindowNames.desktop] = new OWWindow(WindowNames.desktop);
+    this._windows[WindowNames.minimap] = new OWWindow(WindowNames.minimap);
+    this._windows[WindowNames.welcome] = new OWWindow(WindowNames.welcome);
 
     // When a a supported game game is started or is ended, toggle the app's windows
-    this._gameListener = new OWGameListener({
-      onGameStarted: this.toggleWindows.bind(this),
-      onGameEnded: this.toggleWindows.bind(this)
-    });
+    var deligation: OWGameListenerDelegate = {
+      onGameStarted: (info: RunningGameInfo) => {
+        if (this.isSupportedGame(info)) {
+          this.toggleWindows(info);
+        }
+      },
+      onGameEnded: (info: RunningGameInfo) => {
+        if (this.isSupportedGame(info)) {
+          this.toggleWindows(info);
+        }
+      }
+    }
+    this._gameListener = new OWGameListener(deligation);
 
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
@@ -45,42 +55,48 @@ class BackgroundController {
 
     if (await this.isSupportedGameRunning()) {
       logMessage("info", "A supported game is running");
-      this._windows[WindowNames.desktop].restore() && logMessage("info", "Desktop window closed");
-      this._windows[WindowNames.overlay].restore() && logMessage("info", "Overlay window restored");
+      this._windows[WindowNames.welcome].restore() && this._windows[WindowNames.welcome].maximize() && logMessage("info", "Welcome window restored");
+      this._windows[WindowNames.minimap].restore() && this._windows[WindowNames.minimap].maximize() && logMessage("info", "Minimap window restored");
     } else {
-      this._windows[WindowNames.desktop].close() && logMessage("info", "Desktop window restored");
-      this._windows[WindowNames.overlay].close() && logMessage("info", "Overlay window restored");
+      this._windows[WindowNames.welcome].maximize() && this._windows[WindowNames.welcome].minimize() && logMessage("info", "Welcome window close");
+      this._windows[WindowNames.welcome].maximize() && this._windows[WindowNames.minimap].minimize() && logMessage("info", "Minimap window close");
     }
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     logMessage("event", `App launch triggered: ${JSON.stringify(e)}`);
 
-    if (!e || e.origin.includes('gamelaunchevent')) {
+    if (!e) {
       return;
     }
 
     if (await this.isSupportedGameRunning()) {
-      this._windows[WindowNames.overlay].restore();
-      this._windows[WindowNames.desktop].restore();
+      this._windows[WindowNames.minimap].restore();
+      this._windows[WindowNames.welcome].restore();
     } else {
-      this._windows[WindowNames.desktop].close();
-      this._windows[WindowNames.overlay].close();
+      this._windows[WindowNames.welcome].minimize();
+      this._windows[WindowNames.minimap].minimize();
+    }
+
+    if (e.origin.includes('gamelaunchevent')) {
+      this._windows[WindowNames.minimap].maximize() && logMessage("info", "Minimap window restored");
+      this._windows[WindowNames.welcome].maximize() && logMessage("info", "Welcome window restored");
     }
   }
 
   private toggleWindows(info: RunningGameInfo) {
-    logMessage("event", `toggleWindows triggered.`);
     if (!info || !this.isSupportedGame(info)) {
       return;
     }
 
+    logMessage("event", `toggleWindows triggered.`);
+
     if (info.isRunning) {
-      this._windows[WindowNames.overlay].restore();
-      this._windows[WindowNames.desktop].restore();
+      this._windows[WindowNames.minimap].restore();
+      this._windows[WindowNames.welcome].restore();
     } else {
-      this._windows[WindowNames.desktop].close();
-      this._windows[WindowNames.overlay].close();
+      this._windows[WindowNames.welcome].minimize();
+      this._windows[WindowNames.minimap].minimize();
     }
   }
 

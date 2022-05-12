@@ -8,16 +8,45 @@
       "@types/node",
       "@overwolf/types",
       "node",
-      "react",
+      "react"
     ],
     "rootDirs": [
-      "./src",
-      "./src/**/*"
+      "src",
+      "src/background/**",
+      "src/components/**",
+      "src/windows/**",
+      "public/**/*",
+      "src/*/**",
     ],
-    "target": "es2017",
+    "target": "ESNext",
     "outDir": "./dist",
-    "module": "none",
+    "module": "ESNext",
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "plugins": [
+      // import a emcascriptmodule syntax
+      {
+        "name": "@babel/plugin-transform-modules-commonjs",
+        "options": {
+          "allowTopLevelThis": true,
+          "allowReturnOutsideFunction": true,
+          "allowDynamicImport": true,
+          "allowImportExportEverywhere": true,
+          "allowAwaitOutsideFunction": true,
+          "only": [
+            "src/**/*",
+            "src/*/**",
+            "src/background/**",
+            "src/components/**",
+            "src/windows/**",
+            "public/**/*",
+            "src/*/**",
+          ]
+        },
+      },
+    ],
+    "jsx": "react",
     "sourceMap": true,
     "removeComments": true,
     "allowJs": true,
@@ -27,5 +56,10 @@
     "api",
     "debug.server.js",
     "public",
+    ".vercel",
+    ".vscode",
+    "releases",
+    "dist",
+    "build"
   ]
 }

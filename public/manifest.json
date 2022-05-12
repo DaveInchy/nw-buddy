@@ -1,11 +1,11 @@
 {
   "manifest_version": 1,
   "type": "WebApp",
-  "$schema": "../overwolf-manifest-schema.json",
+  "$schema": "manifest-schema.json",
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "0.22.6",
+    "version": "0.22.7",
     "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -29,7 +29,6 @@
     "Tray"
   ],
   "data": {
-    "start_window": "background",
     "hotkeys": {
       "minimap": {
         "title": "Show Minimap",
@@ -47,17 +46,17 @@
         "default": "Alt+O"
       },
       "create": {
-        "title": "Create Marker/Route",
+        "title": "Create Marker",
         "action-type": "toggle",
         "default": "Ctrl+P"
       },
-      "groups": {
-        "title": "Show/Hide Groups",
+      "worldmap": {
+        "title": "Show Worldmap",
         "action-type": "toggle",
-        "default": "Ctrl+A"
+        "default": "Ctrl+M"
       },
       "editor": {
-        "title": "Show/Hide Editor",
+        "title": "Show Map Editor",
         "action-type": "toggle",
         "default": "Ctrl+E"
       },
@@ -69,65 +68,60 @@
     },
     "protocol_override_domains": {
       "localhost": "http",
-      "vercel.app": "https"
+      "vercel.app": "https",
+      "doonline.nl": "https"
     },
     "externally_connectable": {
       "matches": [
         "http://*.overwolf.com",
         "https://*.overwolf.com",
         "http://localhost:*",
-        "http://*.vercel.app"
+        "http://*.vercel.app",
+        "http://*doonline.nl",
+        "https://*.amazonaws.com"
       ]
     },
     "force_browser": "user",
     "extra-objects": {},
+    "start_window": "service",
     "windows": {
-      "background": {
-        "file": "background.html",
+      "service": {
+        "file": "service.html",
         "background_optimization": true,
         "is_background_page": true
       },
-      "desktop": {
-        "file": "desktop.html",
-        "in_game_only": true,
-        "focus_game_takeover": "always",
-        "disable_blur": true,
-        "allow_local_file_access": true,
-        "background_optimization": true,
-        "keep_window_location": false,
-        "forcecapture": true,
-        "disable_rightclick": true,
-        "enable_osr_acceleration": true,
-        "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": false,
-        "resizable": true,
-        "use_os_windowing": true,
-        "transparent": true,
-        "override_on_update": true,
-        "min_size": {
-          "width": 1280,
-          "height": 840
-        }
-      },
-      "overlay": {
-        "file": "overlay.html",
-        "use_os_windowing": true,
+      "welcome": {
+        "file": "welcome.html",
         "in_game_only": true,
         "focus_game_takeover": "ShowOnFocus",
-        "disable_blur": true,
+        "use_os_windowing": true,
+        "native_window": true,
         "allow_local_file_access": true,
-        "background_optimization": true,
         "keep_window_location": true,
-        "forcecapture": true,
         "disable_rightclick": true,
-        "show_in_taskbar": false,
-        "enable_osr_acceleration": true,
         "optimize_accelerate_rendering": true,
         "ignore_keyboard_events": false,
         "resizable": true,
         "transparent": true,
         "override_on_update": false,
-        "min_size": {
+        "size": {
+          "width": 1280,
+          "height": 840
+        }
+      },
+      "minimap": {
+        "file": "minimap.html",
+        "in_game_only": true,
+        "focus_game_takeover": "ShowOnFocus",
+        "allow_local_file_access": true,
+        "keep_window_location": true,
+        "disable_rightclick": true,
+        "optimize_accelerate_rendering": true,
+        "ignore_keyboard_events": false,
+        "resizable": true,
+        "transparent": true,
+        "override_on_update": false,
+        "size": {
           "width": 1280,
           "height": 840
         }

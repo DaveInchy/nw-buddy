@@ -17,7 +17,7 @@ import Minimap from "../minimap";
 import Player from '../player';
 import Pin from "../pin";
 
-import ReactApp from "./react";
+import ReactApp from "../welcome/react";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
@@ -27,7 +27,7 @@ class DesktopWindow extends WindowManager {
     private static _instance: any;
 
     private constructor() {
-        super(WindowNames.desktop);
+        super(WindowNames.welcome);
         logMessage("startup", "constructing desktop window instance");
     }
 
@@ -56,8 +56,8 @@ class DesktopWindow extends WindowManager {
     }
 
     public async run() {
-        this.setWindowBehavior();
         var App = ReactApp;
+        this.setWindowBehavior();
     }
 
     public async wait(intervalInMilliseconds: any) {

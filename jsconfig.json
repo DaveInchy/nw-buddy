@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "module": "ESNext",
+        "module": "nodenext",
         "moduleResolution": "node",
-        "target": "ES2017",
-        "jsx": "preserve",
+        "target": "ESNext",
+        "jsx": "react",
         "strictFunctionTypes": true
     },
     "exclude": [
