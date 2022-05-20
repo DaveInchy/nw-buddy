@@ -5,5 +5,6 @@
         "titleBar.activeBackground": "#000000",
         "titleBar.activeForeground": "#F3FEF6"
     },
-    "workbench.editor.splitSizing": "distribute"
+    "workbench.editor.splitSizing": "distribute",
+    "typescript.tsdk": "node_modules/typescript/lib"
 }

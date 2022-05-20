@@ -42,7 +42,7 @@ module.exports = class OverwolfPlugin {
     var build = newDate.getUTCMinutes();
     var newVersion = `${base.toString().split(20)[1]}.${major}.${minor}`;
 
-    this.env.setVersion = newVersion === version  ? `${newVersion}.${revision}.${build}` : newVersion;
+    this.env.setVersion = newVersion === version ? `${newVersion}.${revision}.${build}` : newVersion;
   }
   apply(compiler) {
     compiler.hooks.run.tapPromise(PluginName, async (compilation) => {

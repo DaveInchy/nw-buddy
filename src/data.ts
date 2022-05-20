@@ -1,5 +1,5 @@
 import { logMessage, logError } from './debug';
-import { getCircularReplacer } from '../../archive/nw-buddy-r22/src/global';
+import { getCircularReplacer } from './global';
 import { createHash, Hash } from 'crypto';
 import { playerModel } from './player';
 

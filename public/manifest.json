@@ -5,7 +5,7 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "0.22.7",
+    "version": "0.30.2",
     "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -31,54 +31,62 @@
   "data": {
     "hotkeys": {
       "minimap": {
-        "title": "Show Minimap",
-        "action-type": "toggle",
+        "title": "Force Show (minimap)",
+        "action-type": "custom",
         "default": "Alt+M"
       },
       "zoomIn": {
-        "title": "Zoom in",
+        "title": "Zoom IN (minimap)",
         "action-type": "custom",
         "default": "Alt+I"
       },
       "zoomOut": {
-        "title": "Zoom out",
+        "title": "Zoom OUT (minimap)",
         "action-type": "custom",
         "default": "Alt+O"
       },
       "create": {
-        "title": "Create Marker",
+        "title": "New POI",
         "action-type": "toggle",
         "default": "Ctrl+P"
       },
       "worldmap": {
-        "title": "Show Worldmap",
-        "action-type": "toggle",
+        "title": "WorldmapV2",
+        "action-type": "custom",
         "default": "Ctrl+M"
       },
       "editor": {
-        "title": "Show Map Editor",
+        "title": "WorldMapV1",
         "action-type": "toggle",
         "default": "Ctrl+E"
       },
       "routes": {
-        "title": "Show/Hide Routes",
+        "title": "New Route",
         "action-type": "toggle",
         "default": "Ctrl+R"
+      },
+      "restart": {
+        "hold": false,
+        "action-type": "custom",
+        "passthrough": false,
+        "title": "Refresh UI",
+        "default": "Shift+Esc"
       }
     },
     "protocol_override_domains": {
       "localhost": "http",
-      "vercel.app": "https",
-      "doonline.nl": "https"
+      "doonline.nl": "http",
+      "vercel.app": "http",
+      "overwolf.com": "https",
+      "amazonaws.com": "https"
     },
     "externally_connectable": {
       "matches": [
-        "http://*.overwolf.com",
-        "https://*.overwolf.com",
         "http://localhost:*",
+        "http://doonline.nl:*",
         "http://*.vercel.app",
-        "http://*doonline.nl",
-        "https://*.amazonaws.com"
+        "http://*.overwolf.com",
+        "http://*.amazonaws.com"
       ]
     },
     "force_browser": "user",
@@ -92,6 +100,25 @@
       },
       "welcome": {
         "file": "welcome.html",
+        "in_game_only": false,
+        "focus_game_takeover": "ShowOnFocus",
+        "use_os_windowing": true,
+        "native_window": true,
+        "allow_local_file_access": true,
+        "keep_window_location": true,
+        "disable_rightclick": true,
+        "optimize_accelerate_rendering": true,
+        "ignore_keyboard_events": true,
+        "resizable": true,
+        "transparent": true,
+        "override_on_update": true,
+        "size": {
+          "width": 1280,
+          "height": 840
+        }
+      },
+      "worldmap": {
+        "file": "worldmap.html",
         "in_game_only": true,
         "focus_game_takeover": "ShowOnFocus",
         "use_os_windowing": true,
@@ -103,7 +130,7 @@
         "ignore_keyboard_events": false,
         "resizable": true,
         "transparent": true,
-        "override_on_update": false,
+        "override_on_update": true,
         "size": {
           "width": 1280,
           "height": 840
@@ -120,10 +147,10 @@
         "ignore_keyboard_events": false,
         "resizable": true,
         "transparent": true,
-        "override_on_update": false,
+        "override_on_update": true,
         "size": {
-          "width": 1280,
-          "height": 840
+          "width": 1,
+          "height": 1
         }
       }
     },
@@ -138,7 +165,7 @@
         "event_data": {
           "game_ids": [21816]
         },
-        "start_minimized": false
+        "start_minimized": true
       }
     ],
     "launch_event": [
@@ -147,7 +174,7 @@
         "game_ids": [
           21816
         ],
-        "start_minimized": false
+        "start_minimized": true
       }
     ],
     "developer": {

@@ -28,7 +28,7 @@ export default class owWindow {
       if (!this.maximized) {
         this.currWindow.maximize();
       } else {
-        this.currWindow.maximize();
+        this.currWindow.minimize();
       }
       this.maximized = !this.maximized;
     }

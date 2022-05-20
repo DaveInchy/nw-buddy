@@ -8,6 +8,7 @@ import DesktopComponent from "./desktop.js";
 
 // Create the root element
 const element = document.getElementById("root");
-export default ReactApp = createRoot(element).render(<DesktopComponent />);
+const ReactApp = createRoot(element).render(<DesktopComponent />);
 
+export default ReactApp
 reportWebVitals();

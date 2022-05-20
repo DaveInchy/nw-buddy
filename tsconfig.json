@@ -6,42 +6,37 @@
     "experimentalDecorators": true,
     "types": [
       "@types/node",
+      "@types/p5",
       "@overwolf/types",
       "node",
-      "react"
+      "react",
     ],
     "rootDirs": [
       "src",
-      "src/background/**",
-      "src/components/**",
-      "src/windows/**",
+      "src/**/*",
+      "public",
       "public/**/*",
-      "src/*/**",
     ],
-    "target": "ESNext",
-    "outDir": "./dist",
-    "module": "ESNext",
+    "target": "ES2017",
+    "module": "CommonJS",
     "moduleResolution": "node",
+    "outDir": "./dist",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "plugins": [
-      // import a emcascriptmodule syntax
       {
         "name": "@babel/plugin-transform-modules-commonjs",
         "options": {
+          "noImplicitAny": true,
           "allowTopLevelThis": true,
           "allowReturnOutsideFunction": true,
           "allowDynamicImport": true,
           "allowImportExportEverywhere": true,
           "allowAwaitOutsideFunction": true,
           "only": [
+            "src",
             "src/**/*",
-            "src/*/**",
-            "src/background/**",
-            "src/components/**",
-            "src/windows/**",
+            "public",
             "public/**/*",
-            "src/*/**",
           ]
         },
       },

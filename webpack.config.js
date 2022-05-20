@@ -6,7 +6,7 @@ const OverwolfPlugin = require('./overwolf.webpack');
 
 module.exports = env => ({
     resolve: {
-        extensions: ['.js', '.ts'],
+        extensions: ['.js','.ts'],
         modules: [
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'node_modules')
@@ -23,8 +23,9 @@ module.exports = env => ({
     },
     entry: {
         service: './src/background/service.ts',
-        welcome: './src/windows/welcome.ts',
-        minimap: './src/windows/minimap.ts',
+        welcome: './src/resources/window/welcome.ts',
+        minimap: './src/resources/window/minimap.ts',
+        worldmap: './src/resources/window/worldmap.ts',
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -104,7 +105,7 @@ module.exports = env => ({
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.js', '.tsx'],
         modules: [
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'node_modules')
@@ -133,6 +134,11 @@ module.exports = env => ({
             template: './src/minimap/index.html',
             filename: path.resolve(__dirname, './dist/minimap.html'),
             chunks: ['minimap']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/resources/pages/worldmap.html',
+            filename: path.resolve(__dirname, './dist/worldmap.html'),
+            chunks: ['worldmap']
         }),
         new OverwolfPlugin(env),
     ],

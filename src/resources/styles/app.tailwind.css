@@ -1,0 +1,8 @@
+/*
+ * Custom Tailwind CSS configuration file.
+ * 1.0.0 :: build-time: 2020-01-30T15:00:00.000Z
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;

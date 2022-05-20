@@ -25,3 +25,9 @@ yarn-error.log*
 # Overwolf packages
 *.opk
 .vercel
+
+# images, only mapping needs to be done before commit
+!src/resources/tilemap/**/*.CACHE
+src/resources/tilemap/**/*.PNG
+src/resources/tilemap/**/*.LIST
+src/resources/tilemap/**/*.2D

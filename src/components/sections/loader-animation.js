@@ -90,7 +90,7 @@ export default function DesktopComponent({props})
     }, [checkmark]);
 
     useEffect(() => {
-        if (checkmark) {
+        if (!checkmark) {
             checkElem1.current.src = checkIconActive;
         } else {
             checkElem1.current.src = checkIconInactive;
@@ -99,25 +99,25 @@ export default function DesktopComponent({props})
 
     return (
         <>
-            <Section id={1} className="" bg="" bgSrc={backgroundImage}
-            // style={
-            //     backgroundImage ? {
-            //         backgroundImage: `url(${backgroundImage})`,
-            //         backgroundSize: "cover",
-            //         backgroundRepeat: "no-repeat",
-            //         backgroundPosition: "center",
-            //         backgroundAttachment: "fixed",
-            //         backgroundColor: "transparent",
-            //         zIndex: -1
-            //     } : {
-            //         backgroundSize: "cover",
-            //         backgroundRepeat: "no-repeat",
-            //         backgroundPosition: "center",
-            //         backgroundAttachment: "fixed",
-            //         backgroundColor: "transparent",
-            //         zIndex: -1
-            //     }
-            // }>
+            <Section id={1} className="" bg="bg-slate-900" bgSrc={nwBackground}
+                // style={
+                //     backgroundImage ? {
+                //         backgroundImage: `url(${backgroundImage})`,
+                //         backgroundSize: "cover",
+                //         backgroundRepeat: "no-repeat",
+                //         backgroundPosition: "center",
+                //         backgroundAttachment: "fixed",
+                //         backgroundColor: "transparent",
+                //         zIndex: -1
+                //     } : {
+                //         backgroundSize: "cover",
+                //         backgroundRepeat: "no-repeat",
+                //         backgroundPosition: "center",
+                //         backgroundAttachment: "fixed",
+                //         backgroundColor: "transparent",
+                //         zIndex: -1
+                //     }
+                // }>
             >
                 <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-20 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
                     <img ref={circleBackgroundElem1} src={runicCircleBackground} className={`relative opacity-50 animate-pulse duration-1000 w-[500px] h-[500px] transform-gpu transition-all`} />

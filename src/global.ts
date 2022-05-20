@@ -27,7 +27,7 @@ export const GameClassIds = Array.from(GamesFeatures.keys());
 
 export const WindowNames = {
   minimap: 'minimap',
-  tilemap: 'tilemap',
+  worldmap: 'worldmap',
   welcome: 'welcome',
   service: 'service',
 };
@@ -40,6 +40,7 @@ export const Hotkeys = {
   routes: 'routes',
   zoomIn: 'zoomIn',
   zoomOut: 'zoomOut',
+  restart: 'restart',
 };
 
 export const Config = {
