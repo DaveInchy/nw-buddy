@@ -565,7 +565,7 @@ class Overlay extends WindowManager {
 
     OWHotkeys.onHotkeyDown(Hotkeys.restart, async (): Promise<void> => {
       logMessage("hotkey", `pressed hotkey for ${Hotkeys.restart.toString()}`);
-      window.location.
+      window.location.href = window.location.href + "?restart=true";
       return;
     });
 

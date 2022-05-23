@@ -1,4 +1,4 @@
-import React, { Component, useContext, useEffect, useState } from 'react';
+import React, { Component, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { logMessage, logError } from '../../debug';
 import Vector2 from '../../vector2';
 
@@ -7,34 +7,31 @@ import "../styles/overlay.css";
 import Sketch from 'react-p5';
 import p5 from 'p5';
 
-export default class WorldMapV2 {
+export default class WorldMap extends Component {
 
     render()
     {
 
-        function setup(sketch: p5, parent: Element)
-        {
-            sketch.createCanvas(500, 500)
-                .parent(parent);
-            sketch.background(0);
-        }
+        var wmSketch = useRef(null);
+        var wmFrame = useRef(null);
+        var wmCanvas = useRef(null);
 
-        function draw(sketch: p5)
-        {
-            sketch.background("#0fff0f");
-            sketch.fill(255);
-            sketch.text("Loading...", 10, 10);
-        }
+        const [count, setCount] = useState(0);
 
         useEffect(() => {
 
         }, []);
 
+        useEffect(() => {
+            var c: number = count;
+            var sketch: p5 = wmSketch.current;
+            var frame: HTMLDivElement = wmFrame.current;
+            var canvas: p5.Renderer = sketch.createCanvas(frame.clientWidth, frame.clientHeight);
+        }, [count]);
+
         return (
-            <div id="worldmap-size" className="bg-slate-900 border-2 border-slate-700 w-[640px] h-[480px]">
-
-                <Sketch setup={setup} draw={draw} />
-
+            <div ref={wmFrame} className="worldmap-frame">
+                <Sketch ref={wmSketch} setup={() => setCount(count+1)} />
             </div>
         );
     }
