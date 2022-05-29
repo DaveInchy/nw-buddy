@@ -6,5 +6,16 @@
         "titleBar.activeForeground": "#F3FEF6"
     },
     "workbench.editor.splitSizing": "distribute",
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
+  "liveServer.settings.file": "index.html",
+  "liveServer.settings.CustomBrowser": "chrome",
+  "liveServer.settings.fullReload": true,
+  "liveServer.settings.host": "192.168.10.101",
+  "liveServer.settings.port": 3000,
+  "liveServer.settings.root": "dist/",
+  "liveServer.settings.multiRootWorkspaceName": "./",
+  "liveServer.settings.useLocalIp": true
 }

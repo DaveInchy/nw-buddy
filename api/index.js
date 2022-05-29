@@ -1,6 +1,74 @@
 const express = require('express');
 const cache = require("./pins.json");
 
+var meta = {};
+    meta.staticSuffix = "static/cdn/"
+    meta.apiVersion = "1";
+    meta.apiTime = new Date().getTime();
+
+var config = {
+    metadata: {
+        ...meta,
+        bukkit: "cloudworks-bukkit.s3.eu-west-2.amazonaws.com",
+        title: "",
+        descriptor: "",
+        request: {
+            headers: [
+                ["Allow-Origin", "*"],
+                ["", ""],
+                ["Accept-Type", "application/json"],
+            ]
+        }
+    },
+    api: {
+        version: meta.apiVersion,
+        expired: meta.apiTime,
+        route_prefix: "/api",
+        route_suffix: `/v${meta.apiVersion}`,
+        // All endpoints for the api, it calls a function to handle the request.
+        endpoint: [
+            {
+                category: "player",
+                routes: [
+                    ["set", ""]
+                    ["get", function(req, res) {
+                        res.end();
+                    }],
+                    "list",
+                    "update",
+                    "delete",
+                ]
+            }
+        ],
+    },
+    static: {
+        version: meta.apiVersion,
+        route_prefix: "/static",
+        route_suffix: `/v${meta.apiVersion}`,
+        media: [
+            {
+                resource: "",
+                route: "",
+            }
+        ],
+        data: [
+            {
+                mime: "application/json",
+                resource: "./res/json/locations.json",
+                name: "locations",
+            }
+        ],
+        public: [
+            {
+
+            }
+        ],
+    }
+};
+
+var data = {};
+    data.locations = require("./res/json/locations.json");
+
 class Player {
 
     user = undefined;
@@ -51,8 +119,18 @@ class DataServer {
         return this;
     }
 
+    useStaticRoute = (id) =>
+    {
+        return id;
+    }
+
+    getStaticResource = (request, response) =>
+    {
+        return [request, response];
+    }
+
     getPinsJSON = (request, response) => {
-        let text = JSON.stringify(cache, getCircularReplacer());
+        let text = JSON.stringify(data.locations, getCircularReplacer());
 
         console.log(`${request.url} => ${text}`);
 
