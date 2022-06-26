@@ -26,13 +26,12 @@ const log = (data) => {
 class DebugServer {
 
     app = {};
-    port = 8420;
+    port = 8088;
 
     constructor(port) {
 
         this.app = express();
-        this.port = parseInt(port, 10) ||  8420;
-        this.app.listen(this.port);
+        this.port = parseInt(port ? port : this.port);
 
         console.log(`Server started on port ${this.getUrl()}`);
 
@@ -61,12 +60,16 @@ class DebugServer {
                     `${output}` // false => message
                 );
 
+                res.sendStatus(200);
                 res.setHeader('Content-Type', 'application/json');
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.send(JSON.stringify(data, getCircularReplacer()));
                 res.end();
             }
         );
+
+
+        this.app.listen(this.port);
 
         return this;
     }
@@ -93,4 +96,4 @@ class DebugServer {
 
 }
 
-module.exports.default = new DebugServer(8433);
+module.exports.default = new DebugServer(8443);

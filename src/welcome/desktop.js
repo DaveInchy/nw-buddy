@@ -27,23 +27,14 @@ import runicCircleBackground from "../assets/img/new-world/banner_runebg.png";
 import runicCircleInner from "../assets/img/new-world/banner_runeinner.png";
 import runicCircleTitle from "../assets/img/new-world/banner_titleinner.png";
 
+import bgImage from "../assets/loadingimages/loadingimage1_07_05_2022.png";
+
 export default function DesktopComponent({props})
 {
     var backgroundImageList = new Array();
 
-    var prefix = "https://cloudworks-bukkit.s3.eu-west-2.amazonaws.com/nwbuddy/generic/"
-    var suffix = "_07_05_2022";
-    var extension = ".png";
-
-    for (var i = 1; i <= 29; i++) {
-        var n = i.toString().length < 2 ? `0${i}` : i;
-        var str = `${prefix}generic${n}${suffix}${extension}`;
-        backgroundImageList.push(str);
-    }
-
     const [offset, setOffset] = useState(0);
     const [checkmark, setCheckmark] = useState(false);
-    const [random, setRandom] = useState(Math.floor(Math.random() * 29));
     const circleInnerElem1 = useRef(null);
     const circleBackgroundElem1 = useRef(null);
     const circleElem1 = useRef(null);
@@ -84,13 +75,13 @@ export default function DesktopComponent({props})
     useLayoutEffect(() => {
         setTimeout(() => {
             setOffset(offset + 1);
-        }, 250);
+        }, 250 );
     }, [offset]);
 
     useEffect(() => {
-        rotateCircle(circleElem1, offset * 1.75);
-        rotateCircle(circleElem2, -(offset * 1.65));
-        rotateCircle(circleElem3, offset * 1.55);
+        rotateCircle(circleElem1, offset * 2.0);
+        rotateCircle(circleElem2, -(offset * 1.75));
+        rotateCircle(circleElem3, offset * 1.45);
     }, [offset]);
 
     useLayoutEffect(() => {
@@ -111,7 +102,7 @@ export default function DesktopComponent({props})
 
     return (
         <>
-            <Section id={1} className="" bg="" depth="z-30" bgSrc={backgroundImageList[random]}>
+            <Section id={1} className="splash-section" bg="" depth="z-30" bgSrc={bgImage}>
                 <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-20 w-[100vw] h-[100vh] flex flex-col justify-center items-center">
                     <img ref={circleBackgroundElem1} src={runicCircleBackground} className={`relative opacity-50 animate-pulse duration-1000 w-[500px] h-[500px] transform-gpu transition-all`} />
                 </div>
@@ -137,12 +128,12 @@ export default function DesktopComponent({props})
                 </div>
                 <div className="flex flex-col h-screen justify-center items-center -translate-y-[30px]">
                     <h4 class="flex flex-col justify-center items-center">
-                        <span className="text-4xl font-new-world text-slate-400 mt-5 z-30">thanks for using</span>
+                        <span className="text-4xl font-new-world text-slate-400 mt-5 z-30">thanks for watching</span>
                     </h4>
                     <h1 className={"bg-gradient-to-bl from-amber-600 to-amber-400 text-transparent text-8xl bg-clip-text font-extrabold text-center uppercase text-clip z-30"}>
-                        New World<br />
+                        Dave Inchy<br />
                         <hr class="my-2 border-[1px] rounded border-slate-200" />
-                        Buddy
+                        🤜🏻 BRO 🤛🏻
                     </h1>
                 </div>
             </Section>

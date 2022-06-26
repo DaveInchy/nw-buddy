@@ -5,7 +5,7 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "0.40.11",
+    "version": "22.6.26",
     "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -156,14 +156,20 @@
     },
     "game_targeting": {
       "type": "dedicated",
-      "game_ids": [21816]
+      "game_ids": [
+        21816
+      ]
     },
-    "game_events": [21816],
+    "game_events": [
+      21816
+    ],
     "launch_events": [
       {
         "event": "GameLaunch",
         "event_data": {
-          "game_ids": [21816]
+          "game_ids": [
+            21816
+          ]
         },
         "start_minimized": true
       }
