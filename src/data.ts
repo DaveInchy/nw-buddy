@@ -66,4 +66,4 @@ class DataClient
 
 }
 
-export default new DataClient("https://doonline.nl");
+export default new DataClient("https://nw-radar-api.vercel.app");
