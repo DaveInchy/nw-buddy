@@ -118,7 +118,7 @@ export default class Minimap {
 
   public reqPlayerByName = async (username) => {
     var axios = require('axios');
-    return await axios.get("https://doonline.nl/api/player/get/" + username, {
+    return await axios.get("https://nw-radar-api.vercel.app/api/player/get/" + username, {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
