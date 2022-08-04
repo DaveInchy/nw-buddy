@@ -140,7 +140,7 @@ class Overlay extends WindowManager {
       loadCounter++;
     }
 
-    var App = Sidebar;
+    const _sideBar = Sidebar;
 
     logMessage("startup", "starting runtime service ...");
     // var domState = new DocumentStateController();
@@ -167,7 +167,7 @@ class Overlay extends WindowManager {
           direction: this._playerPosData[13].toString(),
         },
         group: this._gameProcData.sessionId.toString(),
-        map: this._gameMap.toString(),
+        map: this._gameMap || "surface",
       };
 
       // https://nw-radar-api.vercel.app/api/player/list
@@ -398,7 +398,7 @@ class Overlay extends WindowManager {
     seconds;
     seconds < 10 ? "0" + seconds : seconds;
     var strTime = hours + ":" + minutes + " " + ampm;
-    elem.innerHTML = strTime;
+    elem.textContent = strTime;
   }
 
   public async drawCoords() {
@@ -409,7 +409,7 @@ class Overlay extends WindowManager {
     var direction = coords[13];
 
     var elem = document.getElementById("minimap-position");
-    elem.innerHTML = `${direction.toString()} :: ${x.toString().split(".")[0]}, ${
+    elem.textContent = `${direction.toString()} :: ${x.toString().split(".")[0]}, ${
       y.toString().split(".")[0]}, ${z.toString().split(".")[0]
     }`; // , ${z.toString().split('.')[0]}`;
   }

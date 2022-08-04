@@ -1,5 +1,7 @@
+import { Config } from "./global";
+
 export const logMessage = async (type, message) => {
-    var http = await fetch('http://localhost:8433/'
+    var http = await fetch((Config.debug.ssl ? "https://" : "http://") + Config.debug.host + ':' + Config.debug.port + '/'
         + '?time=' + encodeURIComponent(`${Date.now()}`)
         + '&subject=' + encodeURIComponent(`${type}`)
         + '&message=' + encodeURIComponent(`${message}`)

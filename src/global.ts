@@ -45,5 +45,20 @@ export const Hotkeys = {
 
 export const Config = {
   package: require('../package.json'),
-  metadata: require('../public/manifest.json').meta
+  metadata: require('../public/manifest.json').meta,
+  server: {
+    domain: "nw-radar-api.vercel.app",
+    ssl: true,
+  },
+  debug: {
+    standalone: true,
+    start: "/bin/bash npm run debug",
+    host: "0.0.0.0",
+    port: 8433,
+    ssl: false,
+  },
+  build: {
+    standalone: true,
+    start: "/bin/bash npm run watch",
+  },
 }

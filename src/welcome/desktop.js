@@ -131,9 +131,9 @@ export default function DesktopComponent({props})
                         <span className="text-4xl font-new-world text-slate-400 mt-5 z-30">thanks for watching</span>
                     </h4>
                     <h1 className={"bg-gradient-to-bl from-amber-600 to-amber-400 text-transparent text-8xl bg-clip-text font-extrabold text-center uppercase text-clip z-30"}>
-                        Dave Inchy<br />
+                        New World<br />
                         <hr class="my-2 border-[1px] rounded border-slate-200" />
-                        🤜🏻 BRO 🤛🏻
+                        🤜🏻 BUDDY 🤛🏻
                     </h1>
                 </div>
             </Section>

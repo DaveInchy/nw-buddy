@@ -67,7 +67,7 @@ var config = {
 };
 
 var data = {};
-    data.locations = require("./res/json/locations.json");
+    data.locations = require("./res/json/_locations.json");
 
 class Player {
 

@@ -1,5 +1,5 @@
 import { logMessage, logError } from './debug';
-import { getCircularReplacer } from './global';
+import { Config, getCircularReplacer } from './global';
 import { createHash, Hash } from 'crypto';
 import { playerModel } from './player';
 
@@ -66,4 +66,4 @@ class DataClient
 
 }
 
-export default new DataClient("https://nw-radar-api.vercel.app");
+export default new DataClient((Config.server.ssl ? "https://" : "http://") + Config.server.domain);
