@@ -128,7 +128,7 @@ export default function DesktopComponent({props})
                 </div>
                 <div className="flex flex-col h-screen justify-center items-center -translate-y-[30px]">
                     <h4 class="flex flex-col justify-center items-center">
-                        <span className="text-4xl font-new-world text-slate-400 mt-5 z-30">thanks for watching</span>
+                        <span className="text-4xl font-new-world text-slate-400 mt-5 z-30">thanks for using</span>
                     </h4>
                     <h1 className={"bg-gradient-to-bl from-amber-600 to-amber-400 text-transparent text-8xl bg-clip-text font-extrabold text-center uppercase text-clip z-30"}>
                         New World<br />

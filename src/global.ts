@@ -47,7 +47,7 @@ export const Config = {
   package: require('../package.json'),
   metadata: require('../public/manifest.json').meta,
   server: {
-    domain: "nw-radar-api.vercel.app",
+    domain: "nw-buddy-private.vercel.app",
     ssl: true,
   },
   debug: {
@@ -59,6 +59,6 @@ export const Config = {
   },
   build: {
     standalone: true,
-    start: "/bin/bash npm run watch",
+    start: "/bin/bash npm run build",
   },
 }
