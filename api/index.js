@@ -115,9 +115,9 @@ class DataServer {
         this.app.use('/api/player/list', this.listPlayers);
         //this.app.use('/api/player/list/:group', this.listGroup);
 
-        this.app.static('/images/', __dirname + "/res/image");
-        this.app.static('/dataset/', __dirname + "/res/json");
-        this.app.static('/release/', __dirname + "../releases");
+        //this.app.static('/images/', __dirname + "/res/image");
+        //this.app.static('/dataset/', __dirname + "/res/json");
+        //this.app.static('/release/', __dirname + "../releases");
 
         this.app.listen(this.port);
         return this;
