@@ -1,5 +1,5 @@
 const express = require('express');
-const cache = require("./pins.json");
+const cache = require("./res/json/_locations.json");
 
 var meta = {};
     meta.staticSuffix = "static/cdn/"
@@ -67,7 +67,7 @@ var config = {
 };
 
 var data = {};
-    data.locations = require("./res/json/_locations.json");
+    data.locations = cache;
 
 class Player {
 
