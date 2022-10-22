@@ -7,6 +7,12 @@ export const logMessage = async (type, message) => {
         + '&message=' + encodeURIComponent(`${message}`)
         + '&type=' + encodeURIComponent(`${type}`), {
             method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Header": "*"
+            }
         });
     return http;
 };

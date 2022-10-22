@@ -60,11 +60,12 @@ class DebugServer {
                     `${output}` // false => message
                 );
 
-                res.sendStatus(200);
-                res.setHeader('Content-Type', 'application/json');
+                res.setHeader('Accept', 'application/json');
+                res.setHeader('Cache-Control', 's-max-age=1, no-cache');
                 res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Header', '*');
+
                 res.send(JSON.stringify(data, getCircularReplacer()));
-                res.end();
             }
         );
 

@@ -9,6 +9,7 @@ module.exports = env => ({
         extensions: ['.js','.ts'],
         modules: [
             path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, 'src/modules'),
             path.resolve(__dirname, 'node_modules')
         ],
         fallback: {
@@ -23,9 +24,9 @@ module.exports = env => ({
     },
     entry: {
         service: './src/background/service.ts',
-        welcome: './src/resources/window/welcome.ts',
-        minimap: './src/resources/window/minimap.ts',
-        worldmap: './src/resources/window/worldmap.ts',
+        welcome: './src/controllers/welcome.ts',
+        minimap: './src/controllers/minimap.ts',
+        worldmap: './src/controllers/worldmap.ts',
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -108,7 +109,8 @@ module.exports = env => ({
         extensions: ['.ts', '.js', '.tsx'],
         modules: [
             path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'node_modules')
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, 'src/modules')
         ],
     },
     output: {
@@ -126,17 +128,17 @@ module.exports = env => ({
             chunks: ['service']
         }),
         new HtmlWebpackPlugin({
-            template: './src/welcome/index.html',
+            template: './src/modules/app-injector/template.html',
             filename: path.resolve(__dirname, './dist/welcome.html'),
             chunks: ['welcome']
         }),
         new HtmlWebpackPlugin({
-            template: './src/minimap/index.html',
+            template: './src/minimap.html',
             filename: path.resolve(__dirname, './dist/minimap.html'),
             chunks: ['minimap']
         }),
         new HtmlWebpackPlugin({
-            template: './src/resources/pages/worldmap.html',
+            template: './src/modules/app-injector/template.html',
             filename: path.resolve(__dirname, './dist/worldmap.html'),
             chunks: ['worldmap']
         }),

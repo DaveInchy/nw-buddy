@@ -17,5 +17,6 @@
   "liveServer.settings.port": 3000,
   "liveServer.settings.root": "dist/",
   "liveServer.settings.multiRootWorkspaceName": "./",
-  "liveServer.settings.useLocalIp": true
+  "liveServer.settings.useLocalIp": true,
+  "git.ignoreLimitWarning": true
 }

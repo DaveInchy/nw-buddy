@@ -105,6 +105,8 @@ export default class Minimap {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Header": "*",
         "Bearer-Token": StorageInterface.get("bearer").toString(),
       }
     }).then(res => {
@@ -122,6 +124,8 @@ export default class Minimap {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Header": "*",
         "Bearer-Token": StorageInterface.get("bearer").toString(),
       }
     }).then(res => {

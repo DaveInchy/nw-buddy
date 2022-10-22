@@ -53,8 +53,8 @@ export const Config = {
   debug: {
     standalone: true,
     start: "/bin/bash npm run debug",
-    host: "0.0.0.0",
-    port: 8433,
+    host: "localhost",
+    port: 8443,
     ssl: false,
   },
   build: {

@@ -77,7 +77,7 @@ const Resources: Array<{
   {
     name: "loot",
     icon: `💰`,
-    size: { width: 8, height: 8 },
+    size: { width: 10, height: 10 },
     types: [
       {
         name: "coin",

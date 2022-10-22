@@ -4,7 +4,7 @@ import { OWWindow } from "@overwolf/overwolf-api-ts";
 import { logError, logMessage } from './debug';
 import { WindowNames } from "./global";
 
-export default class owWindow {
+export default class WindowManager {
 
   maximized: boolean;
   windowName: string;

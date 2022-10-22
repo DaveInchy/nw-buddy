@@ -18,6 +18,7 @@ class BackgroundController {
   private constructor() {
     // Populating the background controller's window dictionary
     this._windows[WindowNames.minimap] = new OWWindow(WindowNames.minimap);
+    this._windows[WindowNames.worldmap] = new OWWindow(WindowNames.worldmap);
     this._windows[WindowNames.welcome] = new OWWindow(WindowNames.welcome);
 
     // When a a supported game game is started or is ended, toggle the app's windows

@@ -6,70 +6,10 @@ var meta = {};
     meta.apiVersion = "1";
     meta.apiTime = new Date().getTime();
 
-var config = {
-    metadata: {
-        ...meta,
-        bukkit: "cloudworks-bukkit.s3.eu-west-2.amazonaws.com",
-        title: "",
-        descriptor: "",
-        request: {
-            headers: [
-                ["Allow-Origin", "*"],
-                ["", ""],
-                ["Accept-Type", "application/json"],
-            ]
-        }
-    },
-    api: {
-        version: meta.apiVersion,
-        expired: meta.apiTime,
-        route_prefix: "/api",
-        route_suffix: `/v${meta.apiVersion}`,
-        // All endpoints for the api, it calls a function to handle the request.
-        endpoint: [
-            {
-                category: "player",
-                routes: [
-                    ["set", ""]
-                    ["get", function(req, res) {
-                        res.end();
-                    }],
-                    "list",
-                    "update",
-                    "delete",
-                ]
-            }
-        ],
-    },
-    static: {
-        version: meta.apiVersion,
-        route_prefix: "/static",
-        route_suffix: `/v${meta.apiVersion}`,
-        media: [
-            {
-                resource: "",
-                route: "",
-            }
-        ],
-        data: [
-            {
-                mime: "application/json",
-                resource: "./res/json/locations.json",
-                name: "locations",
-            }
-        ],
-        public: [
-            {
-
-            }
-        ],
-    }
-};
-
 var data = {};
     data.locations = cache;
-
-class Player {
+class Player
+{
 
     user = undefined;
     data = undefined;
@@ -97,7 +37,8 @@ class Player {
     }
 }
 
-class DataServer {
+class DataServer
+{
 
     app = undefined;
 
@@ -113,11 +54,7 @@ class DataServer {
         this.app.use('/api/player/set', this.setPlayer);
         this.app.use('/api/player/get/:username', this.getPlayer);
         this.app.use('/api/player/list', this.listPlayers);
-        //this.app.use('/api/player/list/:group', this.listGroup);
-
-        //this.app.static('/images/', __dirname + "/res/image");
-        //this.app.static('/dataset/', __dirname + "/res/json");
-        //this.app.static('/release/', __dirname + "../releases");
+        this.app.use('/api/player/list/:group', this.listGroup);
 
         this.app.listen(this.port);
         return this;
@@ -133,8 +70,21 @@ class DataServer {
         return [request, response];
     }
 
+    getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+            if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) {
+                    return;
+                }
+                seen.add(value);
+            }
+            return value;
+        };
+    };
+
     getPinsJSON = (request, response) => {
-        let text = JSON.stringify(data.locations, getCircularReplacer());
+        let text = JSON.stringify(data.locations, this.getCircularReplacer());
 
         console.log(`${request.url} => ${text}`);
 
@@ -162,7 +112,7 @@ class DataServer {
 
                 response.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
 
-                response.status(200).send(JSON.stringify(element, getCircularReplacer()));
+                response.status(200).send(JSON.stringify(element, this.getCircularReplacer()));
                 return;
             }
         });
@@ -218,12 +168,12 @@ class DataServer {
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
 
-        response.send(JSON.stringify(data.players, getCircularReplacer()));
+        response.send(JSON.stringify(data.players, this.getCircularReplacer()));
         return;
     }
 
     listGroup = (request, response) => {
-        response.status(200).send(JSON.stringify(this.players, getCircularReplacer()));
+        response.status(200).send(JSON.stringify(this.players, this.getCircularReplacer()));
         return;
     }
 
@@ -244,7 +194,7 @@ class DataServer {
         response.setHeader('Access-Control-Allow-Header', '*');
         response.setHeader('Access-Control-Allow-Origin', '*');
 
-        response.send(JSON.stringify(data.players, getCircularReplacer()));
+        response.send(JSON.stringify(data.players, this.getCircularReplacer()));
         return;
     }
 
@@ -256,18 +206,5 @@ class DataServer {
         return `https://0.0.0.0:${this.port}`;
     }
 }
-
-const getCircularReplacer = () => {
-    const seen = new WeakSet();
-    return (key, value) => {
-        if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-        }
-        return value;
-    };
-};
 
 module.exports.default = new DataServer().app;
