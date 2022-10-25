@@ -1,6 +1,6 @@
 {
   "name": "nw-buddy",
-  "version": "0.10.21",
+  "version": "22.10.25",
   "description": "An Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game.",
   "main": "api/index.js",
   "private": true,
@@ -70,6 +70,7 @@
     "stream-http": "^3.2.0",
     "style-loader": "^3.3.1",
     "tailwindcss": "^3.0.23",
+    "tesseract.js": "^3.0.3",
     "tls": "^0.0.1",
     "ts-loader": "^8.0.17",
     "url": "^0.11.0",

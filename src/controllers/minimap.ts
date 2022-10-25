@@ -19,6 +19,9 @@ import Player, { playerModel } from '../player';
 import Pin from "../pin";
 import Mount from "../mount.js";
 
+// Modules imports
+import { getScreenshotFromNewWorld, getLocation } from "../modules/ocr-devleon/tesseract";
+
 // React Components
 import DesktopComponent from "../components/content/minimap";
 import Sidebar from "../components/sections/sidebar"
@@ -28,7 +31,9 @@ import "../resources/styles/overlay.css";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
+import owGames = overwolf.games;
 import owUtils = overwolf.utils;
+import Vector2 from "../vector2";
 
 
 class Overlay extends WindowManager {
@@ -48,7 +53,7 @@ class Overlay extends WindowManager {
   private _gameEventData: Object | any;
 
   public _gameInfoUpdates: overwolf.Event<any>;
-  public _gameEventsUpdates: overwolf.Event<owEvents.NewGameEvents>;
+  public _gameEventsUpdates: overwolf.Event<any>;
 
   private _Minimap: Minimap;
 
@@ -104,110 +109,142 @@ class Overlay extends WindowManager {
       logMessage("startup", "try again => [" + loadInterval * loadCounter + " sec]");
       try {
 
+        var playerLocation: [number, number, number] = await this.leonOCR();
+
+        playerLocation = [
+          Number(playerLocation[1].toString().split('.')[0]),
+          Number(playerLocation[0].toString().split('.')[0]),
+          Number(playerLocation[2].toString().split('.')[0]),
+        ]
+
+        logMessage(`[locationOCR]`, `${JSON.stringify(playerLocation)}`);
+
         //all this code should be in the react component
         //this._app = Mount(DesktopComponent);
-        var data = { game_info: { location: "", player_name: "" } };
-        this._gameEventsData = await this.getEventData();
-        if (this._gameEventsData.status !== "error")
-        {
-          data = this._gameEventsData;
-        }
-        // await this.getProcData();
+        var eventData = await this.getEventData();
+        var processData = await this.getProcData();
 
         this.setToggleHotkeyText();
         this.setCreatePinHotkeyText();
         this.setZoomHotkeysText();
 
-        logMessage('debug', `${JSON.stringify(this._gameEventsData.status, getCircularReplacer())}`);
+        // logMessage('debug', `${JSON.stringify(eventData, getCircularReplacer())}`);
 
-        this._playerCharacter = data.game_info.player_name;
-        this._playerLocation = data.game_info.location;
-        this._playerPosData = this._playerLocation.split(",");
+        this._playerCharacter = eventData.res.game_info.player_name;
+        this._playerLocation = eventData.res.game_info.location;
+        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : playerLocation;
 
         this._player = {
           type: "player",
           user: this._playerCharacter,
           coords: {
-            x: Number(this._playerPosData[1]),
-            y: Number(this._playerPosData[3]),
-            z: Number(this._playerPosData[5]),
-            direction: this._playerPosData[13],
+            x: Number(this._playerPosData[(this._playerLocation ? 1 : 0)]),
+            y: Number(this._playerPosData[(this._playerLocation ? 3 : 1)]),
+            z: Number(this._playerPosData[(this._playerLocation ? 5 : 2)]),
+            direction: this._playerLocation ? this._playerPosData[13].toString() : "N",
           },
           map: this._gameMap ? this._gameMap : "surface",
           group: (`${Math.floor(Math.random() * 100)}`).toString(),
         };
 
         var canvas: HTMLCanvasElement = document.getElementById("minimap-canvas") as HTMLCanvasElement;
+        var chunks: HTMLDivElement = document.getElementById("minimap-html") as HTMLDivElement;
 
-        this._Minimap = new Minimap(this._player, canvas)
+        this._Minimap = new Minimap(this._player, canvas, chunks)
 
         this.setHotkeyBehavior();
 
         loading = false;
         logMessage("startup", "success loading game data ...");
       } catch (e) {
-        logError("aomwrhing wrong, retry in 4s ...");
+        logError("Something went wrong, retry in 5s ...");
         logError(e);
       }
       await this.wait(1000 * loadInterval);
       loadCounter++;
     }
 
-    const _sideBar = Sidebar;
+    // const _sideBar = Sidebar;
 
     logMessage("startup", "starting runtime service ...");
     // var domState = new DocumentStateController();
 
     var updateCounter = 0;
     while (!loading) {
-      // await this.getProcData();
-      // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
-      // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
-      // await this.getEventData();
-      // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
-      // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
-      this._gameMap = this._gameEventData.res.game_info.map;
-      this._playerCharacter = this._gameEventData.res.game_info.player_name;
-      this._playerLocation = this._gameEventData.res.game_info.location;
-      this._playerPosData = this._playerLocation.split(",");
-      this._player = {
-        type: "player",
-        user: this._playerCharacter,
-        coords: {
-          x: Number(this._playerPosData[1]),
-          y: Number(this._playerPosData[3]),
-          z: Number(this._playerPosData[5]),
-          direction: this._playerPosData[13].toString(),
-        },
-        group: (`${Math.floor(Math.random() * 100)}`).toString(),
-        map: this._gameMap || "surface",
-      };
+      try {
+        var playerLocation: [number, number, number] = await this.leonOCR();
 
-      // https://nw-radar-api.vercel.app/api/player/list
-      this._playerList = DataClient.setPlayer(this._player); // returns playerlist
-      // [{"type":"player","user":"n'Adina","group":"0c218ed2585c4353b77fbbb2d6e915a8","coords":{"x":"8695.59","y":"4233.43","z":"179.55","direction":"SW"}}]
-      // logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
+        playerLocation = [
+          Number(playerLocation[1].toString().split('.')[0]),
+          Number(playerLocation[0].toString().split('.')[0]),
+          Number(playerLocation[2].toString().split('.')[0]),
+        ]
 
-      this.drawCoords();
-      this.drawTime();
-      this.drawTitle(this._playerCharacter);
+        logMessage(`[locationOCR]`, `${JSON.stringify(playerLocation)}`);
 
-      this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
-      ? ((this._createPinShown === true || this._editorShown === true || this.sidebarShown === true)
-        ? this.currWindow.maximize() && true
-        : this.currWindow.minimize() && false)
-      : this.currWindow.maximize() && false;
+        await this.getProcData();
+        // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
+        // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
+        await this.getEventData();
+        // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
+        // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
+        this._gameMap = this._gameEventData.res.game_info.map;
 
-      this._Minimap.renderCanvas(this._player, this._playerList);
+        this._playerCharacter = this._gameEventData.res.game_info.player_name;
+        this._playerLocation = this._gameEventData.res.game_info.location;
+        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : playerLocation;
 
-      // keep checking for when the window for worldmap is stored in var _Worldmap on window _worldMap
-      typeof this._Worldmap === 'object' ? this._Worldmap.renderCanvas(this._player, this._playerList) && this._Worldmap.setZoom(0.35) : null;
+        // logMessage('debug', `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
 
-      updateCounter <= 1 ? this.showMinimap() : null;
+        this._player = {
+          type: "player",
+          user: this._playerCharacter,
+          coords: {
+            x: Number(this._playerPosData[(this._playerLocation ? 1 : 0)]),
+            y: Number(this._playerPosData[(this._playerLocation ? 3 : 1)]),
+            z: Number(this._playerPosData[(this._playerLocation ? 5 : 2)]),
+            direction: this._playerLocation ? this._playerPosData[13].toString() : "N",
+          },
+          group: (`${Math.floor(Math.random() * 100)}`).toString(),
+          map: this._gameMap || "surface",
+        };
 
-      await this.wait(1000 / ticksPerSecond);
-      updateCounter++;
+        // https://nw-radar-api.vercel.app/api/player/list
+        this._playerList = DataClient.setPlayer(this._player); // returns playerlist
+        // [{"type":"player","user":"n'Adina","group":"0c218ed2585c4353b77fbbb2d6e915a8","coords":{"x":"8695.59","y":"4233.43","z":"179.55","direction":"SW"}}]
+        // logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
+
+        this.drawCoords();
+        this.drawTime();
+        this.drawTitle(this._playerCharacter);
+
+        this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
+          ? ((this._createPinShown === true || this._editorShown === true || this.sidebarShown === true)
+            ? this.currWindow.maximize() && true
+            : this.currWindow.minimize() && false)
+          : this.currWindow.maximize() && false;
+
+        this._Minimap.renderCanvas(this._player, this._playerList);
+
+        // keep checking for when the window for worldmap is stored in var _Worldmap on window _worldMap
+        //  typeof this._Worldmap === 'object' ? this._Worldmap.renderCanvas(this._player, this._playerList) && this._Worldmap.setZoom(0.35) : null;
+
+        updateCounter <= 1 ? this.showMinimap() : null;
+
+        await this.wait(1000 / ticksPerSecond);
+        updateCounter++;
+      } catch (e) {
+        logError(e)
+      }
     }
+  }
+
+  private leonOCR(): Promise<[number, number, number]> {
+    return (async () => {
+      return await getLocation(
+        await getScreenshotFromNewWorld().then(result => result)
+      ).then(result => result)
+    })()
   }
 
   public async releaseMouse() {
@@ -371,30 +408,36 @@ class Overlay extends WindowManager {
 
   public async listenForEvents() {
     logMessage("startup", "loading event listeners ...");
+    try {
+      const gameFeatures = GamesFeatures.get(GameClassId);
+      if (gameFeatures && gameFeatures.length) {
 
-    const gameFeatures = GamesFeatures.get(GameClassId);
-    if (gameFeatures && gameFeatures.length) {
-      this._gameInfoUpdates = overwolf.games.events.onInfoUpdates2;
-      this._gameInfoUpdates.addListener(this.setProcData.bind(this));
+        this._owGameEventsDeligate = {
+          onNewEvents: (e) => {
+            this.setEventData(e);
+          },
+          onInfoUpdates: (info) => {
+            this.setProcData(info);
+          },
+        };
 
-      this._gameEventsUpdates = overwolf.games.events.onNewEvents;
-      this._gameEventsUpdates.addListener(this.setEventData.bind(this));
+        this._owGameEventsListener = new OWGamesEvents(
+          this._owGameEventsDeligate,  await this.getRequiredFeatures()
+        );
 
-      // this._owGameEventsDeligate = {
-      //   onNewEvents: (e) => {
-      //     this.setEventData(e);
-      //   },
-      //   onInfoUpdates: (e) => {
-      //     this.setProcData(e);
-      //   },
-      // };
+        await this._owGameEventsListener.start();
 
-      // this._owGameEventsListener = new OWGamesEvents(
-      //   this._owGameEventsDeligate,
-      //   await this.getRequiredFeatures()
-      // );
-      // await this._owGameEventsListener.start();
-      logMessage("startup", "event listeners set uo ...");
+        this._gameInfoUpdates = overwolf.games.events.onInfoUpdates2;
+        this._gameInfoUpdates.addListener(this.setProcData.bind(this));
+
+        this._gameEventsUpdates = overwolf.games.events.onNewEvents;
+        this._gameEventsUpdates.addListener(this.setEventData.bind(this));
+
+        logMessage("startup", "event listeners set up ...");
+      }
+    } catch(e) {
+      logError(e);
+      return;
     }
     return;
   }
@@ -433,15 +476,19 @@ class Overlay extends WindowManager {
   }
 
   public async getProcData() {
-    this._gameProcData = await OWGames.getRunningGameInfo();
+    this._gameProcData = await new Promise<overwolf.games.GetRunningGameInfoResult>((resolve) => {
+      overwolf.games.getRunningGameInfo((result) => resolve(result))
+    });
+    this._gameProcData = this._gameProcData ? this._gameProcData : await OWGames.getRunningGameInfo();
     return this._gameProcData;
   }
 
   public async getEventData() {
-    owEvents.onInfoUpdates2.addListener((e) => {
-      this.setEventData(e.info);
-    })
-    return await OWGames.getRunningGameInfo() || await OWGamesEvents.prototype.getInfo();
+    overwolf.games.events.getInfo((info) => {
+      this._gameEventData = info;
+    });
+    this._gameEventData = this._gameEventData ? this._gameEventData : await OWGamesEvents.prototype.getInfo();
+    return this._gameEventData;
   }
 
   private setProcData(json): void {
@@ -450,7 +497,7 @@ class Overlay extends WindowManager {
   }
 
   private setEventData(e): void {
-    this._gameEventData = e.info;
+    this._gameEventData = e;
     return;
   }
 
@@ -590,7 +637,7 @@ class Overlay extends WindowManager {
   showSidebar() {
     var sidebar = document.getElementById("sidebar");
     var worldmap = document.getElementById("worldmap");
-    this._Worldmap = new Minimap(this._player, document.getElementById("worldmap-canvas") as HTMLCanvasElement)
+    this._Worldmap = new Minimap(this._player, document.getElementById("worldmap-canvas") as HTMLCanvasElement, document.getElementById("worldmap-html") as HTMLDivElement)
     sidebar.style.display = "block";
     worldmap.style.display = "block";
     this.sidebarShown = true;

@@ -24,6 +24,7 @@ export default class Minimap {
     zoom: 1.0,
 
     canvas: undefined,
+    chunks: undefined,
     canvasContext: undefined,
 
     playerName: undefined,
@@ -48,12 +49,13 @@ export default class Minimap {
     directionAngle: undefined
   };
 
-  constructor(player: playerModel, canvas: HTMLCanvasElement) {
+  constructor(player: playerModel, canvas: HTMLCanvasElement, html: HTMLDivElement) {
     var _ = this.__;
 
     this.cacheDownload();
 
     _.canvas = canvas;
+    _.chunks = html;
     _.canvasContext = _.canvas.getContext("2d");
 
     _.playerName = player.user ? player.user : "Player";
@@ -150,7 +152,11 @@ export default class Minimap {
     this.__.canvas.style.marginLeft = playerCanvasCoords.x + "px";
     this.__.canvas.style.marginTop = playerCanvasCoords.y + "px";
 
+    this.__.chunks.style.marginLeft = playerCanvasCoords.x + "px";
+    this.__.chunks.style.marginTop = playerCanvasCoords.y + "px";
+
     var ctx: CanvasRenderingContext2D = this.__.canvas.getContext("2d");
+
     const renderOtherPlayers = (otherPlayers: playerModel[]) =>
     {
       for (var i = 0; i < otherPlayers.length; i++)
@@ -181,7 +187,7 @@ export default class Minimap {
 
     this.renderLayers();
 
-    renderOtherPlayers(playerList);
+    // renderOtherPlayers(playerList);
 
     return this;
   }
@@ -198,6 +204,9 @@ export default class Minimap {
 
     this.__.canvas.style.width = parseInt(this.__.canvasWidth) + "px";
     this.__.canvas.style.height = parseInt(this.__.canvasHeight) + "px";
+
+    this.__.chunks.style.width = parseInt(this.__.canvasWidth) + "px";;
+    this.__.chunks.style.height = parseInt(this.__.canvasHeight) + "px";
 
     this.__.mapToCanvasRatio = new Vector2(
       this.__.canvasWidth / this.__.mapWidth,

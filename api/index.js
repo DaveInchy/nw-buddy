@@ -1,5 +1,5 @@
 const express = require('express');
-const cache = require("./res/json/_locations.json");
+const cache = require("./res/json/_locations_brimstone_sands.json");
 
 var meta = {};
     meta.staticSuffix = "static/cdn/"
@@ -8,6 +8,7 @@ var meta = {};
 
 var data = {};
     data.locations = cache;
+
 class Player
 {
 

@@ -4,6 +4,7 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "types": [
       "@types/node",
       "@types/p5",
@@ -48,6 +49,7 @@
   },
   "exclude": [
     "node_modules",
+    "**/node_modules/*",
     "api",
     "debug.server.js",
     "public",
@@ -55,6 +57,11 @@
     ".vscode",
     "releases",
     "dist",
-    "build"
+    "build",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "jsconfig.json",
+    "public/manifest.json",
   ]
 }

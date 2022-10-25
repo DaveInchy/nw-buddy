@@ -43,6 +43,8 @@ export default function DesktopComponent({ props }) {
     const closeElem1 = useRef(null);
     const Storage = StorageInterface;
 
+    const isEnabled = () => Storage.get("splash_enabled") === true ? true : false;
+
     const closeSplash = () => {
         window.close();
         logMessage("action", "Splash closed");
@@ -65,7 +67,10 @@ export default function DesktopComponent({ props }) {
 
     useEffect(() => {
         logMessage("action", "React mounted desktop");
-        setCheckmark(Storage.get("splash_enabled") ? true : false);
+        setCheckmark(!isEnabled());
+        if (!isEnabled()) {
+            closeSplash();
+        }
     }, []);
 
     // call every render refresh
@@ -83,10 +88,10 @@ export default function DesktopComponent({ props }) {
 
     useEffect(() => {
         if (checkmark) {
-            checkElem1.current.src = checkIconActive;
+            checkElem1.current.src = checkIconInactive;
             disableSplash();
         } else {
-            checkElem1.current.src = checkIconInactive;
+            checkElem1.current.src = checkIconActive;
             enableSplash();
         }
     }, [checkmark]);
@@ -110,7 +115,7 @@ export default function DesktopComponent({ props }) {
                     <img ref={circleElem3} src={runicCircleC} className={`relative opacity-100 duration-500 w-[333px] h-[333px] transform-cpu transition-all`} />
                 </div>
                 <div class="absolute z-20 top-[20px] right-[20px] w-auto h-[30px]">
-                    <img ref={checkElem1} src={checkmark ? checkIconActive : checkIconInactive} className="inline-block float-right w-auto h-[100%] justify-center align-center mr-5 border: 1px solid #eee;" onClick={() => setCheckmark(checkmark ? false : true)} />
+                    <img ref={checkElem1} src={checkmark ? checkIconActive : checkIconInactive} className="inline-block float-right w-auto h-[100%] justify-center align-center mr-5 border: 1px solid #eee;" onClick={() => setCheckmark(!checkmark)} />
                     <span className="inline-block text-slate-200 mr-5 float-right h-[100%] justify-center align-center text-2xl font-new-world font-thin" style={{ lineHeight: "30px" }}>dont show window again?</span>
                 </div>
                 <div class="absolute z-30 top-[20px] left-[20px] w-auto h-[30px]">

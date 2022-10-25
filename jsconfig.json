@@ -14,16 +14,30 @@
         "target": "ES2017",
         "module": "CommonJS",
         "moduleResolution": "node",
+        "resolveJsonModule": true,
         "jsx": "react"
     },
-    "exclude": [
-        "node_modules",
-        "**/node_modules/*"
-    ],
     "include": [
         "src",
         "src/**/*",
         "public",
         "public/**/*",
+    ],
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*",
+        "api",
+        "debug.server.js",
+        "public",
+        ".vercel",
+        ".vscode",
+        "releases",
+        "dist",
+        "build",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "jsconfig.json",
+        "public/manifest.json"
     ]
 }

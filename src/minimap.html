@@ -7,7 +7,17 @@
   <meta name="theme-color" content="#333">
   <meta charset="UTF-8" />
 
-  <title>NW Buddy - Minimap</title>
+  <title>Minimap</title>
+  <STYLE>
+    .leaflet-tile
+    {
+      position: absolute;
+    }
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+  </STYLE>
 </head>
 <body style="border: 0px solid cyan; overflow: hidden;">
 
@@ -16,13 +26,1277 @@
     <div id="minimap" style="display: none; ">
 
       <div id="minimap-title" style="position: absolute; bottom: calc(20px + 35vh + 15vw); right: 50px; width: 15vw; height: auto; text-align: center; z-index: 10;">
-        <h1 style="font-size: 52px; line-height: 22px; padding: 0px; font-weight: extrabold;"><span id="minimap-current-time" class="bg-gradient-to-tr from-amber-500 to-amber-700 text-transparent text-6xl bg-clip-text font-extrabold text-center uppercase text-clip text-shadow shadow-amber-400"></span></h1>
+        <h1 style="font-size: 52px; line-height: 22px; padding: 0px; font-weight: extrabold;">
+          <span id="minimap-current-time" class="bg-gradient-to-tr from-amber-500 to-amber-700 text-transparent text-6xl bg-clip-text font-extrabold text-center uppercase text-clip text-shadow shadow-amber-400"></span>
+        </h1>
       </div>
 
-      <div id="minimap-context" class="shadow-slate-700 shadow-md rounded-xs border-2 border-slate-700 bg-slate-800" style="width: 15vw; height: 15vw; position: absolute; bottom: 35vh; right: 50px; z-index: 5; overflow: hidden; scroll-behavior: smooth;">
+      <div id="minimap-context" class="shadow-slate-700 shadow-md rounded-xs border-2 border-slate-700 bg-slate-800 overflow-hidden" style="width: 15vw; height: 15vw; position: absolute; bottom: 35vh; right: 50px; z-index: 5; scroll-behavior: smooth;">
 
-        <canvas width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-500" style="position:relative; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; background-image: url('../../img/map/worldmap-transparent.webp'); background-size: cover; opacity: 100%; z-index: 0;">
+        <canvas width="9000" height="10200" id="minimap-canvas" class="transform-gpu duration-500" style="background-image: url('../../img/map/worldmap-transparent.webp'); position: absolute; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; z-index: 0;">
+
         </canvas>
+
+        <div id="minimap-html" class="transform-gpu duration-500" style="position: absolute; padding: 0; top: calc(0px + 50%); left: calc(0px + 50%); width: 9000px; height: 10200px; z-index: 0;">
+          <div id="container" style="" class="bg-blue-300 z-10 w-[100vw] h-[100vh]">
+            <div style="transform: translate3d(9000px, 0px, 0px) scale(3);" class="">
+              <!-- MAP CHUNKS ALIGNED TOP LEFT | Theyre rendered with the lowest quality on top zindex -->
+              <div style="z-index: 18; opacity: 1; transform: translate3d(-36px, 1136px, 0px) scale(1);">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, 377px, 0px); opacity: 1;"><img alt=""
+                  role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, 633px, 0px); opacity: 1;"><img alt=""
+                  role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, 121px, 0px); opacity: 1;"><img alt=""
+                  role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, 889px, 0px); opacity: 1;"><img alt=""
+                  role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, 633px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, 377px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, 889px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, 121px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, 1145px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -135px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, 1401px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -391px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -647px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -903px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -1159px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -1415px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -1671px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1062px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(806px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1318px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(550px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1574px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(294px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1830px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(38px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2086px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-218px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2342px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-474px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(2598px, -1927px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-730px, -1927px, 0px); opacity: 1;">
+              </div>
+              <div style="z-index: 17; opacity: 1; transform: translate3d(1056px, 880px, 0px)  scale(1); position: absolute; top: 0; left: 0;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/11.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 1152px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/12.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 1408px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/10.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/13.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 1664px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/9.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/8.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/7.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, 128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, -128px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, -384px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, -640px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/8/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(233px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/7/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-23px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/9/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(489px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/6/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-279px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/10/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(745px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/5/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-535px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/11/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1001px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/4/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-791px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/12/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1257px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/3/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1047px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/13/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1513px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/2/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1303px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/1/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1559px, -896px, 0px); opacity: 1;"><img
+                  alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/4/0/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-1815px, -896px, 0px); opacity: 1;">
+              </div>
+              <div style="z-index: 16; opacity: 1; transform: translate3d(8996px, -6380px, 0px) scale(2); position: absolute; top: 0; left: 0;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/4.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 3822px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 3566px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/5.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 4078px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 3310px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/6.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 4334px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/3/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4110px, 2798px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/2/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4366px, 2798px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/4/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3854px, 2798px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/1/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4622px, 2798px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/5/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3598px, 2798px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 3054px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/0/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-4878px, 2798px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/3/6/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(-3342px, 2798px, 0px); opacity: 1;">
+              </div>
+              <div style="z-index: 15; opacity: 1; transform: translate3d(-4856px, -2832px, 0px)  scale(4); position: absolute; top: 0; left: 0;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/1/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1280px, 1024px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/1/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1280px, 1280px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/0/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1024px, 1024px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/2/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1536px, 1024px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/0/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1024px, 1280px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/2/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1536px, 1280px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/0/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1024px, 768px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/1/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1280px, 768px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/2/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1536px, 768px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/3/2.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1792px, 1024px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/3/1.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1792px, 768px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/3/3.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1792px, 1280px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/1/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1280px, 512px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/0/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1024px, 512px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/2/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1536px, 512px, 0px); opacity: 1;">
+                <img alt="" role="presentation" src="https://cdn.newworldfans.com/newworldmap/09-2022/2/3/0.png"
+                  class="leaflet-tile leaflet-tile-loaded"
+                  style="width: 256px; height: 256px; transform: translate3d(1792px, 512px, 0px); opacity: 1;">
+              </div>
+            </div>
+          </div>
+        </div>
 
         <img src="../../img/compass-needle-pink.svg" id="compassNeedle" class="transform-none" style="max-width: 200px; max-height: 250px; position: absolute; top: 50%; left: 50%; z-index: 0; margin-left: -100px; margin-top: -100px;" />
 
@@ -50,7 +1324,7 @@
 
     </div>
 
-    <!-- <div id="pin-editor" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display:none;" class="w-1/3 h-full p-16">
+    <div id="pin-editor" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display:none;" class="w-1/3 h-full p-16">
       <div class="flex justify-center items-start w-full h-full">
         <div id="pin-list" class="w-full">
           <h2 class="text-4xl text-left">User Create-ed Map pins</h2>
@@ -86,9 +1360,9 @@
           </table>
         </div>
       </div>
-    </div> -->
+    </div>
 
-    <!-- <div id="create-pin" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="mx-auto mt-1/4 w-2/4 h-1/2 py-6">
+    <div id="create-pin" style="background-image: url(./img/bg-dialog.png); background-size: 100% 100%; background-repeat: repeat-x; display: none;" class="mx-auto mt-1/4 w-2/4 h-1/2 py-6">
       <div class="flex w-full h-full justify-center items-center">
 
         <div class="w-full">
@@ -103,7 +1377,7 @@
         </div>
 
       </div>
-    </div> -->
+    </div>
 
   </main>
 </body>

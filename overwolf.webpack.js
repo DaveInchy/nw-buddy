@@ -13,6 +13,7 @@ const handleErrors = (error, compilation) => {
 const PluginName = 'OverwolfPlugin';
 
 module.exports = class OverwolfPlugin {
+  version;
   constructor(env) {
     this.env = env
 
@@ -29,28 +30,15 @@ module.exports = class OverwolfPlugin {
 
     if ( !manifest )
       throw 'could not read manifest.json';
-
-    const
-      version = pkg.version,
-      name = pkg.name;
-
-    var newDate = new Date();
-    var base = newDate.getUTCFullYear();
-    var major = newDate.getUTCMonth() + 1;
-    var minor = newDate.getUTCDate();
-    var revision = newDate.getUTCHours();
-    var build = newDate.getUTCMinutes();
-    var newVersion = `${base.toString().split(20)[1]}.${major}.${minor}`;
-
-    this.env.setVersion = newVersion === version ? `${newVersion}.${revision}.${build}` : newVersion;
   }
   apply(compiler) {
     compiler.hooks.run.tapPromise(PluginName, async (compilation) => {
       try {
-        const newVersion = this.env.setVersion;
 
-        if ( newVersion && semver.valid(newVersion) )
-          await this.setVersion(newVersion);
+        if ( this.version && semver.valid(this.version) ) {
+          await this.setVersion(this.version);
+        }
+
       } catch(e) {
         handleErrors(e, compilation);
       }
@@ -59,19 +47,50 @@ module.exports = class OverwolfPlugin {
       try {
         const makeOpk = this.env.makeOpk;
 
-        if ( makeOpk )
-          await this.makeOPK(( typeof makeOpk === 'string' ) ? makeOpk : '');
+        if (this.version && semver.valid(this.version)) {
+          await this.setVersion(this.version);
+        }
+
+        if ( makeOpk ) {
+          await this.makeOPK();
+        }
+
       } catch(e) {
         handleErrors(e, compilation);
       }
     });
   }
 
-  async makeOPK(suffix = '') {
+  async makeOPK(suffix = undefined) {
     const
       packagePath = path.resolve(__dirname, './package.json'),
-      manifestPath = path.resolve(__dirname, './public/manifest.json'),
-      dist = path.join(__dirname, 'dist/');
+      manifestPath = path.resolve(__dirname, './public/manifest.json')
+
+    const [
+      pkg,
+      manifest
+    ] = await Promise.all([
+      this.readFile(packagePath),
+      this.readFile(manifestPath)
+    ]);
+
+    if ( !pkg )
+      throw 'could not read package.json';
+
+    if ( !manifest )
+      throw 'could not read manifest.json';
+
+    const version = pkg.version, name = pkg.name,
+    opkPath = path.join(__dirname, `releases/${name}_${version}${(suffix) ? `.${suffix}` : ''}.opk`),
+    distPath = path.join(__dirname, 'dist/');
+
+    await this.deleteFile(opkPath);
+    await zip.zip(distPath, opkPath);
+  }
+
+  async setVersion(newVersion) {
+    const packagePath = path.resolve(__dirname, './package.json'),
+    manifestPath = path.resolve(__dirname, './public/manifest.json');
 
     const [
       pkg,
@@ -89,38 +108,23 @@ module.exports = class OverwolfPlugin {
 
     const
       version = pkg.version,
-      name = pkg.name,
-      opkPath = path.join(__dirname, `releases/${name}_${version}${(suffix) ? `.${suffix}` : ''}.opk`);
+      name = pkg.name;
 
-    await this.deleteFile(opkPath);
-    await zip.zip(dist, opkPath);
-  }
+    var newDate = new Date();
+    var release = newDate.getUTCFullYear();
+    var major = newDate.getUTCMonth() + 1;
+    var minor = newDate.getUTCDate();
+    var revision = newDate.getUTCHours();
+    var build = newDate.getUTCMinutes();
+    var newVersion = `0.${release.toString().split(20)[1]}.${major}.${minor}`;
 
-  async setVersion(newVersion) {
-    const
-      packagePath = path.resolve(__dirname, './package.json'),
-      manifestPath = path.resolve(__dirname, './public/manifest.json');
-
-    const [
-      pkg,
-      manifest
-    ] = await Promise.all([
-      this.readFile(packagePath),
-      this.readFile(manifestPath)
-    ]);
-
-    if ( !pkg )
-      throw 'could not read package.json';
-
-    if ( !manifest )
-      throw 'could not read manifest.json';
+    this.version = newVersion === version ? `${newVersion}.revision-${revision}.build-${build}` : `${newVersion}`;
 
     pkg.version = newVersion;
     manifest.meta.version = newVersion;
 
-    const
-      pkgJSON = JSON.stringify(pkg, null, '  '),
-      manifestJSON = JSON.stringify(manifest, null, '  ');
+    const pkgJSON = JSON.stringify(pkg, null, '  '),
+    manifestJSON = JSON.stringify(manifest, null, '  ');
 
     await Promise.all([
       this.writeFile(packagePath, pkgJSON),
