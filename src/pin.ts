@@ -1,5 +1,5 @@
 import { logError, logMessage as log } from "./debug";
-import { getCircularReplacer } from "./global";
+import { getCircularReplacer } from "./utils";
 
 import Resources from "./resources";
 

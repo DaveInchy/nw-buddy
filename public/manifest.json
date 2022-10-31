@@ -5,7 +5,7 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "22.10.25",
+    "version": "0.22.1027",
     "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -46,19 +46,9 @@
         "default": "Alt+O"
       },
       "create": {
-        "title": "New POI",
+        "title": "New Node",
         "action-type": "toggle",
         "default": "Ctrl+P"
-      },
-      "worldmap": {
-        "title": "WorldmapV2",
-        "action-type": "custom",
-        "default": "Ctrl+M"
-      },
-      "editor": {
-        "title": "WorldMapV1",
-        "action-type": "toggle",
-        "default": "Ctrl+E"
       },
       "routes": {
         "title": "New Route",
@@ -69,7 +59,7 @@
         "hold": false,
         "action-type": "custom",
         "passthrough": false,
-        "title": "Refresh UI",
+        "title": "Restart UI",
         "default": "Shift+Esc"
       }
     },
@@ -100,8 +90,8 @@
       },
       "welcome": {
         "file": "welcome.html",
-        "in_game_only": false,
-        "focus_game_takeover": "ShowOnFocus",
+        "in_game_only": true,
+        "focus_game_takeover": "FocusOnShow",
         "use_os_windowing": true,
         "native_window": true,
         "allow_local_file_access": true,
@@ -113,14 +103,18 @@
         "transparent": true,
         "override_on_update": true,
         "size": {
-          "width": 1280,
-          "height": 840
+          "width": 16,
+          "height": 16
         }
       },
-      "worldmap": {
-        "file": "worldmap.html",
-        "in_game_only": false,
-        "focus_game_takeover": "ShowOnFocus",
+      "generic": {
+        "file": "generic.html",
+        "desktop_only": true,
+        "disable_restore_animation": true,
+        "focus_game_takeover": "HideOnShow",
+        "show_in_taskbar": true,
+        "grab_focus_on_desktop": false,
+        "dev_tools_window_style": true,
         "use_os_windowing": true,
         "native_window": true,
         "allow_local_file_access": true,
@@ -132,12 +126,12 @@
         "transparent": false,
         "override_on_update": true,
         "size": {
-          "width": 1280,
-          "height": 840
+          "width": 860,
+          "height": 640
         }
       },
-      "minimap": {
-        "file": "minimap.html",
+      "overlay": {
+        "file": "overlay.html",
         "in_game_only": true,
         "focus_game_takeover": "ShowOnFocus",
         "allow_local_file_access": true,
@@ -149,8 +143,8 @@
         "transparent": true,
         "override_on_update": true,
         "size": {
-          "width": 1,
-          "height": 1
+          "width": 16,
+          "height": 16
         }
       }
     },

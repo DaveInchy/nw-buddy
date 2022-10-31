@@ -1,6 +1,6 @@
 
 import { logError, logMessage } from './debug';
-import { getCircularReplacer } from './global';
+import { getCircularReplacer, wait } from './utils';
 import Vector2 from './vector2';
 import StorageInterface from './storage';
 import CacheInterface from './cache';
@@ -22,9 +22,28 @@ export default class Minimap {
   public __ = {
     data: [],
     zoom: 1.0,
+    scale: 1.0,
+
+    tilemap: undefined,
+
+    tilemapLeft: undefined,
+    tilemapRight: undefined,
+    tilemapTop: undefined,
+    tilemapBottom: undefined,
+
+    tilemapWidth: undefined,
+    tilemapHeight: undefined,
+
+    containerLeft: undefined,
+    containerRight: undefined,
+    containerTop: undefined,
+    containerBottom: undefined,
+    containerWidth: undefined,
+    containerHeight: undefined,
+
+    containerToTilemapRatio: undefined,
 
     canvas: undefined,
-    chunks: undefined,
     canvasContext: undefined,
 
     playerName: undefined,
@@ -46,21 +65,47 @@ export default class Minimap {
     mapHeight: undefined,
 
     mapToCanvasRatio: undefined,
-    directionAngle: undefined
+
+    directionAngle: undefined,
+    previousCoords: undefined,
+    currentCoords: new Vector2(0,0),
   };
 
-  constructor(player: playerModel, canvas: HTMLCanvasElement, html: HTMLDivElement) {
+  constructor(player: playerModel, canvas: HTMLCanvasElement, tilemap: HTMLDivElement) {
     var _ = this.__;
 
     this.cacheDownload();
 
-    _.canvas = canvas;
-    _.chunks = html;
-    _.canvasContext = _.canvas.getContext("2d");
-
-    _.playerName = player.user ? player.user : "Player";
+    _.playerName = player.user ? player.user : "localPlayer";
     _.playerDirection = player.coords.direction;
     _.playerMapCoords = new Vector2(player.coords.x, player.coords.y);
+
+    //tilemap code.
+    _.tilemap = tilemap;
+
+    _.tilemapLeft = 0 || tilemap.clientLeft;
+    _.tilemapRight = tilemap.clientWidth * _.scale;
+    _.tilemapTop = 0 || tilemap.clientTop;
+    _.tilemapBottom = tilemap.clientHeight * _.scale;
+
+    _.tilemapWidth = _.tilemapRight - _.tilemapLeft;
+    _.tilemapHeight = _.tilemapBottom - _.tilemapTop;
+
+    _.containerLeft = 0;
+    _.containerRight = 14336;
+    _.containerTop = 14336;
+    _.containerBottom = 0;
+    _.containerWidth = _.containerLeft - _.containerRight;
+    _.containerHeight = _.containerBottom - _.containerTop;
+
+    _.containerToTilemapRatio = new Vector2(
+      _.tilemapWidth * _.zoom / _.containerWidth,
+      _.tilemapHeight * _.zoom / _.mapHeight,
+    );
+
+    // canvas code.
+    _.canvas = canvas;
+    _.canvasContext = _.canvas.getContext("2d");
 
     _.canvasLeft = 0;
     _.canvasRight = canvas.width * _.zoom;
@@ -70,10 +115,10 @@ export default class Minimap {
     _.canvasHeight = _.canvasBottom - _.canvasTop;
 
     // map constants // DONT CHANGE THIS SHOULD WORK
-    _.mapLeft = 4520; // West Min 5240
-    _.mapRight = 14240; // East Max 14240
-    _.mapTop = 10120; // North Max 10240 / 10100 / 10200
-    _.mapBottom = 100; // South Min 0
+    _.mapLeft = 0; // West Min 5240
+    _.mapRight = 14336; // East Max 14240
+    _.mapTop = 14336; // North Max 10240 / 10100 / 10200
+    _.mapBottom = 0; // South Min 0
     _.mapWidth = _.mapLeft - _.mapRight; // mapLeft - mapRight
     _.mapHeight = _.mapBottom - _.mapTop; // -mapTop - mapBottom
     // DONT DONT DONT DONT DONT DONT CHANGE CHANGE CHANGE CHANGE CHANGE //
@@ -84,7 +129,23 @@ export default class Minimap {
       _.canvasHeight * _.zoom / _.mapHeight
     );
 
-    return;
+    var error;
+    while (!error) {
+
+      const ticksPerSecond = 15;
+      try {
+
+        this.renderNeedle(player);
+      } catch (e) {
+
+        logError(e);
+        error = e;
+      }
+
+      wait(1000 / ticksPerSecond)
+    }
+
+    return this;
   }
 
   public async cacheDownload()
@@ -137,9 +198,27 @@ export default class Minimap {
     });
   }
 
+  private async renderNeedle(player: playerModel) {
+    this.__.playerMapCoords = new Vector2(player.coords.x, player.coords.y);
+
+    this.__.previousCoords = this.__.currentCoords;
+    this.__.currentCoords = new Vector2(player.coords.x, player.coords.y);
+
+    var diffX = this.__.currentCoords.x - this.__.previousCoords.x;
+    var diffY = this.__.currentCoords.y - this.__.previousCoords.y;
+
+    var angle = Math.atan2(diffY, diffX) * 180 / Math.PI;
+
+    this.__.directionAngle = angle;
+    if (this.__.directionAngle !== 0 && this.__.previousCoords !== this.__.currentCoords) {
+      this.rotateNeedle(90 - this.__.directionAngle)
+    }
+    return;
+  }
+
   public async renderCanvas(player: playerModel, playerList: playerModel[]) {
 
-    this.__.playerMapCoords = new Vector2(player.coords.x, player.coords.y);
+    this.renderNeedle(player);
 
     var playerCanvasCoords: Vector2 = new Vector2(
       (this.__.playerMapCoords.x - this.__.mapLeft) *
@@ -148,46 +227,30 @@ export default class Minimap {
         this.__.mapToCanvasRatio.y
     );
 
+    var playerContainerCoords: Vector2 = new Vector2(
+      (this.__.playerMapCoords.x - this.__.containerLeft) *
+      this.__.containerToTilemapRatio.x,
+      (this.__.containerTop - this.__.playerMapCoords.y) *
+      this.__.containerToTilemapRatio.y
+    );
+
     // move the canvas's center to the player position with relative position
     this.__.canvas.style.marginLeft = playerCanvasCoords.x + "px";
     this.__.canvas.style.marginTop = playerCanvasCoords.y + "px";
 
-    this.__.chunks.style.marginLeft = playerCanvasCoords.x + "px";
-    this.__.chunks.style.marginTop = playerCanvasCoords.y + "px";
+    this.__.tilemap.style.marginLeft = `${(0 - this.__.playerMapCoords.x)}px`;
+    this.__.tilemap.style.marginBottom = `${(0 - this.__.playerMapCoords.y)}px`;
+    //this.__.tilemap.style.transform = `translate(${playerContainerCoords.x}px, ${playerContainerCoords.y})`;
+    //this.__.tilemap.style.top = `${playerContainerCoords.y}px`;
+
+    // StorageInterface.set('playerCoords', JSON.stringify({ x: this.__.playerMapCoords.x, y: this.__.playerMapCoords.y }));
 
     var ctx: CanvasRenderingContext2D = this.__.canvas.getContext("2d");
 
-    const renderOtherPlayers = (otherPlayers: playerModel[]) =>
-    {
-      for (var i = 0; i < otherPlayers.length; i++)
-      {
-        var oPlayerMapCoords = new Vector2(otherPlayers[i].coords.x, otherPlayers[i].coords.y);
-
-        var otherPlayer: playerModel = otherPlayers[i];
-
-        var oPlayerCanvasCoords: Vector2 = new Vector2(
-          (oPlayerMapCoords.x - this.__.mapLeft) * this.__.mapToCanvasRatio.x,
-          (this.__.mapTop - oPlayerMapCoords.y) * this.__.mapToCanvasRatio.y
-        );
-
-        var icon: CanvasImageSource = new Image();
-            icon.src = "./assets/img/compass-needle-yellow.svg";
-            icon.style.position = "relative";
-            icon.style.left = oPlayerCanvasCoords.x + "px";
-            icon.style.top = oPlayerCanvasCoords.y + "px";
-        ctx.drawImage(icon, oPlayerCanvasCoords.x, oPlayerCanvasCoords.y)
-        // logMessage("render", "rendering player: " + otherPlayer.user)
-      }
-    }
-
     // draw and animation of the player pointer
-    var a = this.getRotation(player.coords.direction);
-    this.rotateNeedle(this.getDirectionAngle(player));
-    this.__.directionAngle = a;
+    // this.rotateNeedle(this.getDirectionAngle(player));
 
     this.renderLayers();
-
-    // renderOtherPlayers(playerList);
 
     return this;
   }
@@ -204,9 +267,6 @@ export default class Minimap {
 
     this.__.canvas.style.width = parseInt(this.__.canvasWidth) + "px";
     this.__.canvas.style.height = parseInt(this.__.canvasHeight) + "px";
-
-    this.__.chunks.style.width = parseInt(this.__.canvasWidth) + "px";;
-    this.__.chunks.style.height = parseInt(this.__.canvasHeight) + "px";
 
     this.__.mapToCanvasRatio = new Vector2(
       this.__.canvasWidth / this.__.mapWidth,
@@ -241,7 +301,7 @@ export default class Minimap {
   private rotateNeedle(angle: number) {
     var needle: HTMLElement = document.getElementById("compassNeedle");
     needle.style.transform = 'rotate(' + angle + 'deg)'
-    needle.style.animationDuration = '1ms'
+    needle.style.animationDuration = '250ms'
     return;
   }
 
@@ -274,7 +334,7 @@ export default class Minimap {
     const _ = this.__;
     const data: any = _.data;
 
-    // StorageInterface.clear();
+    StorageInterface.clear();
     for (let key in data) {
       if (key === typeof "object") {
         logMessage(key, `Object: ${JSON.stringify(data[key])}`);
@@ -560,7 +620,7 @@ export default class Minimap {
   }
 
   async renderGrid() {
-    const chunksPerAxis = 100;
+    const chunksPerAxis = 56;
 
     function step(length) {
       return Math.floor(length / chunksPerAxis);

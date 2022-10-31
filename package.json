@@ -1,12 +1,12 @@
 {
   "name": "nw-buddy",
-  "version": "22.10.25",
+  "version": "0.22.1027",
   "description": "An Overwolf overlay that helps players find new friends and keep track of their progress, gives them a sense of the world around them, and helps them find their way around the game.",
   "main": "api/index.js",
   "private": true,
   "scripts": {
     "build": "webpack --mode=production --env makeOpk",
-    "dev": "webpack --mode=development",
+    "dev": "webpack serve --watch --mode=development",
     "watch": "webpack --watch --mode=development",
     "debug": "node debug.server.js",
     "api": "node api/index.js"
@@ -19,8 +19,8 @@
   ],
   "author": "DaveInchy",
   "publisher": "Overwolf",
-  "website": "http://github.com/dadavinci/nw-buddy",
-  "license": "CUSTOM",
+  "website": "https://overwolf.com/",
+  "license": "UNLICENSED",
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
@@ -82,10 +82,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DaDavinci/v22.git"
+    "url": "git+https://github.com/daveinchy/nw-buddy.git"
   },
   "bugs": {
-    "url": "https://github.com/DaDavinci/v22/issues"
+    "url": "https://github.com/daveinchy/nw-buddy/issues"
   },
-  "homepage": "https://github.com/DaDavinci/v22#readme"
+  "homepage": "https://github.com/DaveInchy/nw-buddy/blob/publish/README.md"
 }

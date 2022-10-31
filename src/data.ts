@@ -1,5 +1,6 @@
 import { logMessage, logError } from './debug';
-import { Config, getCircularReplacer } from './global';
+import { Config } from './global';
+import { getCircularReplacer } from './utils';
 import { createHash, Hash } from 'crypto';
 import { playerModel } from './player';
 

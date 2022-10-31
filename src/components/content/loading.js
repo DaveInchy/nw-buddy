@@ -1,17 +1,23 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import StorageInterface from '../../storage';
+// @ts-ignore
 import { logMessage, logError } from '../../debug';
 
 import "../../assets/css/overlay.css";
-import "../../assets/css/tailwind.css";
 
+// @ts-ignore
 import xIcon from "../../assets/img/new-world/ui/smallx_06_05_2022.png";
 
+// @ts-ignore
 import checkIconActive from "../../assets/img/new-world/icons/icon_checkmark_active.png";
+// @ts-ignore
 import checkIconInactive from "../../assets/img/new-world/icons/icon_checkmark_inactive.png";
 
+// @ts-ignore
 import bookIcon from "../../assets/img/book-original.png"
+// @ts-ignore
 import nwBackground from "../../assets/img/new-world/textures/continent-diff.png";
+// @ts-ignore
 import bannerBackground from "../../assets/img/new-world/backgrounds/banner-bg1.png";
 
 globalThis.nwBackground = nwBackground;
@@ -20,16 +26,25 @@ globalThis.checkIconActive = checkIconActive;
 globalThis.checkIconInactive = checkIconInactive;
 globalThis.crossIcon = xIcon;
 
+// @ts-ignore
 import runicCircleA from "../../assets/img/new-world/banner_runebiga.png";
+// @ts-ignore
 import runicCircleB from "../../assets/img/new-world/banner_runebigb.png";
+// @ts-ignore
 import runicCircleC from "../../assets/img/new-world/banner_runebigc.png";
+// @ts-ignore
 import runicCircleBackground from "../../assets/img/new-world/banner_runebg.png";
+// @ts-ignore
 import runicCircleInner from "../../assets/img/new-world/banner_runeinner.png";
+// @ts-ignore
 import runicCircleTitle from "../../assets/img/new-world/banner_titleinner.png";
 
+// @ts-ignore
 import bgImage from "../../assets/loadingimages/loadingimage5_07_05_2022.png";
 
+// @ts-ignore
 export default function DesktopComponent({ props }) {
+    // @ts-ignore
     var backgroundImageList = new Array();
 
     const [offset, setOffset] = useState(0);
@@ -114,25 +129,35 @@ export default function DesktopComponent({ props }) {
                 <div className="fixed top-auto left-auto translate-x-0 translate-y-0 z-20 w-full h-full flex flex-col justify-center items-center">
                     <img ref={circleElem3} src={runicCircleC} className={`relative opacity-100 duration-500 w-[333px] h-[333px] transform-cpu transition-all`} />
                 </div>
-                <div class="absolute z-20 top-[20px] right-[20px] w-auto h-[30px]">
+                <div
+// @ts-ignore
+                class="absolute z-20 top-[20px] right-[20px] w-auto h-[30px]">
                     <img ref={checkElem1} src={checkmark ? checkIconActive : checkIconInactive} className="inline-block float-right w-auto h-[100%] justify-center align-center mr-5 border: 1px solid #eee;" onClick={() => setCheckmark(!checkmark)} />
                     <span className="inline-block text-slate-200 mr-5 float-right h-[100%] justify-center align-center text-2xl font-new-world font-thin" style={{ lineHeight: "30px" }}>dont show window again?</span>
                 </div>
-                <div class="absolute z-30 top-[20px] left-[20px] w-auto h-[30px]">
+                <div
+// @ts-ignore
+                class="absolute z-30 top-[20px] left-[20px] w-auto h-[30px]">
                     <img ref={closeElem1} src={xIcon} className="inline-block float-left w-auto h-[100%] justify-center align-center mr-5" onClick={() => closeSplash()} />
                     <span className="inline-block text-slate-200 mr-5 float-left h-[100%] justify-center align-center text-2xl font-new-world font-thin" style={{ lineHeight: "30px" }}></span>
                 </div>
                 <div className="flex flex-col h-screen justify-center items-center -translate-y-[30px]">
-                    <h4 class="flex flex-col justify-center items-center">
+                    <h4
+// @ts-ignore
+                    class="flex flex-col justify-center items-center">
                         <span className="text-2xl font-new-world text-slate-400 mt-5 z-30">thanks for using</span>
                     </h4>
                     <h1 className={"translate-y-1 bg-gradient-to-bl from-amber-600 to-amber-400 text-transparent text-4xl bg-clip-text font-extrabold text-center uppercase text-clip z-30"}>
                         New World<br />
-                        <hr class="my-2 border-[1px] rounded border-slate-200/50" />
+                        <hr
+// @ts-ignore
+                        class="my-2 border-[1px] rounded border-slate-200/50" />
                         BUDDY
                     </h1>
                 </div>
-                <div class="absolute z-40 bottom-[20px] left-[0px] w-full h-[30px] bg-slate-500">
+                <div
+// @ts-ignore
+                class="absolute z-40 bottom-[20px] left-[0px] w-full h-[30px] bg-slate-500">
 
                 </div>
             </Section>

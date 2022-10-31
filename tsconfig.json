@@ -45,7 +45,7 @@
     "jsx": "react",
     "sourceMap": true,
     "removeComments": true,
-    "allowJs": true,
+    "allowJs": true
   },
   "exclude": [
     "node_modules",
@@ -58,8 +58,8 @@
     "releases",
     "dist",
     "build",
-    "package.json",
-    "package-lock.json",
+    "./package.json",
+    "./package-lock.json",
     "tsconfig.json",
     "jsconfig.json",
     "public/manifest.json",

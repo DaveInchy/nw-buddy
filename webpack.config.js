@@ -20,13 +20,13 @@ module.exports = env => ({
             "http": require.resolve("stream-http"),
             "fetch": require.resolve("node-fetch"),
             "process": require.resolve("process/"),
-        }
+        },
     },
     entry: {
-        service: './src/background/service.ts',
-        welcome: './src/controllers/welcome.ts',
-        minimap: './src/controllers/minimap.ts',
-        worldmap: './src/controllers/worldmap.ts',
+        service: './src/service/service.ts',
+        welcome: './src/windows/welcome.ts',
+        overlay: './src/windows/overlay.ts',
+        generic: './src/windows/generic.ts',
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -36,7 +36,22 @@ module.exports = env => ({
     module: {
         rules: [
             {
-                test: /\.ts?$/,
+                test: /\.(js)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            "presets": [
+                                "@babel/preset-env",
+                                "@babel/preset-react"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(ts)?$/,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -45,7 +60,7 @@ module.exports = env => ({
                 ],
             },
             {
-                test: /\.css$/,
+                test: /\.(css)$/,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -63,40 +78,6 @@ module.exports = env => ({
                 ]
             },
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            "presets": [
-                                "@babel/preset-env",
-                                "@babel/preset-react"
-                            ]
-                        }
-                    },
-                ]
-            },
-            {
-                test: /\.(tsx|jsx)$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            "presets": [
-                                "@babel/preset-env",
-                                "@babel/preset-react"
-                            ]
-                        }
-                    },
-                    {
-                        loader: 'ts-loader',
-                        options: { transpileOnly: true },
-                    }
-                ]
-            },
-            {
                 test: /\.(png|svg|jpg|gif|ico)$/,
                 exclude: /node_modules/,
                 use: [
@@ -106,11 +87,11 @@ module.exports = env => ({
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js', '.tsx'],
+        extensions: ['.ts', '.js'],
         modules: [
-            path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, 'src/modules')
+            path.resolve(__dirname, 'src/'),
+            path.resolve(__dirname, 'src/modules/'),
+            path.resolve(__dirname, 'node_modules/')
         ],
     },
     output: {
@@ -123,24 +104,24 @@ module.exports = env => ({
             patterns: [ { from: "public", to: "./" } ],
         }),
         new HtmlWebpackPlugin({
-            template: './src/background/service.html',
+            template: './src/service/service.html',
             filename: path.resolve(__dirname, './dist/service.html'),
             chunks: ['service']
         }),
         new HtmlWebpackPlugin({
-            template: './src/modules/app-injector/template.html',
+            template: './src/modules/owReact/template.html',
             filename: path.resolve(__dirname, './dist/welcome.html'),
             chunks: ['welcome']
         }),
         new HtmlWebpackPlugin({
-            template: './src/minimap.html',
-            filename: path.resolve(__dirname, './dist/minimap.html'),
-            chunks: ['minimap']
+            template: './src/modules/owReact/template.html',
+            filename: path.resolve(__dirname, './dist/generic.html'),
+            chunks: ['generic']
         }),
         new HtmlWebpackPlugin({
-            template: './src/modules/app-injector/template.html',
-            filename: path.resolve(__dirname, './dist/worldmap.html'),
-            chunks: ['worldmap']
+            template: './src/overlay.html',
+            filename: path.resolve(__dirname, './dist/overlay.html'),
+            chunks: ['overlay']
         }),
         new OverwolfPlugin(env),
     ],

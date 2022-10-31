@@ -1,4 +1,4 @@
-import { Config } from "./global";
+import { Config } from "../../../global";
 
 export const logMessage = async (type, message) => {
     var http = await fetch((Config.debug.ssl ? "https://" : "http://") + Config.debug.host + ':' + Config.debug.port + '/'

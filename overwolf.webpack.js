@@ -30,6 +30,18 @@ module.exports = class OverwolfPlugin {
 
     if ( !manifest )
       throw 'could not read manifest.json';
+
+    var version = pkg.version;
+
+    var newDate = new Date();
+    var release = newDate.getUTCFullYear();
+    var major = newDate.getUTCMonth() + 1;
+    var minor = newDate.getUTCDate();
+    var revision = newDate.getUTCHours();
+    var build = newDate.getUTCMinutes();
+    var newVersion = `0.${release.toString().split(20)[1]}.${major}${minor}`;
+
+    this.version = newVersion === version ? `${newVersion}.revision-${revision}.build-${build}` : `${newVersion}`;
   }
   apply(compiler) {
     compiler.hooks.run.tapPromise(PluginName, async (compilation) => {
@@ -46,10 +58,6 @@ module.exports = class OverwolfPlugin {
     compiler.hooks.afterEmit.tapPromise(PluginName, async (compilation) => {
       try {
         const makeOpk = this.env.makeOpk;
-
-        if (this.version && semver.valid(this.version)) {
-          await this.setVersion(this.version);
-        }
 
         if ( makeOpk ) {
           await this.makeOPK();
@@ -110,15 +118,7 @@ module.exports = class OverwolfPlugin {
       version = pkg.version,
       name = pkg.name;
 
-    var newDate = new Date();
-    var release = newDate.getUTCFullYear();
-    var major = newDate.getUTCMonth() + 1;
-    var minor = newDate.getUTCDate();
-    var revision = newDate.getUTCHours();
-    var build = newDate.getUTCMinutes();
-    var newVersion = `0.${release.toString().split(20)[1]}.${major}.${minor}`;
-
-    this.version = newVersion === version ? `${newVersion}.revision-${revision}.build-${build}` : `${newVersion}`;
+    this.version = newVersion;
 
     pkg.version = newVersion;
     manifest.meta.version = newVersion;

@@ -1,9 +1,4 @@
-@import './tailwind.css';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind variants;
+@import './app.tailwind.css';
 
 body {
   display: flex;
@@ -34,13 +29,12 @@ main {
 h1, h2, h3, h4, h5, h6 {
     @apply font-new-world;
     font-weight: bolder;
-    font-size: 1.8rem;
-    color: rgb(192,161,0);
+    font-size: 1.8em;
 }
 
 h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
     @apply font-new-world;
-    font-size: 1.0em;
+    font-size: 1.0rem;
     @apply text-black;
 }
 
@@ -61,7 +55,6 @@ p, a, p > span, a > span {
     @apply font-mono;
     font-size: 18px !important;
     letter-spacing: -2px;
-    color: rgb(192,161,0);
 }
 
 span#minimap-current-time {
@@ -72,12 +65,12 @@ div#minimap-info {
     @apply font-new-world;
     font-size: 14px !important;
     letter-spacing: -1px;
-    @apply text-slate-400
+    @apply text-slate-200
 }
 
 span#zoomIn-hotkey, span#zoomOut-hotkey, span#settings-hotkey {
     @apply font-mono;
-    @apply border-0 border-rose-500 text-rose-400;
+    @apply border-0 border-rose-500 text-rose-500;
     @apply px-1;
     border-radius: 0.1rem;
 }
@@ -87,7 +80,7 @@ span#zoomIn-hotkey, span#zoomOut-hotkey, span#settings-hotkey {
     @apply items-start;
     @apply px-1;
     @apply py-1;
-    @apply text-rose-400;
+    @apply text-rose-500;
     @apply rounded;
 }
 
@@ -98,4 +91,12 @@ span#zoomIn-hotkey, span#zoomOut-hotkey, span#settings-hotkey {
     @apply py-1;
     @apply rounded;
     @apply hover:text-white;
+}
+
+#water {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
 }

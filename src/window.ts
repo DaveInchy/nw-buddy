@@ -15,7 +15,7 @@ export default class WindowManager {
 
     this.maximized = false;
     this.windowName = windowName;
-    this.mainWindow = new OWWindow('background');
+    this.mainWindow = new OWWindow('service');
     this.currWindow = new OWWindow(windowName);
 
     this.setWindowBehavior()

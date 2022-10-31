@@ -1,47 +1,9 @@
 export const GameClassId = 21816; // New world
 
-export const getCircularReplacer = () => {
-  const seen = new WeakSet();
-  return (key, value) => {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) {
-        return;
-      }
-      seen.add(value);
-    }
-    return value;
-  };
-};
-
-export const GamesFeatures = new Map<number, string[]>([
-  [
-    GameClassId,
-    [
-      "gep_internal", // Events that are registered by the game
-      "game_info", // Basic info about the game and installation
-    ]
-  ]
-]);
-
-export const GameClassIds = Array.from(GamesFeatures.keys());
-
-export const WindowNames = {
-  minimap: 'minimap',
-  worldmap: 'worldmap',
-  welcome: 'welcome',
-  service: 'service',
-};
-
-export const Hotkeys = {
-  minimap: 'minimap',
-  create: 'create',
-  editor: 'editor',
-  worldmap: 'worldmap',
-  routes: 'routes',
-  zoomIn: 'zoomIn',
-  zoomOut: 'zoomOut',
-  restart: 'restart',
-};
+import owWindowState = overwolf.windows.WindowStateEx;
+import owEvents = overwolf.games.events;
+import owGames = overwolf.games;
+import owUtils = overwolf.utils;
 
 export const Config = {
   package: require('../package.json'),
@@ -61,4 +23,34 @@ export const Config = {
     standalone: true,
     start: "/bin/bash npm run build",
   },
+  games: [GameClassId],
 }
+
+export const WindowNames = {
+  generic: 'generic',
+  welcome: 'welcome',
+  overlay: 'overlay',
+  service: 'service',
+};
+
+export const Hotkeys = {
+  minimap: 'minimap',
+  create: 'create',
+  routes: 'routes',
+  zoomIn: 'zoomIn',
+  zoomOut: 'zoomOut',
+  restart: 'restart',
+};
+
+export const GamesFeatures = new Map<number, string[]>([
+  [
+    GameClassId,
+    [
+      "gep_internal", // Events that are registered by the game
+      "game_info", // Basic info about the game and installation
+    ]
+  ]
+]);
+
+export const GameClassIds = Array.from(GamesFeatures.keys());
+
