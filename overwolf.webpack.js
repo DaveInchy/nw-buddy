@@ -39,7 +39,7 @@ module.exports = class OverwolfPlugin {
     var minor = newDate.getUTCDate();
     var revision = newDate.getUTCHours();
     var build = newDate.getUTCMinutes();
-    var newVersion = `0.${release.toString().split(20)[1]}.${major}${minor}`;
+    var newVersion = `${release.toString().split(20)[1]}.${major}.${minor}`;
 
     this.version = newVersion === version ? `${newVersion}.revision-${revision}.build-${build}` : `${newVersion}`;
   }
