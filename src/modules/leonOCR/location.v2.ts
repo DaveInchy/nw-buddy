@@ -2,7 +2,7 @@ import { takeScreenshot } from './lib/media';
 import defaultProfile from './default_profile.json';
 
 /* You have to have brigtness on 5 ingame
- *
+ * Copied from Leon Machens with permission.
  */
 
 const WIDTH = 288;

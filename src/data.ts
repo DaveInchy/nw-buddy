@@ -58,11 +58,14 @@ class DataClient
     }
 
     public async getCache() {
-        var res = await fetch(`${this.host}/api/datasheet/pins`, {
-            method: 'POST',
-            body: JSON.stringify({})
+        var result = await fetch(`https://www.newworld-map.com/markers.json`, {
+            method: 'GET',
         })
-        return await res.json();
+        // var res = await fetch(`${this.host}/api/datasheet/pins`, {
+        //     method: 'POST',
+        //     body: JSON.stringify({})
+        // })
+        return await result.json();
     }
 
 }

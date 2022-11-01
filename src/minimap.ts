@@ -129,28 +129,12 @@ export default class Minimap {
       _.canvasHeight * _.zoom / _.mapHeight
     );
 
-    var error;
-    while (!error) {
-
-      const ticksPerSecond = 15;
-      try {
-
-        this.renderNeedle(player);
-      } catch (e) {
-
-        logError(e);
-        error = e;
-      }
-
-      wait(1000 / ticksPerSecond)
-    }
-
     return this;
   }
 
   public async cacheDownload()
   {
-    logMessage("cache", "Cache download ..");
+    logMessage("cache", "Cache download started ..");
     DataClient.getCache().then(json => {
       logMessage("cache", "Cache fully download ...");
       this.__.data = json;
@@ -198,11 +182,11 @@ export default class Minimap {
     });
   }
 
-  private async renderNeedle(player: playerModel) {
-    this.__.playerMapCoords = new Vector2(player.coords.x, player.coords.y);
+  async renderNeedle(coords: [number, number, number]) {
+    this.__.playerMapCoords = new Vector2(coords[0], coords[1]);
 
     this.__.previousCoords = this.__.currentCoords;
-    this.__.currentCoords = new Vector2(player.coords.x, player.coords.y);
+    this.__.currentCoords = new Vector2(coords[0], coords[1]);
 
     var diffX = this.__.currentCoords.x - this.__.previousCoords.x;
     var diffY = this.__.currentCoords.y - this.__.previousCoords.y;
@@ -217,8 +201,6 @@ export default class Minimap {
   }
 
   public async renderCanvas(player: playerModel, playerList: playerModel[]) {
-
-    this.renderNeedle(player);
 
     var playerCanvasCoords: Vector2 = new Vector2(
       (this.__.playerMapCoords.x - this.__.mapLeft) *
@@ -318,16 +300,6 @@ export default class Minimap {
     ];
 
     return sequence.indexOf(playerDirection) * 45;
-  }
-
-  //@TODO fix this to actually work
-  private getDirectionAngle(player: playerModel) {
-    var prev = this.__.directionAngle;
-    var curr = this.getRotation(player.coords.direction)
-    var diff = prev-curr;
-
-    this.__.directionAngle = curr;
-    return curr;
   }
 
   public async cacheData() {

@@ -21,7 +21,7 @@ import Pin from "../pin";
 
 // Modules imports
 import { mountApp, mountComponent } from "../modules/owReact/mount";
-import owOCR from "../modules/leonOCR/location.v1";
+import owOCR from "../modules/leonOCR/location.v2";
 
 // React Components
 import TileMapComponent from "../components/tilemap"
@@ -123,7 +123,6 @@ class Overlay extends WindowManager {
           Number(playerLocation[2].toString().split('.')[0]),
         ]
 
-
         //all this code should be in the react component
         //this._app = Mount(DesktopComponent);
         var eventData = await this.getEventData();
@@ -158,6 +157,7 @@ class Overlay extends WindowManager {
 
         mountComponent(TileMapComponent, `#tilemap`);
         this._Minimap = new Minimap(this._player, canvas, tilemap);
+        await this._Minimap.renderNeedle(playerLocation);
 
         this.setHotkeyBehavior();
 
@@ -176,31 +176,31 @@ class Overlay extends WindowManager {
     logMessage("startup", "starting runtime service ...");
     // var domState = new DocumentStateController();
 
+    var coords;
     var updateCounter = 0;
     while (!loading) {
       try {
-        var playerLocation: [number, number, number] = await owOCR();
-
-        playerLocation = [
-          Number(playerLocation[1].toString().split('.')[0]),
-          Number(playerLocation[0].toString().split('.')[0]),
-          Number(playerLocation[2].toString().split('.')[0]),
-        ]
-
-        logMessage(`OCR`, `${JSON.stringify(playerLocation)}`);
-
         await this.getProcData();
         // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
         // this._gameProcData = { "isInFocus": true, "isRunning": true, "allowsVideoCapture": true, "title": "New World", "displayName": "", "shortTitle": "", "id": 218161, "classId": 21816, "width": 1920, "height": 1080, "logicalWidth": 1920, "logicalHeight": 1080, "renderers": ["D3D11"], "detectedRenderer": "D3D11", "executionPath": "C:/Program Files (x86)/Steam/steamapps/common/New World/Bin64/NewWorld.exe", "sessionId": "1a25e84ec60a4498a8d03a75490654de", "commandLine": "\"\"", "type": 0, "typeAsString": "Game", "overlayInputHookError": false, "windowHandle": { "value": 70979940 }, "monitorHandle": { "value": 65537 }, "processId": 9428, "oopOverlay": false, "terminationUnixEpochTime": null, "overlayInfo": { "oopOverlay": false, "coexistingApps": [], "inputFailure": false, "hadInGameRender": true, "isCursorVisible": true, "exclusiveModeDisabled": false, "isFullScreenOptimizationDisabled": false }, "success": true }
         await this.getEventData();
         // logMessage("debug", `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
         // {"success":true,"status":"success","res":{"gep_internal":{"version_info":"{\"local_version\":\"191.0.24\",\"public_version\":\"191.0.24\",\"is_updated\":true}"},"game_info":{"world_name":"live-1-30-3","map":"NewWorld_VitaeEterna","location":"player.position.x,11139.12,player.position.y,7327.32,player.position.z,166.61,player.rotation.x,0,player.rotation.y,0,player.rotation.z,19,player.compass,E","player_name":"n'Adina"}}}
-        this._gameMap = this._gameEventData.res.game_info.map;
-
         this._playerCharacter = this._gameEventData.res.game_info.player_name;
         this._playerLocation = this._gameEventData.res.game_info.location;
-        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : playerLocation;
+        this._gameMap = this._gameEventData.res.game_info.map;
 
+        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : await owOCR().then(async (playerLocation: [number, number, number], self = this) => {
+          coords = [
+            Number(playerLocation[1].toString().split('.')[0]),
+            Number(playerLocation[0].toString().split('.')[0]),
+            Number(playerLocation[2].toString().split('.')[0]),
+          ]
+
+          logMessage(`OCR`, `${JSON.stringify(coords)}`);
+
+          return coords;
+        });
         // logMessage('debug', `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
 
         this._player = {
@@ -218,7 +218,7 @@ class Overlay extends WindowManager {
         };
 
         // https://nw-radar-api.vercel.app/api/player/list
-        this._playerList = DataClient.setPlayer(this._player); // returns playerlist
+        // this._playerList = DataClient.setPlayer(this._player); // returns playerlist
         // [{"type":"player","user":"n'Adina","group":"0c218ed2585c4353b77fbbb2d6e915a8","coords":{"x":"8695.59","y":"4233.43","z":"179.55","direction":"SW"}}]
         // logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 
@@ -233,6 +233,8 @@ class Overlay extends WindowManager {
           : this.currWindow.maximize() && false;
 
         this._Minimap.renderCanvas(this._player, this._playerList);
+
+        await this._Minimap.renderNeedle(coords);
 
         // keep checking for when the window for worldmap is stored in var _Worldmap on window _worldMap
         //  typeof this._Worldmap === 'object' ? this._Worldmap.renderCanvas(this._player, this._playerList) && this._Worldmap.setZoom(0.35) : null;
@@ -423,7 +425,7 @@ class Overlay extends WindowManager {
   public drawTime() {
     var elem = document.getElementById("minimap-current-time");
     var time = new Date();
-    var hours: any = time.getUTCHours() + 1;
+    var hours: any = time.getUTCHours() + 0; // Yearly summer/winter time switch
     var minutes: any = time.getUTCMinutes();
     var seconds: any = time.getUTCSeconds();
     var ampm = hours >= 12 ? "pm" : "am";
