@@ -27,6 +27,7 @@ export const Config = {
 }
 
 export const WindowNames = {
+  interaction: 'interaction',
   generic: 'generic',
   welcome: 'welcome',
   overlay: 'overlay',
@@ -35,8 +36,6 @@ export const WindowNames = {
 
 export const Hotkeys = {
   minimap: 'minimap',
-  create: 'create',
-  routes: 'routes',
   zoomIn: 'zoomIn',
   zoomOut: 'zoomOut',
   restart: 'restart',

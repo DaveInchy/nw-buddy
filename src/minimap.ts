@@ -191,7 +191,7 @@ export default class Minimap {
     var diffX = this.__.currentCoords.x - this.__.previousCoords.x;
     var diffY = this.__.currentCoords.y - this.__.previousCoords.y;
 
-    var angle = Math.atan2(diffY, diffX) * 180 / Math.PI;
+    var angle = Math.atan2(diffY, diffX) * 180 / Math.PI; //yes i did this, cant believe it
 
     this.__.directionAngle = angle;
     if (this.__.directionAngle !== 0 && this.__.previousCoords !== this.__.currentCoords) {
@@ -283,7 +283,7 @@ export default class Minimap {
   private rotateNeedle(angle: number) {
     var needle: HTMLElement = document.getElementById("compassNeedle");
     needle.style.transform = 'rotate(' + angle + 'deg)'
-    needle.style.animationDuration = '250ms'
+    needle.style.animationDuration = '1ms'
     return;
   }
 

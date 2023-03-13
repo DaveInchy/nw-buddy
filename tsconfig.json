@@ -7,7 +7,6 @@
     "resolveJsonModule": true,
     "types": [
       "@types/node",
-      "@types/p5",
       "@overwolf/types",
       "node",
       "react",

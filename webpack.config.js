@@ -27,6 +27,7 @@ module.exports = env => ({
         welcome: './src/windows/welcome.ts',
         overlay: './src/windows/overlay.ts',
         generic: './src/windows/generic.ts',
+        interaction: './src/windows/interaction.ts',
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -55,7 +56,7 @@ module.exports = env => ({
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: 'ts-loader',
+                        loader: 'ts-loader'
                     }
                 ],
             },
@@ -117,6 +118,11 @@ module.exports = env => ({
             template: './src/modules/owReact/template.html',
             filename: path.resolve(__dirname, './dist/generic.html'),
             chunks: ['generic']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/modules/owReact/template.html',
+            filename: path.resolve(__dirname, './dist/interaction.html'),
+            chunks: ['interaction']
         }),
         new HtmlWebpackPlugin({
             template: './src/overlay.html',

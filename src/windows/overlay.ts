@@ -21,10 +21,11 @@ import Pin from "../pin";
 
 // Modules imports
 import { mountApp, mountComponent } from "../modules/owReact/mount";
-import owOCR from "../modules/leonOCR/location.v2";
+import owOCR from "../modules/leonOCR/location.v3";
 
 // React Components
-import TileMapComponent from "../components/tilemap"
+import MapComponent from '../components/worldmap.l6';
+
 
 // CSS imports
 import "../assets/css/overlay.css";
@@ -35,7 +36,6 @@ import owGames = overwolf.games;
 import owUtils = overwolf.utils;
 
 import Vector2 from "../vector2";
-
 
 class Overlay extends WindowManager {
   private static _instance: Overlay;
@@ -79,7 +79,6 @@ class Overlay extends WindowManager {
   _worldMapShown: boolean;
   _worldmapWindow: OWWindow;
   _app: any;
-  _tilemap: any;
 
   private constructor() {
     super(WindowNames.overlay);
@@ -98,7 +97,7 @@ class Overlay extends WindowManager {
   public async run() {
 
     var loading = true;
-    var ticksPerSecond = Number(3);
+    var ticksPerSecond = Number(10);
 
     var loadInterval = 5; // seconds
     var loadCounter = 0;
@@ -113,16 +112,6 @@ class Overlay extends WindowManager {
       logMessage("startup", "try again => [" + loadInterval * loadCounter + " sec]");
       try {
 
-        var playerLocation: [number, number, number] = await owOCR();
-
-        logMessage(`OCR`, `${JSON.stringify(playerLocation)}`);
-
-        playerLocation = [
-          Number(playerLocation[1].toString().split('.')[0]),
-          Number(playerLocation[0].toString().split('.')[0]),
-          Number(playerLocation[2].toString().split('.')[0]),
-        ]
-
         //all this code should be in the react component
         //this._app = Mount(DesktopComponent);
         var eventData = await this.getEventData();
@@ -132,11 +121,22 @@ class Overlay extends WindowManager {
         this.setCreatePinHotkeyText();
         this.setZoomHotkeysText();
 
-        // logMessage('debug', `${JSON.stringify(eventData, getCircularReplacer())}`);
+        logMessage('debug', `${JSON.stringify(eventData, getCircularReplacer())}`);
 
         this._playerCharacter = eventData.res.game_info.player_name || "localPlayer";
         this._playerLocation = eventData.res.game_info.location;
-        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : playerLocation;
+
+        //var playerLocation: [number, number, number] = await owOCR();
+
+        logMessage(`INFO`, `${JSON.stringify(this._playerLocation)}`);
+
+        // var coords = [
+        //   Number(playerLocation[1].toString().split('.')[0]),
+        //   Number(playerLocation[0].toString().split('.')[0]),
+        //   Number(playerLocation[2].toString().split('.')[0]),
+        // ]
+
+        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : coords;
 
         this._player = {
           type: "player",
@@ -153,11 +153,11 @@ class Overlay extends WindowManager {
         };
 
         var canvas: HTMLCanvasElement = document.getElementById("minimap-canvas") as HTMLCanvasElement;
-        var tilemap: HTMLDivElement = document.getElementById("tilemap") as HTMLDivElement;
+        var tilemap: HTMLDivElement = document.getElementById("minimap-tilemap") as HTMLDivElement;
 
-        mountComponent(TileMapComponent, `#tilemap`);
         this._Minimap = new Minimap(this._player, canvas, tilemap);
-        await this._Minimap.renderNeedle(playerLocation);
+        var coords: [number, number, number] = [this._player.coords.x, this._player.coords.y, this._player.coords.z];
+        await this._Minimap.renderNeedle(coords);
 
         this.setHotkeyBehavior();
 
@@ -176,7 +176,8 @@ class Overlay extends WindowManager {
     logMessage("startup", "starting runtime service ...");
     // var domState = new DocumentStateController();
 
-    var coords;
+    mountComponent(MapComponent, `#minimap-tilemap`);
+
     var updateCounter = 0;
     while (!loading) {
       try {
@@ -190,17 +191,7 @@ class Overlay extends WindowManager {
         this._playerLocation = this._gameEventData.res.game_info.location;
         this._gameMap = this._gameEventData.res.game_info.map;
 
-        this._playerPosData = this._playerLocation ? this._playerLocation.split(",") : await owOCR().then(async (playerLocation: [number, number, number], self = this) => {
-          coords = [
-            Number(playerLocation[1].toString().split('.')[0]),
-            Number(playerLocation[0].toString().split('.')[0]),
-            Number(playerLocation[2].toString().split('.')[0]),
-          ]
-
-          logMessage(`OCR`, `${JSON.stringify(coords)}`);
-
-          return coords;
-        });
+        this._playerPosData = this._playerLocation.split(",");
         // logMessage('debug', `${JSON.stringify(this._gameEventData, getCircularReplacer())}`);
 
         this._player = {
@@ -213,8 +204,8 @@ class Overlay extends WindowManager {
             direction: this._playerLocation ? this._playerPosData[13].toString() : "N",
             angle: 0,
           },
+          map: this._gameMap ? this._gameMap : "surface",
           group: (`${Math.floor(Math.random() * 100)}`).toString(),
-          map: this._gameMap || "surface",
         };
 
         // https://nw-radar-api.vercel.app/api/player/list
@@ -234,7 +225,7 @@ class Overlay extends WindowManager {
 
         this._Minimap.renderCanvas(this._player, this._playerList);
 
-        await this._Minimap.renderNeedle(coords);
+        await this._Minimap.renderNeedle([Number(this._playerPosData[(this._playerLocation ? 1 : 0)]), Number(this._playerPosData[(this._playerLocation ? 3 : 1)]), Number(this._playerPosData[(this._playerLocation ? 5 : 2)])]);
 
         // keep checking for when the window for worldmap is stored in var _Worldmap on window _worldMap
         //  typeof this._Worldmap === 'object' ? this._Worldmap.renderCanvas(this._player, this._playerList) && this._Worldmap.setZoom(0.35) : null;
@@ -518,12 +509,12 @@ class Overlay extends WindowManager {
 
   private async setCreatePinHotkeyText() {
     const gameClassId = GameClassId;
-    const hotkeyText = await OWHotkeys.getHotkeyText(
-      Hotkeys.create,
-      gameClassId
-    );
+    // const hotkeyText = await OWHotkeys.getHotkeyText(
+    //   Hotkeys.create,
+    //   gameClassId
+    // );
     const hotkeyElem = document.getElementById("create-hotkey");
-    hotkeyElem.innerHTML = hotkeyText;
+    hotkeyElem.innerHTML = "Create Hotkey";
   }
 
   private async setHotkeyBehavior() {
@@ -557,22 +548,6 @@ class Overlay extends WindowManager {
       const elem = document.getElementById("zoom-value");
       elem.innerHTML = this._Minimap.__.zoom.toString();
 
-      return;
-    });
-
-    OWHotkeys.onHotkeyDown(Hotkeys.create, async (): Promise<void> => {
-      logMessage("hotkey", `pressed hotkey for ${Hotkeys.create.toString()}`);
-      if (this._createPinShown) {
-        if (!this._editorShown) {
-          this.hideCreatePin();
-          this.showMinimap();
-        }
-      } else {
-        if (!this._editorShown) {
-          this.showCreatePin();
-          this.hideMinimap();
-        }
-      }
       return;
     });
 

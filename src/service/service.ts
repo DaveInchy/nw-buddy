@@ -19,7 +19,8 @@ class BackgroundController {
     // Populating the background controller's window dictionary
     this._windows[WindowNames.overlay] = new OWWindow(WindowNames.overlay);
     this._windows[WindowNames.welcome] = new OWWindow(WindowNames.welcome);
-  //  this._windows[WindowNames.generic] = new OWWindow(WindowNames.generic);
+    this._windows[WindowNames.generic] = new OWWindow(WindowNames.generic);
+    this._windows[WindowNames.interaction] = new OWWindow(WindowNames.interaction);
 
     // When a a supported game game is started or is ended, toggle the app's windows
     var deligation: OWGameListenerDelegate = {
@@ -38,6 +39,10 @@ class BackgroundController {
 
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
+    );
+
+    overwolf.streaming.onStopStreaming.addListener(
+      e => this.onStopStreaming(e)
     );
   };
 
@@ -58,12 +63,21 @@ class BackgroundController {
       logMessage("info", "A supported game is running");
       this._windows[WindowNames.welcome].restore() && this._windows[WindowNames.welcome].maximize() && logMessage("info", "Welcome window restored");
       this._windows[WindowNames.overlay].restore() && this._windows[WindowNames.overlay].maximize() && logMessage("info", "Overlay window restored");
-  //    this._windows[WindowNames.generic].restore() && this._windows[WindowNames.generic].maximize() && logMessage("info", "Desktop window restored");
+      this._windows[WindowNames.generic].restore() && this._windows[WindowNames.generic].maximize() && logMessage("info", "Desktop window restored");
+      this._windows[WindowNames.interaction].restore() && this._windows[WindowNames.interaction].maximize() && logMessage("info", "Desktop window restored");
     } else {
       this._windows[WindowNames.welcome].maximize() && this._windows[WindowNames.welcome].minimize() && logMessage("info", "Welcome window close");
       this._windows[WindowNames.overlay].maximize() && this._windows[WindowNames.overlay].minimize() && logMessage("info", "Overlay window close");
-  //    this._windows[WindowNames.generic].maximize() && this._windows[WindowNames.generic].minimize() && logMessage("info", "Desktop window close");
+      this._windows[WindowNames.generic].maximize() && this._windows[WindowNames.generic].minimize() && logMessage("info", "Desktop window close");
+      this._windows[WindowNames.interaction].maximize() && this._windows[WindowNames.interaction].minimize() && logMessage("info", "Desktop window close");
     }
+  }
+
+  private async onStopStreaming(e: overwolf.streaming.StopStreamingEvent) {
+    if (!e) {
+      return;
+    }
+    return;
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
@@ -76,17 +90,20 @@ class BackgroundController {
     if (await this.isSupportedGameRunning()) {
       this._windows[WindowNames.overlay].restore();
       this._windows[WindowNames.welcome].restore();
-  //    this._windows[WindowNames.generic].restore();
+      this._windows[WindowNames.generic].restore();
+      this._windows[WindowNames.interaction].restore();
     } else {
       this._windows[WindowNames.welcome].minimize();
       this._windows[WindowNames.overlay].minimize();
-    //  this._windows[WindowNames.generic].minimize();
+      this._windows[WindowNames.generic].minimize();
+      this._windows[WindowNames.interaction].minimize();
     }
 
     if (e.origin.includes('gamelaunchevent')) {
       this._windows[WindowNames.overlay].maximize() && logMessage("info", "Minimap window restored");
-    //  this._windows[WindowNames.generic].maximize() && logMessage("info", "Desktop window restored");
+      this._windows[WindowNames.generic].maximize() && logMessage("info", "Desktop window restored");
       this._windows[WindowNames.welcome].maximize() && logMessage("info", "Welcome window restored");
+      this._windows[WindowNames.interaction].maximize() && logMessage("info", "Welcome window restored");
     }
   }
 
@@ -100,11 +117,13 @@ class BackgroundController {
     if (info.isRunning) {
       this._windows[WindowNames.overlay].restore();
       this._windows[WindowNames.welcome].restore();
-      //this._windows[WindowNames.generic].restore();
+      this._windows[WindowNames.generic].restore();
+      this._windows[WindowNames.interaction].restore();
     } else {
-      //this._windows[WindowNames.generic].minimize();
+      this._windows[WindowNames.generic].minimize();
       this._windows[WindowNames.welcome].minimize();
       this._windows[WindowNames.overlay].minimize();
+      this._windows[WindowNames.interaction].minimize();
     }
   }
 

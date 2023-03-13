@@ -6,3 +6,41 @@
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
+
+@font-face {
+  font-family: 'New World';
+  src: url('../font/IMFellDWPica-Regular.ttf');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap');
+
+h1, h2, h3, h4, h5, h6 {
+    @apply font-new-world;
+    font-weight: bolder;
+    font-size: 1.8em;
+}
+
+h1 > span, h2 > span, h3 > span, h4 > span, h5 > span, h6 > span {
+    @apply font-new-world;
+    font-size: 1.0rem;
+    @apply text-black;
+}
+
+* > span {
+    @apply font-mono;
+    font-size: 1.0em;
+    color: #fefefe;
+}
+
+thead > tr > th > span, thead > tr > th, tbody > tr > td > span, tbody > tr > td {
+    @apply font-new-world;
+    font-size: 18px !important;
+    letter-spacing: -1px;
+    color: #fefefe;
+}
+
+p, a, p > span, a > span {
+    @apply font-mono;
+    font-size: 18px !important;
+    letter-spacing: -2px;
+}

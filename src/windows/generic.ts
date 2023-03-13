@@ -32,7 +32,7 @@ import {
 } from "../modules/owReact/mount";
 
 // React Components
-import DesktopComponent from "../components/tilemap";
+import WorldComponent from "../components/worldmap.l6";
 
 class DesktopWindow extends WindowManager {
     private static _instance: any;
@@ -53,7 +53,7 @@ class DesktopWindow extends WindowManager {
     }
 
     public async run() {
-        this._app = Mount(DesktopComponent);
+        this._app = undefined; // Mount(WorldComponent);
         this.setWindowBehavior();
         logMessage("react", "React '" + DesktopWindow._windowName + "' Mounted :\n" + JSON.stringify(this._app, getCircularReplacer()));
     }
