@@ -5,7 +5,7 @@
   "meta": {
     "name": "New World Buddy",
     "author": "DaveInchy",
-    "version": "22.11.2",
+    "version": "23.3.13",
     "minimum-overwolf-version": "0.190.0",
     "description": "An AGS TOS Compliant lightweight Overwolf overlay",
     "dock_button_title": "NW Buddy",
@@ -31,41 +31,27 @@
   "data": {
     "hotkeys": {
       "minimap": {
-        "title": "Force Show (minimap)",
-        "action-type": "custom",
-        "default": "Alt+M"
-      },
-      "zoomIn": {
-        "title": "Zoom IN (minimap)",
-        "action-type": "custom",
-        "default": "Alt+I"
-      },
-      "zoomOut": {
-        "title": "Zoom OUT (minimap)",
+        "title": "Show (minimap)",
         "action-type": "custom",
         "default": "Alt+O"
       },
-      "create": {
-        "title": "New Node",
-        "action-type": "toggle",
-        "default": "Ctrl+P"
-      },
-      "routes": {
-        "title": "New Route",
-        "action-type": "toggle",
-        "default": "Ctrl+R"
+      "minimap_hide": {
+        "hold": true,
+        "title": "Hide (minimap)",
+        "action-type": "custom",
+        "default": "Alt+P"
       },
       "restart": {
         "hold": false,
         "action-type": "custom",
         "passthrough": false,
-        "title": "Restart UI",
+        "title": "Fix (overlay)",
         "default": "Shift+Esc"
       }
     },
     "protocol_override_domains": {
       "localhost": "http",
-      "doonline.nl": "http",
+      "doonline.nl": "https",
       "vercel.app": "http",
       "overwolf.com": "https",
       "amazonaws.com": "https"
@@ -91,7 +77,7 @@
       "welcome": {
         "file": "welcome.html",
         "in_game_only": true,
-        "focus_game_takeover": "FocusOnShow",
+        "focus_game_takeover": "HideOnShow",
         "use_os_windowing": true,
         "native_window": true,
         "allow_local_file_access": true,
@@ -105,29 +91,6 @@
         "size": {
           "width": 16,
           "height": 16
-        }
-      },
-      "generic": {
-        "file": "generic.html",
-        "desktop_only": true,
-        "disable_restore_animation": true,
-        "focus_game_takeover": "HideOnShow",
-        "show_in_taskbar": true,
-        "grab_focus_on_desktop": false,
-        "dev_tools_window_style": true,
-        "use_os_windowing": true,
-        "native_window": true,
-        "allow_local_file_access": true,
-        "keep_window_location": true,
-        "disable_rightclick": false,
-        "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": true,
-        "resizable": true,
-        "transparent": false,
-        "override_on_update": true,
-        "size": {
-          "width": 860,
-          "height": 640
         }
       },
       "overlay": {

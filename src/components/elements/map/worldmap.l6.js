@@ -1,8 +1,8 @@
-import React, { Component, useRef, useState, useEffect, useLayoutEffect, CSSProperties, useReducer } from 'react';
-import { logError, logMessage } from '../debug';
-import bgWaves from '../assets/waves-anim.svg';
-import Vector2 from '../vector2';
-import Storage from '../storage';
+import React, { CSSProperties, Component, useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import Storage from "./../../../storage";
+import Vector2 from "./../../../vector2";
+import bgWaves from "./../../../assets/waves-anim.svg";
+import { logError, logMessage } from "./../../../debug";
 
 export default function Map({props, offsetX = 0, offsetY = 0}) {
 
@@ -14,15 +14,15 @@ export default function Map({props, offsetX = 0, offsetY = 0}) {
      */
 
     // map constants
-    const [layer, setLayer] = useState(7);
-    const [ratio, setRatio] = useState(56 / 158);
-    const [mapSize, setMapSize] = useState(new Vector2(158, 158));
-    const [tileSize, setTileSize] = useState(new Vector2(256 * ratio, 256 * ratio));
+    const [layer, setLayer] = useState(6);
+    const [mapSize, setMapSize] = useState(new Vector2(56, 56));
+    const [tileSize, setTileSize] = useState(new Vector2(256, 256));
     const [lastCoords, setLastCoords] = useState(new Vector2(tileSize.x * mapSize.x / 2, tileSize.x * mapSize.x / 2));
 
     // react vars
     const [jsxElems, setJsxElems] = useState([]);
     const [count, setCount] = useState(0);
+    const [updated, setUpdated] = useState(1);
     const [ignored, forceUpdate] = useReducer(x=>x+1,0);
     const containerLayer = useRef(null);
 
@@ -157,7 +157,7 @@ export default function Map({props, offsetX = 0, offsetY = 0}) {
         setCount(count + 1);
     }, []);
 
-    return (<div style={layerStyle} class="transform-gpu transition-transform">
+    return (<div style={layerStyle} className="transform-gpu transition-transform">
         {jsxElems}
     </div>);
 

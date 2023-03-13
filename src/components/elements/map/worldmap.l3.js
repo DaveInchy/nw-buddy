@@ -1,11 +1,11 @@
-import React, { Component, useRef, useState, useEffect, useLayoutEffect, CSSProperties, useReducer } from 'react';
-import { logError, logMessage } from '../debug';
-import bgWaves from '../assets/waves-anim.svg';
-import Vector2 from '../vector2';
-import Storage from '../storage';
-import overwolf, { OWGamesEvents } from '@overwolf/overwolf-api-ts'
+import React, { CSSProperties, Component, useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import Storage from "../../../storage";
+import Vector2 from "../../../vector2";
+import bgWaves from "../assets/waves-anim.svg";
+import overwolf, { OWGamesEvents } from "@overwolf/overwolf-api-ts";
+import { logError, logMessage } from "../../../debug";
 
-export default async function Map({props, offsetX = 0, offsetY = 0}) {
+export default function Map({props, offsetX = 0, offsetY = 0}) {
 
     /* Guidelines & NOTES
      * Original Tilesize is 1024x1024
@@ -13,29 +13,28 @@ export default async function Map({props, offsetX = 0, offsetY = 0}) {
      * The default layer should be 6
      * Mapsize is best if calculated on 56x56 grid with a tileSize of 256
      */
-
     // props
     const { scale } = props;
 
     if (scale !== undefined)
-        var gameinfo = await OWGamesEvents.prototype.getInfo().then(data => data).catch(e => console.error(e));
+        var gameinfo = wait(10).then(async () => await OWGamesEvents.prototype.getInfo().then(data => data).catch(e => console.error(e)));
 
     // map constants
-    const [layer, setLayer] = useState(4);
-    const [ratio, setRatio] = useState(56 / (56 - (28 + 14)));
-    const [mapSize, setMapSize] = useState(new Vector2(56 - (28 + 14), 56 - (28 + 14)));
+    const [layer, setLayer] = useState(3);
+    const [ratio, setRatio] = useState(56 / (56 - (28 + 14 + 7)));
+    const [mapSize, setMapSize] = useState(new Vector2(56 - (28 + 14 + 7), 56 - (28 + 14 + 7)));
     const [tileSize, setTileSize] = useState(new Vector2(256 * ratio, 256 * ratio));
-    const [lastCoords, setLastCoords] = useState(new Vector2(tileSize.x * mapSize.x * scale / 2, tileSize.x * mapSize.x * scale / 2));
+    const [lastCoords, setLastCoords] = useState(new Vector2(tileSize.x * mapSize.x / 2, tileSize.x * mapSize.x / 2));
 
     // react vars
     const [jsxElems, setJsxElems] = useState([]);
     const [count, setCount] = useState(0);
-    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+    const [ignored, forceUpdate] = useReducer(x=>x+1,0);
     const containerLayer = useRef(null);
 
     const [layerStyle, setLayerStyle] = useState({
-        minWidth: (tileSize.x * mapSize.x) * scale + 'px',
-        minHeight: (tileSize.y * mapSize.y) * scale + 'px',
+        minWidth: tileSize.x * mapSize.x + 'px',
+        minHeight: tileSize.y * mapSize.y + 'px',
         position: 'absolute',
         //backgroundColor: '#ccf0ff',
         //backgroundImage: `url(${bgWaves})`,
@@ -44,10 +43,10 @@ export default async function Map({props, offsetX = 0, offsetY = 0}) {
     })
 
     const [chunkStyle, setChunkStyle] = useState({
-        minWidth: (tileSize.x * scale) + 'px',
-        minHeight: (tileSize.y * scale) + 'px',
-        maxWidth: (tileSize.x * scale) + 'px',
-        maxHeight: (tileSize.y * scale) + 'px',
+        minWidth: tileSize.x + 'px',
+        minHeight: tileSize.y + 'px',
+        maxWidth: tileSize.x + 'px',
+        maxHeight: tileSize.y + 'px',
         position: 'absolute',
     })
 

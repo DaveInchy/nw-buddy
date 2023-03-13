@@ -1,11 +1,11 @@
-import React, { Component, useRef, useState, useEffect, useLayoutEffect, CSSProperties, useReducer } from 'react';
-import { logError, logMessage } from '../debug';
-import bgWaves from '../assets/waves-anim.svg';
-import Vector2 from '../vector2';
-import Storage from '../storage';
-import overwolf, { OWGamesEvents } from '@overwolf/overwolf-api-ts'
+import React, { CSSProperties, Component, useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import Storage from "../storage";
+import Vector2 from "../vector2";
+import bgWaves from "../assets/waves-anim.svg";
+import overwolf, { OWGamesEvents } from "@overwolf/overwolf-api-ts";
+import { logError, logMessage } from "../debug";
 
-export default async function Map({props, offsetX = 0, offsetY = 0}) {
+export default function Map({props, offsetX = 0, offsetY = 0}) {
 
     /* Guidelines & NOTES
      * Original Tilesize is 1024x1024
@@ -17,7 +17,7 @@ export default async function Map({props, offsetX = 0, offsetY = 0}) {
     const { scale } = props;
 
     if (scale !== undefined)
-        var gameinfo = await OWGamesEvents.prototype.getInfo().then(data => data).catch(e => console.error(e));
+        var gameinfo = wait(10).then(async () => await OWGamesEvents.prototype.getInfo().then(data => data).catch(e => console.error(e)));
 
     // map constants
     const [layer, setLayer] = useState(5);

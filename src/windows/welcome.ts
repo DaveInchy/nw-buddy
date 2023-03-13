@@ -1,3 +1,15 @@
+import DataClient from "../data";
+import DesktopComponent from "../components/content/WelcomeAnimation";
+import Minimap from "../minimap";
+import Pin from "../pin";
+import StorageInterface from "../storage";
+import WindowManager from "../window";
+import { logError, logMessage } from "../debug";
+import { GameClassId, GamesFeatures, Hotkeys, WindowNames } from "../global";
+import { mountApp as Mount } from "../modules/owReact/mount";
+import { Player, playerModel } from "../player";
+import { getCircularReplacer } from "../utils";
+
 import {
     IOWGamesEventsDelegate,
     OWGames,
@@ -6,23 +18,12 @@ import {
 } from "@overwolf/overwolf-api-ts";
 
 // Typescript imports
-import { logMessage, logError } from "../debug";
-import WindowManager from "../window";
-import { Hotkeys, WindowNames, GamesFeatures, GameClassId } from "../global";
-import { getCircularReplacer } from "../utils";
 
 // Typescript Class imports
-import { Player, playerModel } from '../player';
-import StorageInterface from "../storage";
-import DataClient from "../data";
-import Minimap from "../minimap";
-import Pin from "../pin";
 
 // Typescript Module imports
-import { mountApp as Mount } from "../modules/owReact/mount";
 
 // React Components
-import DesktopComponent from "../components/content/loading";
 
 class DesktopWindow extends WindowManager {
     private static _instance: any;

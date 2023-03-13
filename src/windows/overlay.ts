@@ -1,3 +1,18 @@
+import "../assets/css/overlay.css";
+import Component from "../components/content/Minimap";
+import DataClient from "../data";
+import Minimap from "../minimap";
+import Pin from "../pin";
+import StorageInterface from "../storage";
+import Vector2 from "../vector2";
+import WindowManager from "../window";
+import owOCR from "../modules/leonOCR/location.v3";
+import { logError, logMessage } from "../debug";
+import { GameClassId, GamesFeatures, Hotkeys, WindowNames } from "../global";
+import { mountApp } from "../modules/owReact/mount";
+import { Player, playerModel } from "../player";
+import { getCircularReplacer } from "../utils";
+
 import {
   IOWGamesEventsDelegate,
   OWGames,
@@ -7,35 +22,21 @@ import {
 } from "@overwolf/overwolf-api-ts";
 
 // Typescript imports
-import { logMessage, logError } from "../debug";
-import WindowManager from "../window";
-import { Hotkeys, WindowNames, GamesFeatures, GameClassId } from "../global";
-import { getCircularReplacer } from "../utils";
 
 // Typescript Class imports
-import StorageInterface from "../storage";
-import DataClient from "../data";
-import Minimap from "../minimap";
-import { Player, playerModel } from '../player';
-import Pin from "../pin";
 
 // Modules imports
-import { mountApp, mountComponent } from "../modules/owReact/mount";
-import owOCR from "../modules/leonOCR/location.v3";
 
 // React Components
-import MapComponent from '../components/worldmap.l6';
 
 
 // CSS imports
-import "../assets/css/overlay.css";
 
 import owWindowState = overwolf.windows.WindowStateEx;
 import owEvents = overwolf.games.events;
 import owGames = overwolf.games;
 import owUtils = overwolf.utils;
 
-import Vector2 from "../vector2";
 
 class Overlay extends WindowManager {
   private static _instance: Overlay;
@@ -82,7 +83,6 @@ class Overlay extends WindowManager {
 
   private constructor() {
     super(WindowNames.overlay);
-    logMessage("startup", "constructing overlay window instance");
     this.setHotkeyBehavior();
   }
 
@@ -90,7 +90,7 @@ class Overlay extends WindowManager {
     if (!this._instance) {
       this._instance = new Overlay();
     }
-    logMessage("startup", "overlay window instance registered successfully");
+    logMessage("overlay", "Overlay Window Instance Register => Success...");
     return this._instance;
   }
 
@@ -102,33 +102,31 @@ class Overlay extends WindowManager {
     var loadInterval = 5; // seconds
     var loadCounter = 0;
 
-    logMessage("startup","loading game data ...");
+    logMessage("overlay","Preparing Overwolf Game Data Events...");
 
     await this.listenForEvents();
 
-    // mountComponent(TileMapComponent, `#tilemap`);
-
     while (loading) {
-      logMessage("startup", "try again => [" + loadInterval * loadCounter + " sec]");
+      logMessage("overlay", "Trying to hook into Overwolf Game Data => reloading in " + loadInterval * loadCounter + " sec");
       try {
 
         //all this code should be in the react component
-        //this._app = Mount(DesktopComponent);
+        this._app = mountApp(Component);
         var eventData = await this.getEventData();
         var processData = await this.getProcData();
 
-        this.setToggleHotkeyText();
-        this.setCreatePinHotkeyText();
-        this.setZoomHotkeysText();
+        // this.setToggleHotkeyText();
+        // this.setCreatePinHotkeyText();
+        // this.setZoomHotkeysText();
 
-        logMessage('debug', `${JSON.stringify(eventData, getCircularReplacer())}`);
+        logMessage('debug', `GameInfo => ${JSON.stringify(eventData, getCircularReplacer())}`);
 
         this._playerCharacter = eventData.res.game_info.player_name || "localPlayer";
         this._playerLocation = eventData.res.game_info.location;
 
         //var playerLocation: [number, number, number] = await owOCR();
 
-        logMessage(`INFO`, `${JSON.stringify(this._playerLocation)}`);
+        logMessage(`debug`, `Player Location => ${JSON.stringify(this._playerLocation)}`);
 
         // var coords = [
         //   Number(playerLocation[1].toString().split('.')[0]),
@@ -173,10 +171,7 @@ class Overlay extends WindowManager {
 
     // const _sideBar = Sidebar;
 
-    logMessage("startup", "starting runtime service ...");
-    // var domState = new DocumentStateController();
-
-    mountComponent(MapComponent, `#minimap-tilemap`);
+    logMessage("startup", "starting minimap application ...");
 
     var updateCounter = 0;
     while (!loading) {
@@ -213,9 +208,9 @@ class Overlay extends WindowManager {
         // [{"type":"player","user":"n'Adina","group":"0c218ed2585c4353b77fbbb2d6e915a8","coords":{"x":"8695.59","y":"4233.43","z":"179.55","direction":"SW"}}]
         // logMessage("debug", `playerList => ${JSON.stringify(this._playerList, getCircularReplacer())}`);
 
-        this.drawCoords();
-        this.drawTime();
-        this.drawTitle(this._playerCharacter);
+        // this.drawCoords();
+        // this.drawTime();
+        // this.drawTitle(this._playerCharacter);
 
         this._overlayShown = this._gameProcData.overlayInfo.isCursorVisible === true
           ? ((this._createPinShown === true || this._editorShown === true || this.sidebarShown === true)
@@ -468,53 +463,6 @@ class Overlay extends WindowManager {
   private setEventData(e): void {
     this._gameEventData = e;
     return;
-  }
-
-  private async setZoomHotkeysText() {
-    const gameClassId = GameClassId;
-
-    const hotkeyZoomIn = await OWHotkeys.getHotkeyText(
-      Hotkeys.zoomIn,
-      gameClassId
-    );
-    const hotkeyZoomOut = await OWHotkeys.getHotkeyText(
-      Hotkeys.zoomOut,
-      gameClassId
-    );
-
-    hotkeyZoomIn === undefined || hotkeyZoomIn === null || hotkeyZoomIn === "undefined" || hotkeyZoomIn === "unassigned"
-    ? "Alt+I"
-    : hotkeyZoomIn;
-
-    hotkeyZoomOut === undefined || hotkeyZoomOut === null || hotkeyZoomOut === "undefined" || hotkeyZoomOut === "unassigned"
-    ? "Alt+O"
-    : hotkeyZoomOut;
-
-    const hotkeyElemZoomIn = document.getElementById("zoomIn-hotkey");
-    const hotkeyElemZoomOut = document.getElementById("zoomOut-hotkey");
-
-    hotkeyElemZoomIn.textContent = hotkeyZoomIn;
-    hotkeyElemZoomOut.textContent = hotkeyZoomOut;
-  }
-
-  private async setToggleHotkeyText() {
-    const gameClassId = GameClassId;
-    const hotkeyText = await OWHotkeys.getHotkeyText(
-      Hotkeys.minimap,
-      gameClassId
-    );
-    const hotkeyElem = document.getElementById("minimap-hotkey");
-    hotkeyElem.innerHTML = hotkeyText;
-  }
-
-  private async setCreatePinHotkeyText() {
-    const gameClassId = GameClassId;
-    // const hotkeyText = await OWHotkeys.getHotkeyText(
-    //   Hotkeys.create,
-    //   gameClassId
-    // );
-    const hotkeyElem = document.getElementById("create-hotkey");
-    hotkeyElem.innerHTML = "Create Hotkey";
   }
 
   private async setHotkeyBehavior() {

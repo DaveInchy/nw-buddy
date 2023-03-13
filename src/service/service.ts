@@ -1,3 +1,6 @@
+import { logError, logMessage } from "../debug";
+import { GameClassIds, WindowNames } from "../global";
+
 import {
   OWGames,
   OWGameListener,
@@ -5,8 +8,6 @@ import {
   OWGameListenerDelegate
 } from '@overwolf/overwolf-api-ts';
 
-import { WindowNames, GameClassIds } from "../global";
-import { logMessage, logError } from "../debug";
 import RunningGameInfo = overwolf.games.RunningGameInfo;
 import AppLaunchTriggeredEvent = overwolf.extensions.AppLaunchTriggeredEvent;
 
@@ -19,8 +20,6 @@ class BackgroundController {
     // Populating the background controller's window dictionary
     this._windows[WindowNames.overlay] = new OWWindow(WindowNames.overlay);
     this._windows[WindowNames.welcome] = new OWWindow(WindowNames.welcome);
-    this._windows[WindowNames.generic] = new OWWindow(WindowNames.generic);
-    this._windows[WindowNames.interaction] = new OWWindow(WindowNames.interaction);
 
     // When a a supported game game is started or is ended, toggle the app's windows
     var deligation: OWGameListenerDelegate = {

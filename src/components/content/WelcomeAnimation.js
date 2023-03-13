@@ -1,24 +1,32 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import StorageInterface from '../../storage';
-// @ts-ignore
-import { logMessage, logError } from '../../debug';
-
 import "../../assets/css/overlay.css";
-
-// @ts-ignore
-import xIcon from "../../assets/img/new-world/ui/smallx_06_05_2022.png";
-
-// @ts-ignore
-import checkIconActive from "../../assets/img/new-world/icons/icon_checkmark_active.png";
-// @ts-ignore
-import checkIconInactive from "../../assets/img/new-world/icons/icon_checkmark_inactive.png";
-
-// @ts-ignore
-import bookIcon from "../../assets/img/book-original.png"
-// @ts-ignore
-import nwBackground from "../../assets/img/new-world/textures/continent-diff.png";
-// @ts-ignore
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import StorageInterface from "../../storage";
 import bannerBackground from "../../assets/img/new-world/backgrounds/banner-bg1.png";
+import bgImage from "../../assets/loadingimages/loadingimage5_07_05_2022.png";
+import bookIcon from "../../assets/img/book-original.png";
+import checkIconActive from "../../assets/img/new-world/icons/icon_checkmark_active.png";
+import checkIconInactive from "../../assets/img/new-world/icons/icon_checkmark_inactive.png";
+import nwBackground from "../../assets/img/new-world/textures/continent-diff.png";
+import runicCircleA from "../../assets/img/new-world/banner_runebiga.png";
+import runicCircleB from "../../assets/img/new-world/banner_runebigb.png";
+import runicCircleBackground from "../../assets/img/new-world/banner_runebg.png";
+import runicCircleC from "../../assets/img/new-world/banner_runebigc.png";
+import runicCircleInner from "../../assets/img/new-world/banner_runeinner.png";
+import runicCircleTitle from "../../assets/img/new-world/banner_titleinner.png";
+import xIcon from "../../assets/img/new-world/ui/smallx_06_05_2022.png";
+import { logError, logMessage } from "../../debug";
+
+// @ts-ignore
+
+
+// @ts-ignore
+
+// @ts-ignore
+// @ts-ignore
+
+// @ts-ignore
+// @ts-ignore
+// @ts-ignore
 
 globalThis.nwBackground = nwBackground;
 globalThis.bookIcon = bookIcon;
@@ -27,20 +35,13 @@ globalThis.checkIconInactive = checkIconInactive;
 globalThis.crossIcon = xIcon;
 
 // @ts-ignore
-import runicCircleA from "../../assets/img/new-world/banner_runebiga.png";
 // @ts-ignore
-import runicCircleB from "../../assets/img/new-world/banner_runebigb.png";
 // @ts-ignore
-import runicCircleC from "../../assets/img/new-world/banner_runebigc.png";
 // @ts-ignore
-import runicCircleBackground from "../../assets/img/new-world/banner_runebg.png";
 // @ts-ignore
-import runicCircleInner from "../../assets/img/new-world/banner_runeinner.png";
 // @ts-ignore
-import runicCircleTitle from "../../assets/img/new-world/banner_titleinner.png";
 
 // @ts-ignore
-import bgImage from "../../assets/loadingimages/loadingimage5_07_05_2022.png";
 
 // @ts-ignore
 export default function DesktopComponent({ props }) {

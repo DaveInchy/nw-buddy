@@ -1,9 +1,7 @@
+import "../../assets/css/app.tailwind.css";
+import Minimap from "./Minimap";
 import React from "react";
-
-import '../../assets/css/app.tailwind.css';
-import InteractiveMap from "../interaction/InteractiveMap";
-
-import SidebarMenu from '../interaction/SidebarMenu';
+import SidebarMenu from "./SidebarMenu";
 
 const Styles = ({
     Container: {
@@ -51,7 +49,7 @@ export default class UserInterface extends React.Component
                     <SidebarMenu/>
                 </div>
                 <div style={Styles.RightMap} className="">
-                    <InteractiveMap />
+                    <Minimap />
                 </div>
             </section>
             <section style={Styles.BottomRibbon}>Copyright by Dave Inchy</section>
