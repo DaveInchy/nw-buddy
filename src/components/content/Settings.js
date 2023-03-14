@@ -1,7 +1,7 @@
 import "../../assets/css/app.tailwind.css";
 import Minimap from "./Minimap";
 import React from "react";
-import SidebarMenu from "./SidebarMenu";
+import SidebarMenu from "./Sidebar";
 
 const Styles = ({
     Container: {

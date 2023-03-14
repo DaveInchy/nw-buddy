@@ -24,8 +24,9 @@ module.exports = env => ({
     },
     entry: {
         service: './src/service/service.ts',
-        welcome: './src/windows/welcome.ts',
-        overlay: './src/windows/overlay.ts',
+        splash: './src/windows/splash.ts',
+        worldmap: './src/windows/worldmap.ts',
+        minimap: './src/windows/minimap.ts',
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -108,14 +109,19 @@ module.exports = env => ({
             chunks: ['service']
         }),
         new HtmlWebpackPlugin({
-            template: './src/modules/owReact/template.html',
-            filename: path.resolve(__dirname, './dist/welcome.html'),
-            chunks: ['welcome']
+            template: './src/modules/ow-react/template.html',
+            filename: path.resolve(__dirname, './dist/splash.html'),
+            chunks: ['splash']
         }),
         new HtmlWebpackPlugin({
-            template: './src/modules/owReact/template.html',
-            filename: path.resolve(__dirname, './dist/overlay.html'),
-            chunks: ['overlay']
+            template: './src/modules/ow-react/template.html',
+            filename: path.resolve(__dirname, './dist/minimap.html'),
+            chunks: ['minimap']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/modules/ow-react/template.html',
+            filename: path.resolve(__dirname, './dist/worldmap.html'),
+            chunks: ['worldmap']
         }),
         new OverwolfPlugin(env),
     ],
