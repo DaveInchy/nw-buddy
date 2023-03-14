@@ -1,0 +1,11 @@
+{
+  "name": "react-overwolf",
+  "version": "23.03.13",
+  "main": "mount.js",
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "author": "DaveInchy",
+  "license": "MIT",
+  "description": "React Component Mount functionality for an Overwolf Application"
+}

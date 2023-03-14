@@ -27,17 +27,14 @@ export const Config = {
 }
 
 export const WindowNames = {
-  interaction: 'interaction',
-  generic: 'generic',
-  welcome: 'welcome',
-  overlay: 'overlay',
+  worldmap: 'worldmap',
+  minimap: 'minimap',
+  splash: 'splash',
   service: 'service',
 };
 
 export const Hotkeys = {
   minimap: 'minimap',
-  zoomIn: 'zoomIn',
-  zoomOut: 'zoomOut',
   restart: 'restart',
 };
 

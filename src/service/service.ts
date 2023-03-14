@@ -18,8 +18,9 @@ class BackgroundController {
 
   private constructor() {
     // Populating the background controller's window dictionary
-    this._windows[WindowNames.overlay] = new OWWindow(WindowNames.overlay);
-    this._windows[WindowNames.welcome] = new OWWindow(WindowNames.welcome);
+    this._windows[WindowNames.splash] = new OWWindow(WindowNames.splash);
+    this._windows[WindowNames.minimap] = new OWWindow(WindowNames.minimap);
+    this._windows[WindowNames.worldmap] = new OWWindow(WindowNames.worldmap);
 
     // When a a supported game game is started or is ended, toggle the app's windows
     var deligation: OWGameListenerDelegate = {
@@ -59,16 +60,14 @@ class BackgroundController {
     this._gameListener.start();
 
     if (await this.isSupportedGameRunning()) {
-      logMessage("info", "A supported game is running");
-      this._windows[WindowNames.welcome].restore() && this._windows[WindowNames.welcome].maximize() && logMessage("info", "Welcome window restored");
-      this._windows[WindowNames.overlay].restore() && this._windows[WindowNames.overlay].maximize() && logMessage("info", "Overlay window restored");
-      this._windows[WindowNames.generic].restore() && this._windows[WindowNames.generic].maximize() && logMessage("info", "Desktop window restored");
-      this._windows[WindowNames.interaction].restore() && this._windows[WindowNames.interaction].maximize() && logMessage("info", "Desktop window restored");
+      logMessage("window", "A supported game is running => Setup Overlay");
+      this._windows[WindowNames.splash].restore() && this._windows[WindowNames.splash].maximize() && logMessage("window", "Splash window restored");
+      this._windows[WindowNames.minimap].restore() && this._windows[WindowNames.minimap].maximize() && logMessage("window", "Minimap window restored");
+      this._windows[WindowNames.worldmap].restore() && this._windows[WindowNames.worldmap].maximize() && logMessage("window", "Worldmap window restored");
     } else {
-      this._windows[WindowNames.welcome].maximize() && this._windows[WindowNames.welcome].minimize() && logMessage("info", "Welcome window close");
-      this._windows[WindowNames.overlay].maximize() && this._windows[WindowNames.overlay].minimize() && logMessage("info", "Overlay window close");
-      this._windows[WindowNames.generic].maximize() && this._windows[WindowNames.generic].minimize() && logMessage("info", "Desktop window close");
-      this._windows[WindowNames.interaction].maximize() && this._windows[WindowNames.interaction].minimize() && logMessage("info", "Desktop window close");
+      this._windows[WindowNames.splash].maximize() && this._windows[WindowNames.splash].minimize() && logMessage("window", "Welcome window close");
+      this._windows[WindowNames.minimap].maximize() && this._windows[WindowNames.minimap].minimize() && logMessage("window", "Minimap window close");
+      this._windows[WindowNames.worldmap].maximize() && this._windows[WindowNames.worldmap].minimize() && logMessage("window", "Worldmap window close");
     }
   }
 
@@ -80,29 +79,26 @@ class BackgroundController {
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
-    logMessage("event", `APP LAUNCHING => ${JSON.stringify(e)}`);
+    logMessage("game", `Game Launching => ${JSON.stringify(e)}`);
 
     if (!e) {
       return;
     }
 
     if (await this.isSupportedGameRunning()) {
-      this._windows[WindowNames.overlay].restore();
-      this._windows[WindowNames.welcome].restore();
-      this._windows[WindowNames.generic].restore();
-      this._windows[WindowNames.interaction].restore();
+      this._windows[WindowNames.splash].restore();
+      this._windows[WindowNames.minimap].restore();
+      this._windows[WindowNames.worldmap].restore();
     } else {
-      this._windows[WindowNames.welcome].minimize();
-      this._windows[WindowNames.overlay].minimize();
-      this._windows[WindowNames.generic].minimize();
-      this._windows[WindowNames.interaction].minimize();
+      this._windows[WindowNames.splash].minimize();
+      this._windows[WindowNames.minimap].minimize();
+      this._windows[WindowNames.worldmap].minimize();
     }
 
     if (e.origin.includes('gamelaunchevent')) {
-      this._windows[WindowNames.overlay].maximize() && logMessage("info", "Minimap window restored");
-      this._windows[WindowNames.generic].maximize() && logMessage("info", "Desktop window restored");
-      this._windows[WindowNames.welcome].maximize() && logMessage("info", "Welcome window restored");
-      this._windows[WindowNames.interaction].maximize() && logMessage("info", "Welcome window restored");
+      this._windows[WindowNames.splash].maximize() && logMessage("window", "Splash window restored");
+      this._windows[WindowNames.minimap].maximize() && logMessage("window", "Minimap window restored");
+      this._windows[WindowNames.worldmap].maximize() && logMessage("window", "Worldmap window restored");
     }
   }
 
@@ -114,15 +110,13 @@ class BackgroundController {
     logMessage("event", `toggleWindows triggered.`);
 
     if (info.isRunning) {
-      this._windows[WindowNames.overlay].restore();
-      this._windows[WindowNames.welcome].restore();
-      this._windows[WindowNames.generic].restore();
-      this._windows[WindowNames.interaction].restore();
+      this._windows[WindowNames.splash].restore();
+      this._windows[WindowNames.minimap].restore();
+      this._windows[WindowNames.worldmap].restore();
     } else {
-      this._windows[WindowNames.generic].minimize();
-      this._windows[WindowNames.welcome].minimize();
-      this._windows[WindowNames.overlay].minimize();
-      this._windows[WindowNames.interaction].minimize();
+      this._windows[WindowNames.splash].minimize();
+      this._windows[WindowNames.minimap].minimize();
+      this._windows[WindowNames.worldmap].minimize();
     }
   }
 

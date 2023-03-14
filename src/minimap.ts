@@ -1,20 +1,12 @@
+import CacheInterface from "./cache";
+import DataClient from "./data";
+import Pin from "./pin";
+import StorageInterface from "./storage";
+import Vector2 from "./vector2";
+import { logError, logMessage } from "./debug";
+import { playerModel } from "./player";
+import { getCircularReplacer, wait } from "./utils";
 
-import { logError, logMessage } from './debug';
-import { getCircularReplacer, wait } from './utils';
-import Vector2 from './vector2';
-import StorageInterface from './storage';
-import CacheInterface from './cache';
-import DataClient from './data';
-import Pin from './pin';
-import { playerModel } from './player';
-/*
- * ClassName:       Minimap
- * Description:     A two dimensional Minimap Canvas object
- * Author:          Dave Inchy;
- * Updated:         2022-03-21
- * ------------------------------------------------- *\
- * @param null
- * ------------------------------------------------- */
 export default class Minimap {
 
   public _once: boolean = true;

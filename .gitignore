@@ -2,7 +2,9 @@
 node_modules
 dist
 releases
+target
 .vs
+.vscode
 
 # local env files
 .env
@@ -31,3 +33,6 @@ yarn-error.log*
 src/resources/tilemap/**/*.PNG
 src/resources/tilemap/**/*.LIST
 src/resources/tilemap/**/*.2D
+
+# Current release should be pushed
+releases/nw-buddy.latest.opk

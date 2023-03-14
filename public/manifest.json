@@ -74,27 +74,58 @@
         "background_optimization": true,
         "is_background_page": true
       },
-      "welcome": {
-        "file": "welcome.html",
-        "in_game_only": true,
-        "focus_game_takeover": "HideOnShow",
+      "splash": {
+        "file": "splash.html",
+        "focus_game_takeover": "HideOnFocus",
+        "desktop_only": true,
+        "disable_rightclick": false,
+        "ignore_keyboard_events": false,
+        "show_in_taskbar": false,
+        "disable_restore_animation": false,
+        "grab_focus_on_desktop": true,
         "use_os_windowing": true,
         "native_window": true,
-        "allow_local_file_access": true,
-        "keep_window_location": true,
-        "disable_rightclick": true,
-        "optimize_accelerate_rendering": true,
-        "ignore_keyboard_events": true,
         "resizable": true,
-        "transparent": true,
+        "transparent": false,
+        "show_maximize": true,
+        "show_minimize": true,
+        "min_size": {
+          "width": 1080,
+          "height": 840
+        },
+        "allow_local_file_access": false,
+        "keep_window_location": false,
         "override_on_update": true,
-        "size": {
-          "width": 16,
-          "height": 16
-        }
+        "dev_tools_window_style": true,
+        "optimize_accelerate_rendering": true
       },
-      "overlay": {
-        "file": "overlay.html",
+      "worldmap": {
+        "file": "worldmap.html",
+        "focus_game_takeover": "HideOnFocus",
+        "desktop_only": true,
+        "disable_rightclick": false,
+        "ignore_keyboard_events": false,
+        "show_in_taskbar": true,
+        "disable_restore_animation": false,
+        "grab_focus_on_desktop": true,
+        "use_os_windowing": true,
+        "native_window": true,
+        "resizable": true,
+        "transparent": false,
+        "show_maximize": true,
+        "show_minimize": true,
+        "min_size": {
+          "width": 1080,
+          "height": 840
+        },
+        "allow_local_file_access": false,
+        "keep_window_location": false,
+        "override_on_update": true,
+        "dev_tools_window_style": true,
+        "optimize_accelerate_rendering": true
+      },
+      "minimap": {
+        "file": "minimap.html",
         "in_game_only": true,
         "focus_game_takeover": "ShowOnFocus",
         "allow_local_file_access": true,

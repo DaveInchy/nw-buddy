@@ -1,6 +1,6 @@
 import "../../assets/css/app.tailwind.css";
 import Map from "../elements/map/worldmap.l6";
-import { mountApp, mountComponent } from "../../modules/owReact/mount";
+import { mountApp, mountComponent } from "../../modules/ow-react/mount";
 import { Player, playerModel } from "../../player";
 import { getEventData } from "../../utils";
 
